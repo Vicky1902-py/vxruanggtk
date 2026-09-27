@@ -1,0 +1,23 @@
+# ── Ruang GTK · perisai root repo ────────────────────────────
+# Dokumen root menunjuk ke folder repo ini. Semua request diarahkan
+# ke public/ (front controller Laravel), sehingga hanya file di
+# public/ yang pernah tersaji ke web.
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Blokir semua file titik (.env, .gitignore, dll.)
+<FilesMatch "^\.">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Blokir akses ke direktori .git (pertahanan berlapis)
+RedirectMatch 404 (?i)/\.git

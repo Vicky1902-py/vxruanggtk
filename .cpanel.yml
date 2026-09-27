@@ -1,0 +1,36 @@
+---
+# Deploy otomatis cPanel via Git Version Control™
+# Setiap kali cPanel menarik commit baru dari GitHub, langkah ini dijalankan.
+# Letakkan file ini di ROOT repo.
+deployment_tasks:
+  - name: Deploy Ruang GTK
+    type: UNversioned
+    actions:
+      # 1. Install dependency Composer (produksi saja).
+      #    Banyak hosting CloudLinux (mis. Rumahweb) menyediakan biner `composer2`.
+      - command: >-
+          if command -v composer >/dev/null 2>&1; then
+            composer install --no-dev --optimize-autoloader --no-interaction;
+          elif command -v composer2 >/dev/null 2>&1; then
+            composer2 install --no-dev --optimize-autoloader --no-interaction;
+          else
+            echo "COMPOSER TIDAK DITEMUKAN — jalankan manual via Terminal cPanel";
+          fi
+
+      # 2. Pastikan .env produksi ada (salin dari template jika belum ada)
+      - command: '[ ! -f .env ] && cp .env.production.example .env || echo ".env sudah ada"'
+
+      # 3. Generate APP_KEY jika belum ada
+      - command: 'grep -q "^APP_KEY=base64" .env || php artisan key:generate --force'
+
+      # 4. Jalankan migrasi database
+      - command: php artisan migrate --force
+
+      # 5. Seed produksi (idempoten): roles, super admin pertama, CMS
+      - command: php artisan db:seed --force --class=ProductionSeeder || true
+
+      # 6. Symbolic link storage (untuk file upload)
+      - command: php artisan storage:link || true
+
+      # 7. Optimasi cache untuk produksi
+      - command: php artisan config:cache && php artisan route:cache && php artisan view:cache
