@@ -32,6 +32,10 @@ class ProductionSeeder extends Seeder
             ['username' => 'god'],
             ['password' => Hash::make('godmode123'), 'name' => 'Platform Owner']
         );
+        SuperAdmin::firstOrCreate(
+            ['username' => 'superadmin'],
+            ['password' => Hash::make('password'), 'name' => 'Super Administrator']
+        );
 
         // ── CMS default ─────────────────────────────────────
         SiteSetting::set('site_tagline', SiteSetting::get('site_tagline', 'Sistem Informasi Manajemen Sekolah multi-tenant — kelola siswa, guru, presensi, tagihan, dan pengumuman dalam satu tampilan yang tenang dan modern.'));

@@ -3,22 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080a11">
+<meta name="theme-color" content="#030712">
 <title>@yield('title', 'Kontrol Global') — Ruang GTK Super Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="icon" href="{{ asset('img/logo.svg') }}" type="image/svg+xml">
 <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ @filemtime(public_path('css/app.css')) }}">
 </head>
 <body>
 <div class="intro-veil" aria-hidden="true"><div class="intro-mark"><img src="{{ asset('img/logo.svg') }}" alt="Logo Ruang GTK"></div></div>
 
-{{-- Mobile Overlay --}}
 <div class="side-overlay" id="sideOverlay" aria-hidden="true"></div>
 
 <div class="shell god-shell">
-  {{-- Mobile Top Bar --}}
   <header class="mobile-header glass-soft">
     <button class="hamburger" id="hamburgerBtn" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="sidebar">
       <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
@@ -30,15 +28,17 @@
   </header>
 
   <aside class="side glass-soft" id="sidebar" role="navigation" aria-label="Menu Super Admin">
-    {{-- Close Button for Mobile Drawer --}}
     <button class="side-close" id="sideClose" aria-label="Tutup menu">
       <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
 
     <div class="brand">
       <div class="brand-mark god-mark"><img src="{{ asset('img/logo.svg') }}" alt="Logo Ruang GTK"></div>
-      <div>
-        <b>Ruang GTK</b>
+      <div style="min-width:0">
+        <div class="brand-ruanggtk">
+          <span class="brand-ruanggtk-text">Ruang<span class="gtk-tag">GTK</span></span>
+          <span class="brand-beam"></span>
+        </div>
         <small style="color:#fdba74">Super Admin Platform</small>
       </div>
     </div>
@@ -63,7 +63,7 @@
 
     <div class="side-foot">
       <div style="display:flex;align-items:center;gap:10px;padding:0 8px 12px">
-        <div style="width:34px;height:34px;border-radius:50%;background:var(--grad-sunset);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex:none">
+        <div style="width:34px;height:34px;border-radius:50%;background:var(--grad-gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#0b1120;flex:none">
           ⚡
         </div>
         <div style="min-width:0;line-height:1.3">

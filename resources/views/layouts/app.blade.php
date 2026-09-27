@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080a11">
+<meta name="theme-color" content="#030712">
 <title>@yield('title', 'Dashboard') — Ruang GTK</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="icon" href="{{ asset('img/logo.svg') }}" type="image/svg+xml">
 <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ @filemtime(public_path('css/app.css')) }}">
 </head>
@@ -25,7 +25,10 @@
     </button>
     <div style="display:flex;align-items:center;gap:10px">
       <div class="brand-mark" style="width:34px;height:34px;border-radius:10px"><img src="{{ asset('img/logo.svg') }}" alt="Logo"></div>
-      <b style="font-size:15px;color:var(--text)">Ruang GTK</b>
+      <div class="brand-ruanggtk">
+        <span class="brand-ruanggtk-text" style="font-size:16px">Ruang<span class="gtk-tag">GTK</span></span>
+        <span class="brand-beam"></span>
+      </div>
     </div>
   </header>
 
@@ -36,19 +39,22 @@
       <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
 
-    {{-- Brand Section --}}
+    {{-- Brand Section with Animated Typography --}}
     <div class="brand">
       <div class="brand-mark"><img src="{{ asset('img/logo.svg') }}" alt="Logo Ruang GTK"></div>
       <div style="min-width:0">
-        <b>Ruang GTK</b>
-        <small style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ auth()->user()?->school?->name ?? 'SIM Sekolah' }}</small>
+        <div class="brand-ruanggtk">
+          <span class="brand-ruanggtk-text">Ruang<span class="gtk-tag">GTK</span></span>
+          <span class="brand-beam"></span>
+        </div>
+        <small style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">{{ auth()->user()?->school?->name ?? 'SIM Sekolah' }}</small>
       </div>
     </div>
 
     @if (session('god_impersonating'))
-      <div class="god-banner">
-        <span>👁️ GOD MODE · {{ session('god_school_name') }}</span>
-        <a href="{{ route('god.exit') }}">Keluar God Mode →</a>
+      <div class="god-banner" style="margin:0 2px 8px;padding:10px 14px;border-radius:14px;font-size:12.5px;font-weight:600;color:#fef08a;background:linear-gradient(135deg,rgba(245,158,11,0.22),rgba(239,68,68,0.15));border:1px solid rgba(245,158,11,0.45);display:grid;gap:4px">
+        <span>⚡ GOD MODE · {{ session('god_school_name') }}</span>
+        <a href="{{ route('god.exit') }}" style="color:#fde68a;text-decoration:underline">Keluar God Mode →</a>
       </div>
     @endif
 
@@ -116,7 +122,7 @@
     {{-- User Profile Pill in Sidebar Footer --}}
     <div class="side-foot">
       <div style="display:flex;align-items:center;gap:10px;padding:0 8px 12px">
-        <div style="width:34px;height:34px;border-radius:50%;background:var(--grad-vertex);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex:none">
+        <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#0284c7,#2563eb);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex:none">
           {{ strtoupper(substr(auth()->user()?->username ?? 'U', 0, 2)) }}
         </div>
         <div style="min-width:0;line-height:1.3">
@@ -124,7 +130,7 @@
           <small style="color:var(--muted);font-size:11.5px">{{ auth()->user()?->role?->name }} · {{ auth()->user()?->school?->subdomain }}</small>
         </div>
       </div>
-      <div style="padding:4px 8px 6px;font-size:11px;color:var(--muted)">© 2026 Vicky Koroh · v2.4 Vertex</div>
+      <div style="padding:4px 8px 6px;font-size:11px;color:var(--muted)">© 2026 Vicky Koroh · ConSentinel</div>
       <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();" style="color:var(--text-2)">
         <svg viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 012 2v12a2 2 0 01-2 2h-4"/><path d="M10 17l-5-5 5-5M5 12h11"/></svg>
         Keluar

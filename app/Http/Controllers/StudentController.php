@@ -44,6 +44,12 @@ class StudentController extends Controller
             'status' => ['required', 'in:aktif,lulus,pindah,keluar'],
         ]);
 
+        $data['class_id'] = $data['class_id'] ?: null;
+        $data['guardian_id'] = $data['guardian_id'] ?: null;
+        $data['birth_date'] = $data['birth_date'] ?: null;
+        $data['nis'] = $data['nis'] ?: null;
+        $data['nisn'] = $data['nisn'] ?: null;
+
         Student::create($data);
 
         return back()->with('toast', 'Siswa "' . $data['full_name'] . '" berhasil ditambahkan.');
@@ -61,6 +67,12 @@ class StudentController extends Controller
             'birth_date' => ['nullable', 'date'],
             'status' => ['required', 'in:aktif,lulus,pindah,keluar'],
         ]);
+
+        $data['class_id'] = $data['class_id'] ?: null;
+        $data['guardian_id'] = $data['guardian_id'] ?: null;
+        $data['birth_date'] = $data['birth_date'] ?: null;
+        $data['nis'] = $data['nis'] ?: null;
+        $data['nisn'] = $data['nisn'] ?: null;
 
         $student->update($data);
 

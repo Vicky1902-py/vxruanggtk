@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════
-   RUANG GTK — Vertex Kinetic Motion Controller
-   Cursor spotlights, 3D card tilt, count-up & interactive behaviors.
+   RUANG GTK — Concept "ConSentinel" Kinetic Controller
+   Caustic sweep, interactive brand typography, cursor spotlights,
+   3D tilt, count-up, mobile drawer & live presensi updates.
    ═══════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -29,7 +30,7 @@
     veil.addEventListener('animationend', function (e) {
       if (e.animationName === 'veilOut') removeVeil();
     });
-    setTimeout(removeVeil, 2200);
+    setTimeout(removeVeil, 2000);
   }
 
   // 4. Interactive Cursor Spotlight on Glass Elements
@@ -45,7 +46,7 @@
       });
     });
 
-    // Subtle 3D Card Tilt on Hover
+    // 3D Card Tilt on Hover
     var tiltCards = document.querySelectorAll('.stat, .landing-feature');
     tiltCards.forEach(function (card) {
       card.addEventListener('mousemove', function (e) {
@@ -54,7 +55,7 @@
         var y = e.clientY - rect.top - rect.height / 2;
         var rotateX = (y / (rect.height / 2)) * -4;
         var rotateY = (x / (rect.width / 2)) * 4;
-        card.style.transform = 'perspective(800px) rotateX(' + rotateX.toFixed(2) + 'deg) rotateY(' + rotateY.toFixed(2) + 'deg) translateY(-3px)';
+        card.style.transform = 'perspective(900px) rotateX(' + rotateX.toFixed(2) + 'deg) rotateY(' + rotateY.toFixed(2) + 'deg) translateY(-3px)';
       });
       card.addEventListener('mouseleave', function () {
         card.style.transform = '';
@@ -77,7 +78,7 @@
           var el = entry.target;
           ioCount.unobserve(el);
           var targetVal = parseFloat(el.getAttribute('data-count') || '0');
-          var dur = 1100;
+          var dur = 1200;
           var startTime = null;
           var step = function (ts) {
             if (!startTime) startTime = ts;
@@ -212,7 +213,7 @@
     syncBillAmount();
   }
 
-  // 11. Quick Demo Credential Autofill (if present on login page)
+  // 11. Quick Demo Credential Autofill
   var demoButtons = document.querySelectorAll('[data-demo-subdomain]');
   demoButtons.forEach(function (btn) {
     btn.addEventListener('click', function (e) {

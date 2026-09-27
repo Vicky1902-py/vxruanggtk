@@ -51,6 +51,9 @@ class AttendanceStudentController extends Controller
             }
         });
 
-        return back()->with('toast', 'Presensi tanggal ' . $date . ' berhasil disimpan.');
+        return redirect()->route('attendance.index', [
+            'class_id' => $data['class_id'],
+            'date' => $date,
+        ])->with('toast', 'Presensi tanggal ' . $date . ' berhasil disimpan.');
     }
 }

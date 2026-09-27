@@ -27,6 +27,8 @@ class SchoolClassController extends Controller
             'homeroom_teacher_id' => ['nullable', 'exists:employees,id'],
         ]);
 
+        $data['homeroom_teacher_id'] = $data['homeroom_teacher_id'] ?: null;
+
         SchoolClass::create($data);
 
         return back()->with('toast', 'Kelas "' . $data['name'] . '" berhasil ditambahkan.');
@@ -39,6 +41,8 @@ class SchoolClassController extends Controller
             'name' => ['required', 'string', 'max:30'],
             'homeroom_teacher_id' => ['nullable', 'exists:employees,id'],
         ]);
+
+        $data['homeroom_teacher_id'] = $data['homeroom_teacher_id'] ?: null;
 
         $class->update($data);
 

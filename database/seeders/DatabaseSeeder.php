@@ -143,6 +143,7 @@ class DatabaseSeeder extends Seeder
 
         foreach (Student::all() as $i => $student) {
             Bill::create([
+                'school_id' => $school->id,
                 'student_id' => $student->id,
                 'payment_type_id' => $spp->id,
                 'amount' => 350000,
@@ -150,6 +151,7 @@ class DatabaseSeeder extends Seeder
                 'status' => $i < 2 ? 'lunas' : 'belum_bayar',
             ]);
             Bill::create([
+                'school_id' => $school->id,
                 'student_id' => $student->id,
                 'payment_type_id' => $udy->id,
                 'amount' => 1500000,

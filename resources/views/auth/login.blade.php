@@ -7,9 +7,12 @@
   <div class="auth-card glass">
     <div class="auth-brand">
       <div class="mark"><img src="{{ asset('img/logo.svg') }}" alt="Logo Ruang GTK"></div>
-      <div>
-        <h1 style="font-size:22px;font-weight:700">Ruang GTK</h1>
-        <p style="color:var(--muted);font-size:13.5px;margin-top:2px">Sistem Informasi Manajemen Sekolah Multi-Tenant</p>
+      <div style="margin-top:6px">
+        <div class="brand-ruanggtk" style="font-size:24px">
+          <span class="brand-ruanggtk-text" style="font-size:24px">Ruang<span class="gtk-tag">GTK</span></span>
+          <span class="brand-beam"></span>
+        </div>
+        <p style="color:var(--muted);font-size:13px;margin-top:4px">Portal Masuk SIM Sekolah Multi-Tenant</p>
       </div>
     </div>
 
@@ -51,7 +54,7 @@
     </div>
 
     <p style="margin-top:16px;text-align:center;font-size:12.5px;color:var(--muted)">
-      Super Admin Platform? <a href="{{ route('super.login') }}" style="color:var(--amber)">Masuk Panel Global →</a>
+      Super Admin Platform? <a href="{{ route('super.login') }}" style="color:var(--accent)">Masuk Panel Global →</a>
     </p>
 
     <p style="margin-top:12px;text-align:center;font-size:13px">

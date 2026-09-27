@@ -1,195 +1,118 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 600" width="720" height="600" role="img" aria-label="Ruang GTK Vertex Futuristic Dashboard Command Center">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 560" width="760" height="560" role="img" aria-label="Ruang GTK ConSentinel Security Viewport">
   <defs>
-    <!-- Background Dark Glows -->
-    <radialGradient id="hero-aura-indigo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.38"/>
-      <stop offset="60%" stop-color="#4338ca" stop-opacity="0.12"/>
-      <stop offset="100%" stop-color="#090a10" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="hero-aura-cyan" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.32"/>
-      <stop offset="60%" stop-color="#0284c7" stop-opacity="0.08"/>
-      <stop offset="100%" stop-color="#090a10" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="hero-aura-amber" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.28"/>
-      <stop offset="60%" stop-color="#d97706" stop-opacity="0.06"/>
-      <stop offset="100%" stop-color="#090a10" stop-opacity="0"/>
+    <!-- Caustic & Radiant Sky Gradients -->
+    <radialGradient id="cs-sphere" cx="45%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="25%" stop-color="#e0f2fe" stop-opacity="0.75"/>
+      <stop offset="55%" stop-color="#7dd3fc" stop-opacity="0.35"/>
+      <stop offset="85%" stop-color="#0284c7" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#0369a1" stop-opacity="0.5"/>
     </radialGradient>
 
-    <!-- Glass Fill & Edge Gradients -->
-    <linearGradient id="vtx-glass-pane" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e2436" stop-opacity="0.88"/>
-      <stop offset="50%" stop-color="#131724" stop-opacity="0.75"/>
-      <stop offset="100%" stop-color="#0a0c14" stop-opacity="0.85"/>
+    <radialGradient id="cs-backglow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.25"/>
+      <stop offset="60%" stop-color="#0369a1" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#020817" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="cs-blade" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85"/>
+      <stop offset="50%" stop-color="#bae6fd" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.1"/>
     </linearGradient>
 
-    <linearGradient id="vtx-glass-border" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35"/>
-      <stop offset="30%" stop-color="#818cf8" stop-opacity="0.45"/>
-      <stop offset="70%" stop-color="#38bdf8" stop-opacity="0.35"/>
-      <stop offset="100%" stop-color="#c084fc" stop-opacity="0.2"/>
+    <linearGradient id="cs-glass-panel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f1a30" stop-opacity="0.85"/>
+      <stop offset="50%" stop-color="#081022" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#030712" stop-opacity="0.9"/>
     </linearGradient>
 
-    <!-- Bar Chart Gradients -->
-    <linearGradient id="bar-grad-1" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#2563eb"/>
-    </linearGradient>
-    <linearGradient id="bar-grad-2" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#c084fc"/>
-      <stop offset="100%" stop-color="#7c3aed"/>
-    </linearGradient>
-    <linearGradient id="bar-grad-3" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#34d399"/>
-      <stop offset="100%" stop-color="#059669"/>
-    </linearGradient>
-    <linearGradient id="bar-grad-4" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#ea580c"/>
+    <linearGradient id="cs-border-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4"/>
+      <stop offset="30%" stop-color="#38bdf8" stop-opacity="0.5"/>
+      <stop offset="70%" stop-color="#60a5fa" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#1e3a8a" stop-opacity="0.15"/>
     </linearGradient>
 
-    <!-- Glow Filters -->
-    <filter id="vtx-hero-glow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="10" result="b1"/>
-      <feComposite in="SourceGraphic" in2="b1" operator="over"/>
+    <filter id="cs-glow-lg" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
   </defs>
 
-  <!-- Ambient Light Clouds -->
-  <circle cx="240" cy="180" r="190" fill="url(#hero-aura-indigo)"/>
-  <circle cx="520" cy="220" r="210" fill="url(#hero-aura-cyan)"/>
-  <circle cx="400" cy="460" r="180" fill="url(#hero-aura-amber)"/>
+  <!-- Ambient Caustic Background Field -->
+  <circle cx="380" cy="270" r="260" fill="url(#cs-backglow)"/>
 
-  <!-- Orbital Geometric Rings (Kinetic Motion Track) -->
-  <ellipse cx="360" cy="300" rx="320" ry="140" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" stroke-dasharray="6 12"/>
-  <ellipse cx="360" cy="300" rx="270" ry="110" fill="none" stroke="rgba(99,102,241,0.22)" stroke-width="1.8" stroke-dasharray="4 8" transform="rotate(-10 360 300)"/>
-  <ellipse cx="360" cy="300" rx="220" ry="85" fill="none" stroke="rgba(6,182,212,0.18)" stroke-width="1.2" stroke-dasharray="2 6" transform="rotate(15 360 300)"/>
+  <!-- Concentric Orbital Grid Tracks (ConSentinel Style) -->
+  <ellipse cx="380" cy="280" rx="340" ry="160" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.2" stroke-dasharray="6 10"/>
+  <ellipse cx="380" cy="280" rx="270" ry="125" fill="none" stroke="rgba(56,189,248,0.18)" stroke-width="1.5" stroke-dasharray="4 8" transform="rotate(-8 380 280)"/>
+  <ellipse cx="380" cy="280" rx="200" ry="90" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="2 6" transform="rotate(12 380 280)"/>
 
-  <!-- Constellation Data Beams -->
-  <line x1="140" y1="180" x2="260" y2="120" stroke="rgba(56,189,248,0.3)" stroke-width="1.2" stroke-dasharray="3 4"/>
-  <circle cx="140" cy="180" r="4" fill="#38bdf8" filter="url(#vtx-hero-glow)"/>
-  <line x1="560" y1="130" x2="480" y2="200" stroke="rgba(192,132,252,0.35)" stroke-width="1.2" stroke-dasharray="3 4"/>
-  <circle cx="560" cy="130" r="4.5" fill="#c084fc" filter="url(#vtx-hero-glow)"/>
-  <line x1="520" y1="440" x2="440" y2="400" stroke="rgba(251,191,36,0.35)" stroke-width="1.2" stroke-dasharray="3 4"/>
-  <circle cx="520" cy="440" r="4" fill="#fbbf24" filter="url(#vtx-hero-glow)"/>
-
-  <!-- MAIN DASHBOARD COMMAND CENTER (Floating Isometric Tilt) -->
-  <g transform="translate(130, 80)">
-    <!-- Shadow Projection -->
-    <rect x="18" y="24" width="460" height="310" rx="28" fill="#000000" opacity="0.45" filter="url(#vtx-hero-glow)"/>
+  <!-- CENTRAL CRYSTAL GLASS SPHERE & CAUSTIC BLADE (Iconic ConSentinel Centerpiece) -->
+  <g transform="translate(380, 270)">
+    <!-- Sphere Shadow Reflection -->
+    <ellipse cx="0" cy="110" rx="100" ry="24" fill="#020817" opacity="0.6" filter="url(#cs-glow-lg)"/>
     
-    <!-- Main Glass Body -->
-    <rect x="0" y="0" width="460" height="310" rx="26" fill="url(#vtx-glass-pane)" stroke="url(#vtx-glass-border)" stroke-width="1.6"/>
+    <!-- Primary Crystal Sphere -->
+    <circle cx="0" cy="0" r="105" fill="url(#cs-sphere)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
     
-    <!-- Window Header -->
-    <circle cx="28" cy="24" r="5" fill="#f87171"/>
-    <circle cx="46" cy="24" r="5" fill="#fbbf24"/>
-    <circle cx="64" cy="24" r="5" fill="#34d399"/>
-    
-    <!-- Title / Breadcrumb in Command Bar -->
-    <rect x="96" y="16" width="130" height="16" rx="8" fill="rgba(255,255,255,0.06)"/>
-    <text x="161" y="28" fill="#c3c9d4" font-family="Inter, sans-serif" font-size="10" font-weight="600" text-anchor="middle">ruanggtk.my.id/telemetry</text>
-    
-    <!-- Real-time Sync Badge -->
-    <rect x="330" y="14" width="105" height="20" rx="10" fill="rgba(52,211,153,0.12)" stroke="rgba(52,211,153,0.3)" stroke-width="1"/>
-    <circle cx="344" cy="24" r="3.5" fill="#34d399" filter="url(#vtx-hero-glow)"/>
-    <text x="382" y="28" fill="#34d399" font-family="Inter, sans-serif" font-size="9.5" font-weight="700">ONLINE · LIVE</text>
+    <!-- Intersecting Crystal Glass Blade -->
+    <path d="M-150 -60 L150 -10 L120 70 L-180 20 Z" fill="url(#cs-blade)" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" opacity="0.75" transform="rotate(-18)"/>
 
-    <!-- Divider -->
-    <line x1="0" y1="46" x2="460" y2="46" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-
-    <!-- Left Stats Column: 3 Metric Capsules -->
-    <g transform="translate(24, 64)">
-      <!-- Capsule 1: Presensi GTK -->
-      <rect x="0" y="0" width="124" height="66" rx="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-      <text x="12" y="20" fill="#94a3b8" font-family="Inter, sans-serif" font-size="10" font-weight="500">PRESENSI GTK</text>
-      <text x="12" y="44" fill="#ffffff" font-family="Inter, sans-serif" font-size="20" font-weight="700">99.4%</text>
-      <path d="M78 40 L88 32 L98 36 L112 26" stroke="#34d399" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <circle cx="112" cy="26" r="2.5" fill="#34d399"/>
-
-      <!-- Capsule 2: Siswa Aktif -->
-      <rect x="0" y="78" width="124" height="66" rx="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-      <text x="12" y="98" fill="#94a3b8" font-family="Inter, sans-serif" font-size="10" font-weight="500">SISWA TERDATA</text>
-      <text x="12" y="122" fill="#ffffff" font-family="Inter, sans-serif" font-size="20" font-weight="700">1,280</text>
-      <path d="M78 118 L88 112 L98 116 L112 104" stroke="#38bdf8" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <circle cx="112" cy="104" r="2.5" fill="#38bdf8"/>
-
-      <!-- Capsule 3: Tagihan Terkumpul -->
-      <rect x="0" y="156" width="124" height="66" rx="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-      <text x="12" y="176" fill="#94a3b8" font-family="Inter, sans-serif" font-size="10" font-weight="500">REKAP KEUANGAN</text>
-      <text x="12" y="200" fill="#fbbf24" font-family="Inter, sans-serif" font-size="15" font-weight="700">Rp 142.8M</text>
-      <path d="M82 196 L92 190 L100 193 L112 182" stroke="#fbbf24" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <circle cx="112" cy="182" r="2.5" fill="#fbbf24"/>
-    </g>
-
-    <!-- Right Side: Graphic Analytics Matrix -->
-    <g transform="translate(166, 64)">
-      <rect x="0" y="0" width="270" height="222" rx="16" fill="rgba(10,12,18,0.7)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
-      
-      <!-- Chart Title -->
-      <text x="18" y="24" fill="#ffffff" font-family="Inter, sans-serif" font-size="12" font-weight="600">Aktivitas GTK &amp; Akademik Terpadu</text>
-      <text x="18" y="38" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Monitoring multi-kelas 2026/2027</text>
-
-      <!-- Background Grid lines -->
-      <line x1="18" y1="70" x2="252" y2="70" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-      <line x1="18" y1="110" x2="252" y2="110" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-      <line x1="18" y1="150" x2="252" y2="150" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-      <line x1="18" y1="190" x2="252" y2="190" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-
-      <!-- Vibrant Bar Columns -->
-      <g transform="translate(26, 0)">
-        <rect x="0" y="110" width="16" height="80" rx="4" fill="url(#bar-grad-1)"/>
-        <rect x="24" y="90" width="16" height="100" rx="4" fill="url(#bar-grad-2)"/>
-        <rect x="48" y="75" width="16" height="115" rx="4" fill="url(#bar-grad-1)"/>
-        <rect x="72" y="125" width="16" height="65" rx="4" fill="url(#bar-grad-3)"/>
-        <rect x="96" y="60" width="16" height="130" rx="4" fill="url(#bar-grad-2)"/>
-        <rect x="120" y="80" width="16" height="110" rx="4" fill="url(#bar-grad-1)"/>
-        <rect x="144" y="95" width="16" height="95" rx="4" fill="url(#bar-grad-4)"/>
-        <rect x="168" y="55" width="16" height="135" rx="4" fill="url(#bar-grad-3)"/>
-        <rect x="192" y="70" width="16" height="120" rx="4" fill="url(#bar-grad-2)"/>
-      </g>
-
-      <!-- Smooth Area Wave Overlay -->
-      <path d="M26 130 C 50 110, 80 140, 110 90 C 140 70, 180 100, 220 65 L 220 190 L 26 190 Z" fill="url(#bar-grad-2)" opacity="0.12"/>
-      <path d="M26 130 C 50 110, 80 140, 110 90 C 140 70, 180 100, 220 65" stroke="#c084fc" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <circle cx="110" cy="90" r="4" fill="#ffffff" stroke="#a855f7" stroke-width="2" filter="url(#vtx-hero-glow)"/>
-      <circle cx="220" cy="65" r="4" fill="#ffffff" stroke="#38bdf8" stroke-width="2" filter="url(#vtx-hero-glow)"/>
-    </g>
+    <!-- Caustic Light Ribs on Sphere -->
+    <ellipse cx="-15" cy="-25" rx="55" ry="32" fill="none" stroke="#ffffff" stroke-width="2.5" opacity="0.65" transform="rotate(-30 -15 -25)"/>
+    <circle cx="-35" cy="-45" r="8" fill="#ffffff" opacity="0.85" filter="url(#cs-glow-lg)"/>
   </g>
 
-  <!-- FLOATING WIDGET 1: Multi-Tenant Cloud Pod (Top Left) -->
-  <g transform="translate(40, 310)">
-    <rect x="0" y="0" width="190" height="74" rx="18" fill="url(#vtx-glass-pane)" stroke="url(#vtx-glass-border)" stroke-width="1.4" filter="url(#vtx-hero-glow)"/>
-    <circle cx="28" cy="37" r="16" fill="rgba(99,102,241,0.2)"/>
-    <path d="M22 34 L28 40 L36 30" stroke="#818cf8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <text x="54" y="32" fill="#ffffff" font-family="Inter, sans-serif" font-size="11" font-weight="700">Multi-Tenant v2</text>
-    <text x="54" y="48" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9.5">Isolasi Database Penuh</text>
+  <!-- FLOATING HUD PANEL 1: Security Sentinel Telemetry (Top Left) -->
+  <g transform="translate(40, 70)">
+    <rect x="0" y="0" width="260" height="110" rx="20" fill="url(#cs-glass-panel)" stroke="url(#cs-border-glow)" stroke-width="1.4" filter="url(#cs-glow-lg)"/>
+    <!-- Top Header -->
+    <circle cx="24" cy="24" r="5" fill="#38bdf8"/>
+    <text x="38" y="28" fill="#e0f2fe" font-family="Inter, sans-serif" font-size="11" font-weight="700" letter-spacing="0.06em">ISOLASI MULTI-TENANT</text>
+    <rect x="180" y="16" width="66" height="18" rx="9" fill="rgba(56,189,248,0.15)"/>
+    <text x="213" y="28.5" fill="#38bdf8" font-family="Inter, sans-serif" font-size="9" font-weight="700" text-anchor="middle">ACTIVE</text>
+    <line x1="16" y1="44" x2="244" y2="44" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    <!-- Subdomain Telemetry Metric -->
+    <text x="24" y="68" fill="#ffffff" font-family="Inter, sans-serif" font-size="20" font-weight="800">100% SECURE</text>
+    <text x="24" y="88" fill="#94a3b8" font-family="Inter, sans-serif" font-size="11">Data terpisah per subdomain sekolah</text>
   </g>
 
-  <!-- FLOATING WIDGET 2: Smart Notification (Bottom Right) -->
-  <g transform="translate(450, 370)">
-    <rect x="0" y="0" width="220" height="82" rx="20" fill="url(#vtx-glass-pane)" stroke="url(#vtx-glass-border)" stroke-width="1.4" filter="url(#vtx-hero-glow)"/>
-    <circle cx="34" cy="41" r="18" fill="rgba(245,158,11,0.18)"/>
-    <!-- Bell Icon -->
-    <path d="M30 36 C30 33, 38 33, 38 36 L39 43 L29 43 Z M32 46 C32 47.5, 36 47.5, 36 46" stroke="#fbbf24" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <text x="64" y="34" fill="#ffffff" font-family="Inter, sans-serif" font-size="11.5" font-weight="700">Presensi Harian Terkunci</text>
-    <text x="64" y="50" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="9.5">Kelas 7A &amp; 8B selesai 100%</text>
-    <rect x="64" y="58" width="85" height="12" rx="6" fill="rgba(52,211,153,0.15)"/>
-    <text x="106" y="67" fill="#34d399" font-family="Inter, sans-serif" font-size="8.5" font-weight="600" text-anchor="middle">Guru &amp; GTK Valid</text>
+  <!-- FLOATING HUD PANEL 2: Real-time GTK & Academic Pulse (Bottom Left) -->
+  <g transform="translate(48, 380)">
+    <rect x="0" y="0" width="240" height="96" rx="20" fill="url(#cs-glass-panel)" stroke="url(#cs-border-glow)" stroke-width="1.4" filter="url(#cs-glow-lg)"/>
+    <circle cx="24" cy="24" r="5" fill="#34d399"/>
+    <text x="38" y="28" fill="#e0f2fe" font-family="Inter, sans-serif" font-size="11" font-weight="700">PRESENSI GTK &amp; SISWA</text>
+    <line x1="16" y1="42" x2="224" y2="42" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    <text x="24" y="68" fill="#34d399" font-family="Inter, sans-serif" font-size="22" font-weight="800">99.4%</text>
+    <text x="100" y="68" fill="#94a3b8" font-family="Inter, sans-serif" font-size="11">Kehadiran tercatat harian</text>
+    <rect x="24" y="78" width="190" height="5" rx="2.5" fill="rgba(255,255,255,0.1)"/>
+    <rect x="24" y="78" width="170" height="5" rx="2.5" fill="#34d399"/>
   </g>
 
-  <!-- FLOATING WIDGET 3: Security & Encryption Badge (Top Right) -->
-  <g transform="translate(500, 60)">
-    <rect x="0" y="0" width="170" height="58" rx="16" fill="url(#vtx-glass-pane)" stroke="url(#vtx-glass-border)" stroke-width="1.2"/>
-    <circle cx="24" cy="29" r="12" fill="rgba(6,182,212,0.2)"/>
-    <path d="M20 28 L23 32 L29 25" stroke="#06b6d4" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <text x="44" y="26" fill="#ffffff" font-family="Inter, sans-serif" font-size="10.5" font-weight="700">End-to-End GTK</text>
-    <text x="44" y="40" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Keamanan Standar Cloud</text>
+  <!-- FLOATING HUD PANEL 3: Smart Ledger & SPP (Top Right) -->
+  <g transform="translate(470, 80)">
+    <rect x="0" y="0" width="250" height="120" rx="20" fill="url(#cs-glass-panel)" stroke="url(#cs-border-glow)" stroke-width="1.4" filter="url(#cs-glow-lg)"/>
+    <circle cx="24" cy="24" r="5" fill="#fbbf24"/>
+    <text x="38" y="28" fill="#e0f2fe" font-family="Inter, sans-serif" font-size="11" font-weight="700">REKAPITULASI KEUANGAN</text>
+    <line x1="16" y1="44" x2="234" y2="44" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    <text x="24" y="72" fill="#fbbf24" font-family="Inter, sans-serif" font-size="22" font-weight="800">Rp 142.8M</text>
+    <text x="24" y="94" fill="#94a3b8" font-family="Inter, sans-serif" font-size="11.5">Tagihan &amp; SPP terkelola rapi</text>
   </g>
 
-  <!-- Sparkle Accents -->
-  <path d="M120 70 L123 78 L131 81 L123 84 L120 92 L117 84 L109 81 L117 78 Z" fill="#ffffff" opacity="0.85"/>
-  <path d="M620 280 L622 286 L628 288 L622 290 L620 296 L618 290 L612 288 L618 286 Z" fill="#67e8f9" opacity="0.9"/>
-  <path d="M200 480 L202 485 L207 487 L202 489 L200 494 L198 489 L193 487 L198 485 Z" fill="#fbbf24" opacity="0.8"/>
+  <!-- FLOATING HUD PANEL 4: Notification Broadcast (Bottom Right) -->
+  <g transform="translate(480, 360)">
+    <rect x="0" y="0" width="240" height="100" rx="20" fill="url(#cs-glass-panel)" stroke="url(#cs-border-glow)" stroke-width="1.4" filter="url(#cs-glow-lg)"/>
+    <circle cx="24" cy="24" r="5" fill="#60a5fa"/>
+    <text x="38" y="28" fill="#e0f2fe" font-family="Inter, sans-serif" font-size="11" font-weight="700">WARTA &amp; PENGUMUMAN</text>
+    <line x1="16" y1="42" x2="224" y2="42" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    <text x="24" y="65" fill="#ffffff" font-family="Inter, sans-serif" font-size="13" font-weight="600">Terdistribusi Instan</text>
+    <text x="24" y="82" fill="#94a3b8" font-family="Inter, sans-serif" font-size="11">Seluruh GTK, siswa &amp; wali murid</text>
+  </g>
+
+  <!-- Sentinel Sparkling Nodes -->
+  <circle cx="340" cy="120" r="3" fill="#ffffff" filter="url(#cs-glow-lg)"/>
+  <circle cx="440" cy="420" r="3.5" fill="#38bdf8" filter="url(#cs-glow-lg)"/>
+  <circle cx="160" cy="260" r="2.5" fill="#bae6fd"/>
+  <circle cx="610" cy="250" r="3" fill="#ffffff"/>
 </svg>

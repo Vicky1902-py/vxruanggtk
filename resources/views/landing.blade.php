@@ -2,73 +2,78 @@
 @section('title', 'Sistem Informasi Manajemen Sekolah')
 
 @section('content')
+{{-- Centered Frosted Glass Navigation Pill (ConSentinel Style) --}}
 <nav class="landing-nav glass-soft" aria-label="Navigasi utama">
-  <div style="display:flex;align-items:center;gap:8px;padding:0 8px">
-    <img src="{{ asset('img/logo.svg') }}" alt="Logo" style="width:24px;height:24px;border-radius:7px">
-    <b style="font-size:14px;color:var(--text)">Ruang GTK</b>
-  </div>
+  <a href="{{ route('landing') }}" class="brand-ruanggtk" style="padding:0 8px">
+    <img src="{{ asset('img/logo.svg') }}" alt="Logo" style="width:26px;height:26px;border-radius:8px">
+    <span class="brand-ruanggtk-text" style="font-size:16px">Ruang<span class="gtk-tag">GTK</span></span>
+    <span class="brand-beam"></span>
+  </a>
   <a href="#fitur">Fitur</a>
   <a href="#modul">Modul</a>
-  <a href="{{ route('login') }}" class="btn btn-sm btn-ink" style="height:32px;padding:0 16px;margin-left:4px">
-    Masuk
+  <a href="{{ route('login') }}" class="btn btn-sm btn-ink" style="height:32px;padding:0 18px;margin-left:4px">
+    Masuk Portal
   </a>
 </nav>
 
+{{-- Hero Section --}}
 <section class="landing-hero">
   <div>
-    <div style="margin-bottom:18px">
-      <span class="vtx-pill">
+    <div style="margin-bottom:20px">
+      <span class="cs-pill">
         <span class="dot"></span>
-        Platform GTK &amp; SIM Sekolah Multi-Tenant
+        Sistem Informasi Manajemen Sekolah &amp; GTK Terintegrasi
       </span>
     </div>
 
-    <h1>
+    <h1 class="hero-animated-title">
       Satu ruang cerdas untuk <br>
-      <span class="vtx-gradient-text">seluruh sekolah &amp; GTK.</span>
+      <span class="highlight-caustic">Ruang GTK</span> &amp; institusi Anda.
     </h1>
+
     <p class="lede">{{ $tagline }}</p>
 
     <div class="landing-cta">
-      <a href="{{ route('login') }}" class="btn btn-ink" style="height:48px;padding:0 28px;font-size:15px">
+      <a href="{{ route('login') }}" class="btn btn-ink" style="height:48px;padding:0 30px;font-size:15px">
         <span>Masuk ke Aplikasi</span>
         <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
       <a href="#fitur" class="btn" style="height:48px;padding:0 24px;font-size:15px">
-        Jelajahi Fitur Utama
+        Eksplorasi Fitur
       </a>
     </div>
 
-    <!-- Quick Metrics Strip -->
-    <div style="display:flex;gap:24px;margin-top:40px;flex-wrap:wrap">
+    <!-- ConSentinel Quick Telemetry Metrics Strip -->
+    <div style="display:flex;gap:26px;margin-top:44px;flex-wrap:wrap">
       <div>
-        <b style="font-size:20px;color:#fff;display:block">100%</b>
+        <b style="font-size:21px;color:#ffffff;display:block">100%</b>
         <small style="color:var(--muted);font-size:12px">Isolasi Data Subdomain</small>
       </div>
-      <div style="width:1px;background:var(--line);height:32px;align-self:center"></div>
+      <div style="width:1px;background:var(--line);height:34px;align-self:center"></div>
       <div>
-        <b style="font-size:20px;color:var(--emerald);display:block">Real-time</b>
-        <small style="color:var(--muted);font-size:12px">Presensi Siswa Harian</small>
+        <b style="font-size:21px;color:var(--accent);display:block">Real-time</b>
+        <small style="color:var(--muted);font-size:12px">Presensi Siswa &amp; GTK</small>
       </div>
-      <div style="width:1px;background:var(--line);height:32px;align-self:center"></div>
+      <div style="width:1px;background:var(--line);height:34px;align-self:center"></div>
       <div>
-        <b style="font-size:20px;color:var(--amber);display:block">Otomatis</b>
-        <small style="color:var(--muted);font-size:12px">Rekap Tagihan &amp; SPP</small>
+        <b style="font-size:21px;color:var(--green);display:block">Otomatis</b>
+        <small style="color:var(--muted);font-size:12px">Manajemen Keuangan &amp; SPP</small>
       </div>
     </div>
   </div>
 
   <div class="hero-visual">
-    <img src="{{ asset($heroImage) }}" alt="Ilustrasi Command Center Ruang GTK" loading="eager">
+    <img src="{{ asset($heroImage) }}" alt="ConSentinel Security Viewport Ruang GTK" loading="eager">
   </div>
 </section>
 
+{{-- Features Section --}}
 <section id="fitur" style="position:relative;z-index:1;padding:50px 0 10px">
   <div style="text-align:center;margin-bottom:12px">
-    <span class="vtx-pill" style="font-size:11px">✨ Fitur Terintegrasi</span>
+    <span class="cs-pill" style="font-size:11px">🛡️ Ekosistem Pendidikan Terpadu</span>
   </div>
   <h2 class="landing-section-title">Semua yang dibutuhkan sekolah.</h2>
-  <p class="landing-section-sub">Satu ekosistem modern yang menggabungkan seluruh operasional pendidikan dan GTK.</p>
+  <p class="landing-section-sub">Solusi terintegrasi untuk seluruh operasional pendidikan, manajemen GTK, dan transparansi siswa.</p>
 </section>
 
 <div class="features-grid">
@@ -78,9 +83,9 @@
       <span class="icon-chip is-blue">
         <svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>
       </span>
-      <h3>Multi-Tenant Cloud</h3>
+      <h3>Isolasi Multi-Tenant</h3>
     </div>
-    <p>Setiap sekolah memiliki subdomain unik dengan isolasi database penuh — aman, mandiri, dan terlindungi.</p>
+    <p>Setiap sekolah memiliki subdomain mandiri dan basis data terisolasi penuh — privasi tinggi, stabil, dan aman.</p>
   </div>
 
   <div class="glass landing-feature reveal" data-reveal-delay="90">
@@ -91,7 +96,7 @@
       </span>
       <h3>Akademik &amp; Presensi</h3>
     </div>
-    <p>Manajemen siswa per tahun ajaran, presensi harian per kelas oleh guru kelas dengan status akurat.</p>
+    <p>Manajemen siswa per rombel tahun ajaran aktif, pencatatan presensi harian oleh guru kelas secara akurat.</p>
   </div>
 
   <div class="glass landing-feature reveal" data-reveal-delay="180">
@@ -102,7 +107,7 @@
       </span>
       <h3>Keuangan &amp; SPP</h3>
     </div>
-    <p>Generate tagihan massal per kelas, catat pembayaran manual, dan pantau status tunggakan secara transparan.</p>
+    <p>Generate tagihan massal per jenjang kelas, pencatatan pembayaran manual, dan kontrol rekapitulasi tunggakan.</p>
   </div>
 
   <div class="glass landing-feature reveal" data-reveal-delay="270">
@@ -113,10 +118,11 @@
       </span>
       <h3>Pusat Pengumuman</h3>
     </div>
-    <p>Kirim edaran penting ke seluruh sekolah atau ditujukan ke kelas tertentu langsung di dashboard GTK.</p>
+    <p>Distribusi informasi edaran resmi ke seluruh sekolah atau kelas tertentu langsung di dashboard GTK.</p>
   </div>
 </div>
 
+{{-- Modules Section --}}
 <section id="modul" style="position:relative;z-index:1;max-width:1200px;margin:16px auto 0;padding:20px 24px 80px">
   <div class="glass panel reveal">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:20px">
@@ -124,7 +130,7 @@
         <h2 style="font-size:22px;font-weight:700">Modul Operasional Sekolah</h2>
         <p style="color:var(--muted);font-size:13.5px;margin-top:4px">Fondasi sistem informasi manajemen siap pakai untuk setiap institusi pendidikan.</p>
       </div>
-      <span class="vtx-pill" style="font-size:11px">Fase 1 Production</span>
+      <span class="cs-pill" style="font-size:11px">Fase 1 Production</span>
     </div>
 
     <div class="stat-grid">
@@ -135,7 +141,7 @@
           </span>
           <h3 style="font-size:15px">Master Data</h3>
         </div>
-        <p>Tahun ajaran aktif, struktur kelas, profil siswa, tenaga kependidikan (GTK), dan wali murid.</p>
+        <p>Tahun ajaran aktif, struktur rombel, profil peserta didik, tenaga kependidikan (GTK), dan wali murid.</p>
       </div>
 
       <div class="glass landing-feature reveal" data-reveal-delay="90">
@@ -145,7 +151,7 @@
           </span>
           <h3 style="font-size:15px">Presensi Siswa</h3>
         </div>
-        <p>Pencatatan kehadiran harian oleh guru kelas (Hadir, Izin, Sakit, Alpa) dengan ringkasan instan.</p>
+        <p>Pencatatan kehadiran harian oleh guru kelas (Hadir, Izin, Sakit, Alpa) dengan ringkasan otomatis instan.</p>
       </div>
 
       <div class="glass landing-feature reveal" data-reveal-delay="180">
@@ -155,7 +161,7 @@
           </span>
           <h3 style="font-size:15px">Manajemen Tagihan</h3>
         </div>
-        <p>Pembuatan tagihan massal per jenjang kelas dan pencatatan pembayaran siswa yang terdokumentasi.</p>
+        <p>Pembuatan tagihan massal per rombel dan pencatatan pembayaran siswa yang terdokumentasi rapi.</p>
       </div>
 
       <div class="glass landing-feature reveal" data-reveal-delay="270">
@@ -172,15 +178,19 @@
     <div style="margin-top:20px;padding:16px 20px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.03);border:1px solid var(--line-light);display:flex;align-items:center;gap:14px;flex-wrap:wrap">
       <span class="badge badge-blue">Roadmap Lanjutan</span>
       <span style="font-size:13px;color:var(--muted-2)">
-        Payment Gateway otomatis (VA &amp; QRIS), Notifikasi WhatsApp Wali Murid, Presensi Selfie + Geolocation GPS, Tabungan Siswa, dan Payroll GTK.
+        Payment Gateway otomatis (VA &amp; QRIS), Notifikasi WhatsApp Wali Murid, Presensi Selfie + GPS Geolocation, Tabungan Siswa, dan Payroll GTK.
       </span>
     </div>
   </div>
 </section>
 
+{{-- Footer --}}
 <footer class="landing-foot">
-  <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
-    <img src="{{ asset('img/logo.svg') }}" alt="" style="width:24px;height:24px;border-radius:7px;vertical-align:middle">
+  <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
+    <a href="{{ route('landing') }}" class="brand-ruanggtk">
+      <img src="{{ asset('img/logo.svg') }}" alt="" style="width:24px;height:24px;border-radius:7px;vertical-align:middle">
+      <span class="brand-ruanggtk-text" style="font-size:16px">Ruang<span class="gtk-tag">GTK</span></span>
+    </a>
     <span>© {{ date('Y') }} <b style="color:var(--text)">Vicky Koroh</b> — Hak Cipta Dilindungi · {{ $footerText }}</span>
   </div>
   @if ($footerPages->isNotEmpty())

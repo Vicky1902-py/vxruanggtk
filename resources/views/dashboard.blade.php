@@ -5,7 +5,7 @@
 <div class="page-head">
   <div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-      <span class="vtx-pill" style="font-size:11px;padding:4px 12px">
+      <span class="cs-pill" style="font-size:11px;padding:3px 12px">
         <span class="dot"></span>
         {{ $school->name }}
       </span>
@@ -13,8 +13,10 @@
         TA {{ optional($school->academicYears()->where('is_active', true)->first())->year_label ?? '2026/2027' }}
       </span>
     </div>
-    <h1>Selamat datang, <span class="vtx-gradient-text">{{ auth()->user()->username }}</span> 👋</h1>
-    <div class="sub">Ikhtisar metrik GTK, kehadiran peserta didik, dan operasional sekolah hari ini.</div>
+    <h1>
+      Selamat datang di <span class="brand-ruanggtk"><span class="brand-ruanggtk-text" style="font-size:27px">Ruang<span class="gtk-tag">GTK</span></span><span class="brand-beam"></span></span>, {{ auth()->user()->username }} 👋
+    </h1>
+    <div class="sub">Ikhtisar telemetri GTK, kehadiran peserta didik, dan operasional sekolah hari ini.</div>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
     <span class="badge badge-ink" style="padding:4px 14px;font-size:12.5px">{{ strtoupper(auth()->user()->role?->name ?? 'User') }}</span>

@@ -25,6 +25,9 @@ class EmployeeController extends Controller
             'status' => ['required', 'in:aktif,nonaktif'],
         ]);
 
+        $data['position_id'] = $data['position_id'] ?: null;
+        $data['nip'] = $data['nip'] ?: null;
+
         Employee::create($data);
 
         return back()->with('toast', 'Pegawai "' . $data['full_name'] . '" berhasil ditambahkan.');
@@ -38,6 +41,9 @@ class EmployeeController extends Controller
             'full_name' => ['required', 'string', 'max:120'],
             'status' => ['required', 'in:aktif,nonaktif'],
         ]);
+
+        $data['position_id'] = $data['position_id'] ?: null;
+        $data['nip'] = $data['nip'] ?: null;
 
         $employee->update($data);
 
