@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0f1116">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080a11">
 <title>@yield('title', 'Dashboard') — Ruang GTK</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,41 +12,43 @@
 <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ @filemtime(public_path('css/app.css')) }}">
 </head>
 <body>
-<div class="intro-veil" aria-hidden="true"><div class="intro-mark"><img src="{{ asset('img/logo.svg') }}" alt=""></div></div>
+<div class="intro-veil" aria-hidden="true"><div class="intro-mark"><img src="{{ asset('img/logo.svg') }}" alt="Logo Ruang GTK"></div></div>
 
-{{-- Mobile overlay --}}
+{{-- Mobile Overlay --}}
 <div class="side-overlay" id="sideOverlay" aria-hidden="true"></div>
 
 <div class="shell">
-  {{-- Mobile top bar --}}
+  {{-- Mobile Top Bar --}}
   <header class="mobile-header glass-soft">
-    <button class="hamburger" id="hamburgerBtn" aria-label="Buka menu" aria-expanded="false" aria-controls="sidebar">
+    <button class="hamburger" id="hamburgerBtn" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="sidebar">
       <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
-    <div style="display:flex;align-items:center;gap:8px">
-      <div class="brand-mark" style="width:30px;height:30px;border-radius:9px"><img src="{{ asset('img/logo.svg') }}" alt="Logo Ruang GTK"></div>
-      <b style="font-size:14px;color:var(--text)">Ruang GTK</b>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="brand-mark" style="width:34px;height:34px;border-radius:10px"><img src="{{ asset('img/logo.svg') }}" alt="Logo"></div>
+      <b style="font-size:15px;color:var(--text)">Ruang GTK</b>
     </div>
   </header>
 
+  {{-- Sidebar --}}
   <aside class="side glass-soft" id="sidebar" role="navigation" aria-label="Menu utama">
-    {{-- Close button (mobile only) --}}
+    {{-- Close Button for Mobile Drawer --}}
     <button class="side-close" id="sideClose" aria-label="Tutup menu">
       <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
 
+    {{-- Brand Section --}}
     <div class="brand">
       <div class="brand-mark"><img src="{{ asset('img/logo.svg') }}" alt="Logo Ruang GTK"></div>
-      <div>
+      <div style="min-width:0">
         <b>Ruang GTK</b>
-        <small>{{ auth()->user()?->school?->name ?? 'SIM Sekolah' }}</small>
+        <small style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ auth()->user()?->school?->name ?? 'SIM Sekolah' }}</small>
       </div>
     </div>
 
     @if (session('god_impersonating'))
       <div class="god-banner">
-        👁️ GOD MODE — {{ session('god_school_name') }}
-        <a href="{{ route('god.exit') }}">Keluar God Mode</a>
+        <span>👁️ GOD MODE · {{ session('god_school_name') }}</span>
+        <a href="{{ route('god.exit') }}">Keluar God Mode →</a>
       </div>
     @endif
 
@@ -111,19 +113,26 @@
       </a>
     @endif
 
+    {{-- User Profile Pill in Sidebar Footer --}}
     <div class="side-foot">
-      <div class="who">
-        {{ auth()->user()?->username }} · {{ auth()->user()?->role?->name }}<br>
-        {{ auth()->user()?->school?->subdomain }}
+      <div style="display:flex;align-items:center;gap:10px;padding:0 8px 12px">
+        <div style="width:34px;height:34px;border-radius:50%;background:var(--grad-vertex);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex:none">
+          {{ strtoupper(substr(auth()->user()?->username ?? 'U', 0, 2)) }}
+        </div>
+        <div style="min-width:0;line-height:1.3">
+          <b style="font-size:13.5px;color:var(--text);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ auth()->user()?->username }}</b>
+          <small style="color:var(--muted);font-size:11.5px">{{ auth()->user()?->role?->name }} · {{ auth()->user()?->school?->subdomain }}</small>
+        </div>
       </div>
-      <div style="padding:8px 12px 2px;font-size:11px;color:var(--muted)">© 2026 Vicky Koroh</div>
-      <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+      <div style="padding:4px 8px 6px;font-size:11px;color:var(--muted)">© 2026 Vicky Koroh · v2.4 Vertex</div>
+      <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();" style="color:var(--text-2)">
         <svg viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 012 2v12a2 2 0 01-2 2h-4"/><path d="M10 17l-5-5 5-5M5 12h11"/></svg>
         Keluar
       </a>
     </div>
   </aside>
 
+  {{-- Main Content Window --}}
   <main class="main">
     @if (session('toast'))
       <div class="toast" role="status">{{ session('toast') }}</div>

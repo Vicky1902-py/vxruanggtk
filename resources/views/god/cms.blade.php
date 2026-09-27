@@ -27,7 +27,7 @@
         <label>Teks Footer</label>
         <input name="site_footer_text" class="input" value="{{ $settings['site_footer_text'] }}">
       </div>
-      <button class="btn btn-god">💾 Simpan Pengaturan</button>
+      <button class="btn btn-god" data-loading="Menyimpan Pengaturan...">💾 Simpan Pengaturan</button>
     </form>
   </div>
 

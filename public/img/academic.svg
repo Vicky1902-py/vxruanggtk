@@ -1,29 +1,50 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 140" width="240" height="140" role="img" aria-label="Presensi dan akademik">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" width="320" height="200" role="img" aria-label="Modul Akademik dan Presensi GTK">
   <defs>
-    <linearGradient id="a-v" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#4f46e5"/></linearGradient>
-    <linearGradient id="a-t" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset="1" stop-color="#0ea5e9"/></linearGradient>
+    <linearGradient id="acad-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181c2d"/>
+      <stop offset="100%" stop-color="#0a0c13"/>
+    </linearGradient>
+    <linearGradient id="acad-border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0.2"/>
+    </linearGradient>
+    <linearGradient id="acad-pill" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
   </defs>
-  <circle cx="208" cy="24" r="36" fill="url(#a-v)" opacity=".5"/>
-  <circle cx="26" cy="118" r="30" fill="url(#a-t)" opacity=".45"/>
-  <g transform="translate(30 22)">
-    <rect width="180" height="96" rx="14" fill="#232838" stroke="rgba(255,255,255,.16)"/>
-    <g transform="translate(14 14)">
-      <circle cx="10" cy="10" r="10" fill="url(#a-v)"/>
-      <rect x="28" y="4" width="66" height="12" rx="6" fill="rgba(255,255,255,.4)"/>
-      <circle cx="142" cy="10" r="9" fill="#34d399" opacity=".9"/>
-      <path d="M137.5 10 l3.4 3.4 6-6.4" stroke="#06281c" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <g transform="translate(14 42)">
-      <circle cx="10" cy="10" r="10" fill="url(#a-t)"/>
-      <rect x="28" y="4" width="54" height="12" rx="6" fill="rgba(255,255,255,.4)"/>
-      <circle cx="142" cy="10" r="9" fill="#34d399" opacity=".9"/>
-      <path d="M137.5 10 l3.4 3.4 6-6.4" stroke="#06281c" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <g transform="translate(14 70)">
-      <circle cx="10" cy="10" r="10" fill="url(#a-v)" opacity=".7"/>
-      <rect x="28" y="4" width="60" height="12" rx="6" fill="rgba(255,255,255,.4)"/>
-      <circle cx="142" cy="10" r="9" fill="#ffb45e" opacity=".9"/>
-      <rect x="137.5" y="5.5" width="9" height="9" rx="2" fill="#3a2405"/>
-    </g>
+
+  <rect width="320" height="200" rx="20" fill="url(#acad-bg)" stroke="url(#acad-border)" stroke-width="1.2"/>
+  <circle cx="240" cy="60" r="60" fill="#8b5cf6" opacity="0.14"/>
+  <circle cx="80" cy="140" r="50" fill="#3b82f6" opacity="0.12"/>
+
+  <!-- Academic Record List -->
+  <g transform="translate(24, 28)">
+    <!-- Row 1: Student Ahmad -->
+    <rect x="0" y="0" width="272" height="40" rx="10" fill="rgba(255,255,255,0.035)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+    <circle cx="20" cy="20" r="12" fill="url(#acad-pill)"/>
+    <text x="20" y="24" fill="#ffffff" font-family="Inter, sans-serif" font-size="9" font-weight="700" text-anchor="middle">AS</text>
+    <rect x="42" y="12" width="70" height="8" rx="4" fill="rgba(255,255,255,0.6)"/>
+    <rect x="42" y="24" width="45" height="5" rx="2.5" fill="rgba(255,255,255,0.2)"/>
+    <rect x="210" y="11" width="50" height="18" rx="9" fill="rgba(52,211,153,0.15)"/>
+    <text x="235" y="23" fill="#34d399" font-family="Inter, sans-serif" font-size="8" font-weight="700" text-anchor="middle">✓ HADIR</text>
+
+    <!-- Row 2: Student Budi -->
+    <rect x="0" y="48" width="272" height="40" rx="10" fill="rgba(255,255,255,0.035)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+    <circle cx="20" cy="68" r="12" fill="rgba(6,182,212,0.6)"/>
+    <text x="20" y="72" fill="#ffffff" font-family="Inter, sans-serif" font-size="9" font-weight="700" text-anchor="middle">BW</text>
+    <rect x="42" y="60" width="85" height="8" rx="4" fill="rgba(255,255,255,0.6)"/>
+    <rect x="42" y="72" width="55" height="5" rx="2.5" fill="rgba(255,255,255,0.2)"/>
+    <rect x="210" y="59" width="50" height="18" rx="9" fill="rgba(52,211,153,0.15)"/>
+    <text x="235" y="71" fill="#34d399" font-family="Inter, sans-serif" font-size="8" font-weight="700" text-anchor="middle">✓ HADIR</text>
+
+    <!-- Row 3: Student Citra -->
+    <rect x="0" y="96" width="272" height="40" rx="10" fill="rgba(255,255,255,0.035)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+    <circle cx="20" cy="116" r="12" fill="rgba(244,114,182,0.6)"/>
+    <text x="20" y="120" fill="#ffffff" font-family="Inter, sans-serif" font-size="9" font-weight="700" text-anchor="middle">CL</text>
+    <rect x="42" y="108" width="60" height="8" rx="4" fill="rgba(255,255,255,0.6)"/>
+    <rect x="42" y="120" width="38" height="5" rx="2.5" fill="rgba(255,255,255,0.2)"/>
+    <rect x="210" y="107" width="50" height="18" rx="9" fill="rgba(245,158,11,0.15)"/>
+    <text x="235" y="119" fill="#fbbf24" font-family="Inter, sans-serif" font-size="8" font-weight="700" text-anchor="middle">ℹ IZIN</text>
   </g>
 </svg>

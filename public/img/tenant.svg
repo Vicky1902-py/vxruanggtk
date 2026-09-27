@@ -1,34 +1,70 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 140" width="240" height="140" role="img" aria-label="Multi sekolah terhubung">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" width="320" height="200" role="img" aria-label="Arsitektur Multi-Tenant Ruang GTK">
   <defs>
-    <linearGradient id="t-v" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#4f46e5"/></linearGradient>
-    <linearGradient id="t-o" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb45e"/><stop offset="1" stop-color="#ff6a3d"/></linearGradient>
-    <linearGradient id="t-t" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset="1" stop-color="#0ea5e9"/></linearGradient>
+    <linearGradient id="ten-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#191e2e"/>
+      <stop offset="100%" stop-color="#0a0c13"/>
+    </linearGradient>
+    <linearGradient id="ten-border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.2"/>
+    </linearGradient>
+    <linearGradient id="ten-cube-top" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="ten-cube-left" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3730a3"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="ten-cube-right" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4338ca"/>
+      <stop offset="100%" stop-color="#312e81"/>
+    </linearGradient>
   </defs>
-  <circle cx="34" cy="26" r="34" fill="url(#t-o)" opacity=".55"/>
-  <circle cx="212" cy="112" r="40" fill="url(#t-t)" opacity=".45"/>
-  <g transform="translate(22 46)">
-    <rect width="52" height="58" rx="7" fill="#232838" stroke="rgba(255,255,255,.18)"/>
-    <path d="M-5 12 L26 -8 L57 12 Z" fill="url(#t-v)"/>
-    <rect x="10" y="24" width="10" height="10" rx="2" fill="#5eead4"/>
-    <rect x="32" y="24" width="10" height="10" rx="2" fill="#ffb45e"/>
-    <rect x="21" y="40" width="10" height="18" rx="2" fill="rgba(255,255,255,.3)"/>
+
+  <rect width="320" height="200" rx="20" fill="url(#ten-bg)" stroke="url(#ten-border)" stroke-width="1.2"/>
+
+  <!-- Glowing Background Mesh -->
+  <circle cx="160" cy="100" r="70" fill="#6366f1" opacity="0.16"/>
+  <circle cx="230" cy="70" r="45" fill="#06b6d4" opacity="0.14"/>
+
+  <!-- Network Coordinate Lines -->
+  <line x1="80" y1="140" x2="160" y2="90" stroke="rgba(99,102,241,0.3)" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <line x1="240" y1="140" x2="160" y2="90" stroke="rgba(6,182,212,0.3)" stroke-width="1.5" stroke-dasharray="3 3"/>
+
+  <!-- Central Cloud Hub (Isometric Cube) -->
+  <g transform="translate(160, 75)">
+    <!-- Top Face -->
+    <path d="M0 -30 L36 -12 L0 6 L-36 -12 Z" fill="url(#ten-cube-top)"/>
+    <!-- Left Face -->
+    <path d="M-36 -12 L0 6 L0 44 L-36 26 Z" fill="url(#ten-cube-left)"/>
+    <!-- Right Face -->
+    <path d="M0 6 L36 -12 L36 26 L0 44 Z" fill="url(#ten-cube-right)"/>
+    <!-- Core Glow Vertex -->
+    <circle cx="0" cy="-12" r="6" fill="#38bdf8"/>
   </g>
-  <g transform="translate(94 34)">
-    <rect width="52" height="70" rx="7" fill="#232838" stroke="rgba(255,255,255,.18)"/>
-    <path d="M-5 12 L26 -8 L57 12 Z" fill="url(#t-o)"/>
-    <rect x="10" y="24" width="10" height="10" rx="2" fill="#a78bfa"/>
-    <rect x="32" y="24" width="10" height="10" rx="2" fill="#5eead4"/>
-    <rect x="21" y="40" width="10" height="30" rx="2" fill="rgba(255,255,255,.3)"/>
+
+  <!-- Left Satellite Tenant Pod (Sekolah 1) -->
+  <g transform="translate(48, 115)">
+    <rect x="0" y="0" width="76" height="52" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(99,102,241,0.4)" stroke-width="1.2"/>
+    <circle cx="16" cy="18" r="5" fill="#34d399"/>
+    <rect x="26" y="14" width="38" height="8" rx="4" fill="rgba(255,255,255,0.4)"/>
+    <rect x="12" y="30" width="52" height="12" rx="6" fill="rgba(99,102,241,0.15)"/>
+    <text x="38" y="39" fill="#c7d2fe" font-family="Inter, sans-serif" font-size="7.5" font-weight="600" text-anchor="middle">@smpn1.ruang</text>
   </g>
-  <g transform="translate(166 52)">
-    <rect width="52" height="52" rx="7" fill="#232838" stroke="rgba(255,255,255,.18)"/>
-    <path d="M-5 12 L26 -8 L57 12 Z" fill="url(#t-t)"/>
-    <rect x="10" y="24" width="10" height="10" rx="2" fill="#ffb45e"/>
-    <rect x="32" y="24" width="10" height="10" rx="2" fill="#a78bfa"/>
-    <rect x="21" y="40" width="10" height="12" rx="2" fill="rgba(255,255,255,.3)"/>
+
+  <!-- Right Satellite Tenant Pod (Sekolah 2) -->
+  <g transform="translate(196, 115)">
+    <rect x="0" y="0" width="76" height="52" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(6,182,212,0.4)" stroke-width="1.2"/>
+    <circle cx="16" cy="18" r="5" fill="#38bdf8"/>
+    <rect x="26" y="14" width="38" height="8" rx="4" fill="rgba(255,255,255,0.4)"/>
+    <rect x="12" y="30" width="52" height="12" rx="6" fill="rgba(6,182,212,0.15)"/>
+    <text x="38" y="39" fill="#bae6fd" font-family="Inter, sans-serif" font-size="7.5" font-weight="600" text-anchor="middle">@sman2.ruang</text>
   </g>
-  <path d="M76 92 C 88 84, 92 84, 100 84 M148 88 C 156 88, 158 90, 168 92" stroke="rgba(255,255,255,.35)" stroke-width="2" stroke-dasharray="3 5" fill="none"/>
-  <circle cx="122" cy="16" r="3.4" fill="#ffb45e"/>
-  <circle cx="8" cy="112" r="3" fill="#5eead4"/>
-  <circle cx="232" cy="30" r="3" fill="#a78bfa"/>
+
+  <!-- Shield Badge at Top -->
+  <g transform="translate(160, 26)">
+    <rect x="-42" y="0" width="84" height="22" rx="11" fill="rgba(52,211,153,0.12)" stroke="rgba(52,211,153,0.35)" stroke-width="1"/>
+    <text x="0" y="14.5" fill="#34d399" font-family="Inter, sans-serif" font-size="8.5" font-weight="700" text-anchor="middle">🔒 ISOLASI PENUH</text>
+  </g>
 </svg>

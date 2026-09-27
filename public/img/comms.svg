@@ -1,17 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 140" width="240" height="140" role="img" aria-label="Pengumuman sekolah">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" width="320" height="200" role="img" aria-label="Modul Komunikasi dan Pengumuman Ruang GTK">
   <defs>
-    <linearGradient id="c-r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fb7185"/><stop offset="1" stop-color="#e11d48"/></linearGradient>
-    <linearGradient id="c-v" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#4f46e5"/></linearGradient>
+    <linearGradient id="com-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181e28"/>
+      <stop offset="100%" stop-color="#0a0c13"/>
+    </linearGradient>
+    <linearGradient id="com-border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.2"/>
+    </linearGradient>
+    <linearGradient id="com-dish" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
   </defs>
-  <circle cx="210" cy="30" r="38" fill="url(#c-v)" opacity=".5"/>
-  <circle cx="24" cy="116" r="30" fill="url(#c-r)" opacity=".4"/>
-  <g transform="translate(52 34)">
-    <path d="M0 30 L58 8 L58 76 L0 54 Z" fill="url(#c-r)"/>
-    <rect x="52" y="30" width="14" height="24" rx="6" fill="#232838" stroke="rgba(255,255,255,.2)"/>
-    <path d="M80 20 C 96 32, 96 52, 80 64" stroke="#ffb45e" stroke-width="5" fill="none" stroke-linecap="round"/>
-    <path d="M94 8 C 118 26, 118 58, 94 76" stroke="#5eead4" stroke-width="5" fill="none" stroke-linecap="round" opacity=".85"/>
-    <path d="M108 -4 C 140 22, 140 62, 108 88" stroke="#a78bfa" stroke-width="5" fill="none" stroke-linecap="round" opacity=".7"/>
-    <circle cx="16" cy="42" r="7" fill="rgba(255,255,255,.5)"/>
+
+  <rect width="320" height="200" rx="20" fill="url(#com-bg)" stroke="url(#com-border)" stroke-width="1.2"/>
+  <circle cx="220" cy="90" r="70" fill="#34d399" opacity="0.12"/>
+
+  <!-- Radar / Broadcast Rings -->
+  <circle cx="85" cy="100" r="28" fill="none" stroke="rgba(52,211,153,0.35)" stroke-width="1.5" stroke-dasharray="3 4"/>
+  <circle cx="85" cy="100" r="48" fill="none" stroke="rgba(52,211,153,0.22)" stroke-width="1.2" stroke-dasharray="4 6"/>
+  <circle cx="85" cy="100" r="68" fill="none" stroke="rgba(52,211,153,0.12)" stroke-width="1" stroke-dasharray="5 8"/>
+
+  <!-- Transmitter Core Icon -->
+  <circle cx="85" cy="100" r="16" fill="url(#com-dish)"/>
+  <path d="M79 100 L85 94 L91 100 M85 94 L85 106" stroke="#06281c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Announcement Card 1 -->
+  <g transform="translate(145, 42)">
+    <rect x="0" y="0" width="145" height="50" rx="12" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+    <circle cx="16" cy="18" r="6" fill="#60a5fa"/>
+    <rect x="28" y="14" width="70" height="8" rx="4" fill="rgba(255,255,255,0.8)"/>
+    <rect x="14" y="28" width="115" height="5" rx="2.5" fill="rgba(255,255,255,0.3)"/>
+    <rect x="14" y="36" width="80" height="5" rx="2.5" fill="rgba(255,255,255,0.2)"/>
   </g>
-  <path d="M36 30 l3.2 6.8 6.8 3.2 -6.8 3.2 -3.2 6.8 -3.2 -6.8 -6.8 -3.2 6.8 -3.2 Z" fill="rgba(255,255,255,.8)"/>
+
+  <!-- Announcement Card 2 -->
+  <g transform="translate(160, 106)">
+    <rect x="0" y="0" width="135" height="48" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(52,211,153,0.3)" stroke-width="1"/>
+    <circle cx="16" cy="18" r="6" fill="#34d399"/>
+    <rect x="28" y="14" width="60" height="8" rx="4" fill="rgba(255,255,255,0.8)"/>
+    <rect x="14" y="28" width="105" height="5" rx="2.5" fill="rgba(255,255,255,0.3)"/>
+  </g>
 </svg>
