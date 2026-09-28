@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#030712">
+<meta name="theme-color" content="#0284c7">
 <title>@yield('title', 'Dashboard') — Ruang GTK</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -156,7 +156,7 @@
           <small style="color:var(--muted);font-size:11.5px">{{ auth()->user()?->role?->name }} · {{ auth()->user()?->school?->subdomain }}</small>
         </div>
       </a>
-      <div class="copyright-txt" style="padding:4px 8px 6px;font-size:11px;color:var(--muted)">© 2026 Vicky Koroh · ConSentinel</div>
+      <div class="copyright-txt" style="padding:4px 8px 6px;font-size:11px;color:var(--muted)">© 2026 Vicky Koroh · Ruang GTK</div>
       <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();" style="color:var(--text-2)" data-tooltip="Keluar">
         <svg viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 012 2v12a2 2 0 01-2 2h-4"/><path d="M10 17l-5-5 5-5M5 12h11"/></svg>
         <span>Keluar</span>

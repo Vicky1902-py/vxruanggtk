@@ -156,7 +156,7 @@
                 <div>
                   <b style="color:var(--text);font-size:14px">{{ $student->full_name }}</b>
                   <div style="margin-top:2px">
-                    <span style="font-size:11.5px;color:{{ $student->gender === 'L' ? '#93c5fd' : '#f472b6' }}">
+                    <span style="font-size:11.5px;font-weight:600;color:{{ $student->gender === 'L' ? '#0284c7' : '#db2777' }}">
                       {{ $student->gender === 'L' ? '♂ Laki-laki' : '♀ Perempuan' }}
                     </span>
                   </div>

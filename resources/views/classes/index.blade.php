@@ -286,7 +286,7 @@
             <td><b style="color:var(--text)">{{ $st->full_name }}</b></td>
             <td>{{ $st->nis ?? '—' }}</td>
             <td>
-              <span style="font-size:11.5px;color:{{ $st->gender === 'L' ? '#93c5fd' : '#f472b6' }}">
+              <span style="font-size:11.5px;font-weight:600;color:{{ $st->gender === 'L' ? '#0284c7' : '#db2777' }}">
                 {{ $st->gender === 'L' ? '♂ L' : '♀ P' }}
               </span>
             </td>
