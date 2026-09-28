@@ -107,8 +107,16 @@ class DashboardController extends Controller
             $mDate = Carbon::now()->subMonths($i);
             $monthLabel = $mDate->translatedFormat('M Y');
             $sum = (float) Payment::whereHas('bill', fn ($q) => $q->where('school_id', $school->id))
-                ->whereYear('payment_date', $mDate->year)
-                ->whereMonth('payment_date', $mDate->month)
+                ->where(function ($q) use ($mDate) {
+                    $q->where(function ($sq) use ($mDate) {
+                        $sq->whereYear('paid_at', $mDate->year)
+                           ->whereMonth('paid_at', $mDate->month);
+                    })->orWhere(function ($sq) use ($mDate) {
+                        $sq->whereNull('paid_at')
+                           ->whereYear('created_at', $mDate->year)
+                           ->whereMonth('created_at', $mDate->month);
+                    });
+                })
                 ->sum('amount_paid');
 
             $cashflowChart[] = [
