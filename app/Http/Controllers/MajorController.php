@@ -88,7 +88,7 @@ class MajorController extends Controller
             ['AKL', 'Akuntansi & Keuangan Lembaga', '', 'Konsentrasi Akuntansi Perbankan & Pembukuan'],
         ];
 
-        return $service->downloadTemplate('template_jurusan.csv', $headers, $sampleRows);
+        return $service->downloadTemplate('template_jurusan.xlsx', $headers, $sampleRows);
     }
 
     public function import(Request $request, SpreadsheetService $service)

@@ -217,7 +217,7 @@
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <h3 style="margin:0;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px">
         <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-        Import Data Siswa (.xlsx / .csv)
+        Import Data Siswa (Excel .xlsx)
       </h3>
       <button type="button" data-close class="side-close" style="position:static">✕</button>
     </div>
@@ -225,18 +225,18 @@
     <form action="{{ route('students.import') }}" method="POST" enctype="multipart/form-data" class="stack">
       @csrf
       <p style="font-size:13px;color:var(--muted-2);margin-bottom:10px">
-        Unggah file Excel (<code>.xlsx</code>) atau <code>.csv</code>. Sistem akan otomatis mendeteksi kolom:
+        Unggah file Microsoft Excel (<b>.xlsx</b>). Sistem otomatis mendeteksi kolom:
         <b>NIS, NISN, NAMA_LENGKAP, JENIS_KELAMIN (L/P), KELAS, JURUSAN, TANGGAL_LAHIR, STATUS, NAMA_WALI, NO_HP_WALI, HUBUNGAN_WALI</b>.
       </p>
 
       <div class="field">
-        <label>Pilih File Excel / CSV (.xlsx / .csv)</label>
-        <input type="file" name="file" class="input" accept=".xlsx,.csv,.txt" required style="padding:10px">
+        <label>Pilih File Excel (.xlsx)</label>
+        <input type="file" name="file" class="input" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv" required style="padding:10px">
       </div>
 
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px">
         <a href="{{ route('students.template') }}" class="btn btn-sm" style="font-size:12px">
-          Unduh Format Contoh (.csv/.xlsx)
+          Unduh Template Excel (.xlsx)
         </a>
         <div style="display:flex;gap:8px">
           <button type="button" data-close class="btn btn-sm">Batal</button>

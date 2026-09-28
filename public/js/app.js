@@ -19,20 +19,6 @@
   // 2. Reduce Motion Check
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // 3. Intro Veil Dismissal
-  var veil = document.querySelector('.intro-veil');
-  if (veil) {
-    var removeVeil = function () {
-      if (veil && veil.parentNode) {
-        veil.parentNode.removeChild(veil);
-      }
-    };
-    veil.addEventListener('animationend', function (e) {
-      if (e.animationName === 'veilOut') removeVeil();
-    });
-    setTimeout(removeVeil, 2000);
-  }
-
   // 4. Interactive Cursor Spotlight on Glass Elements
   if (!reduceMotion && window.innerWidth > 768) {
     var spotlightTargets = document.querySelectorAll('.glass, .glass-soft, .stat, .landing-feature, .ann-item');

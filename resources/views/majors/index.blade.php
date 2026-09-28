@@ -14,11 +14,11 @@
   <div style="display:flex;gap:10px;flex-wrap:wrap">
     <a href="{{ route('majors.template') }}" class="btn btn-sm" title="Unduh format spreadsheet">
       <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-      Template Excel
+      Template Excel (.xlsx)
     </a>
     <button type="button" class="btn btn-sm" data-dialog="#import-major">
       <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-      Import Excel
+      Import Excel (.xlsx)
     </button>
     <button type="button" class="btn btn-sm btn-ink" data-dialog="#create-major">
       + Tambah Jurusan
@@ -214,7 +214,7 @@
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <h3 style="margin:0;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px">
         <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-        Import Data Jurusan (.xlsx / .csv)
+        Import Data Jurusan (Excel .xlsx)
       </h3>
       <button type="button" data-close class="side-close" style="position:static">✕</button>
     </div>
@@ -222,17 +222,17 @@
     <form action="{{ route('majors.import') }}" method="POST" enctype="multipart/form-data" class="stack">
       @csrf
       <p style="font-size:13px;color:var(--muted-2);margin-bottom:10px">
-        Unggah file spreadsheet Excel (<code>.xlsx</code>) atau <code>.csv</code> berisi daftar jurusan. Format kolom: <b>KODE_JURUSAN, NAMA_JURUSAN, NIP_KAPROG, KETERANGAN</b>.
+        Unggah file Microsoft Excel (<b>.xlsx</b>) berisi daftar jurusan. Format kolom: <b>KODE_JURUSAN, NAMA_JURUSAN, NIP_KAPROG, KETERANGAN</b>.
       </p>
 
       <div class="field">
-        <label>Pilih File Excel / CSV</label>
-        <input type="file" name="file" class="input" accept=".xlsx,.csv,.txt" required style="padding:10px">
+        <label>Pilih File Excel (.xlsx)</label>
+        <input type="file" name="file" class="input" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv" required style="padding:10px">
       </div>
 
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px">
         <a href="{{ route('majors.template') }}" class="btn btn-sm" style="font-size:12px">
-          Unduh Template Contoh
+          Unduh Template Excel (.xlsx)
         </a>
         <div style="display:flex;gap:8px">
           <button type="button" data-close class="btn btn-sm">Batal</button>

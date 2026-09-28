@@ -101,7 +101,7 @@ class EmployeeController extends Controller
             ['197506102005011002', 'Drs. Hendra Wijaya, M.Pd.', 'Kepala Sekolah', 'aktif', 'hendra.wijaya', 'hendra@sekolah.sch.id'],
         ];
 
-        return $service->downloadTemplate('template_gtk.csv', $headers, $sampleRows);
+        return $service->downloadTemplate('template_gtk.xlsx', $headers, $sampleRows);
     }
 
     public function import(Request $request, SpreadsheetService $service)

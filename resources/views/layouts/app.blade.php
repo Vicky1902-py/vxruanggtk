@@ -12,27 +12,25 @@
 <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ @filemtime(public_path('css/app.css')) }}">
 </head>
 <body>
-<div class="intro-veil" aria-hidden="true"><div class="intro-mark"><img src="{{ asset('img/logo.svg') }}" alt="Logo Ruang GTK"></div></div>
+{{-- Mobile Top Bar (Hanya tampil di layar ponsel < 900px) --}}
+<header class="mobile-header glass-soft">
+  <button class="hamburger" id="hamburgerBtn" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="sidebar">
+    <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="brand-mark" style="width:34px;height:34px;border-radius:10px"><img src="{{ asset('img/logo.svg') }}" alt="Logo"></div>
+    <div class="brand-ruanggtk">
+      <span class="brand-ruanggtk-text" style="font-size:16px">Ruang<span class="gtk-tag">GTK</span></span>
+      <span class="brand-beam"></span>
+    </div>
+  </div>
+</header>
 
-{{-- Mobile Overlay --}}
+{{-- Mobile Drawer Overlay --}}
 <div class="side-overlay" id="sideOverlay" aria-hidden="true"></div>
 
 <div class="shell" id="appShell">
-  {{-- Mobile Top Bar --}}
-  <header class="mobile-header glass-soft">
-    <button class="hamburger" id="hamburgerBtn" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="sidebar">
-      <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-    </button>
-    <div style="display:flex;align-items:center;gap:10px">
-      <div class="brand-mark" style="width:34px;height:34px;border-radius:10px"><img src="{{ asset('img/logo.svg') }}" alt="Logo"></div>
-      <div class="brand-ruanggtk">
-        <span class="brand-ruanggtk-text" style="font-size:16px">Ruang<span class="gtk-tag">GTK</span></span>
-        <span class="brand-beam"></span>
-      </div>
-    </div>
-  </header>
-
-  {{-- Sidebar --}}
+  {{-- Sidebar (Selalu Kolom 1 di Desktop) --}}
   <aside class="side glass-soft" id="sidebar" role="navigation" aria-label="Menu utama">
     {{-- Close Button for Mobile Drawer --}}
     <button class="side-close" id="sideClose" aria-label="Tutup menu">

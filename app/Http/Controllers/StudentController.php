@@ -141,7 +141,7 @@ class StudentController extends Controller
             ['2604', '0091234570', 'Dimas Arya Anggara', 'L', 'X TKJ 1', 'TKJ', '2010-11-30', 'aktif', 'Hendra Setiawan', '082133445566', 'Wali'],
         ];
 
-        return $service->downloadTemplate('template_siswa.csv', $headers, $sampleRows);
+        return $service->downloadTemplate('template_siswa.xlsx', $headers, $sampleRows);
     }
 
     public function import(Request $request, SpreadsheetService $service)

@@ -126,7 +126,7 @@ class SchoolClassController extends Controller
             ['XI AKL 1', 'AKL', '2026/2027', ''],
         ];
 
-        return $service->downloadTemplate('template_kelas.csv', $headers, $sampleRows);
+        return $service->downloadTemplate('template_kelas.xlsx', $headers, $sampleRows);
     }
 
     public function import(Request $request, SpreadsheetService $service)
