@@ -7,6 +7,7 @@ use App\Models\Announcement;
 use App\Models\Bill;
 use App\Models\Employee;
 use App\Models\Guardian;
+use App\Models\Major;
 use App\Models\PaymentType;
 use App\Models\Position;
 use App\Models\Role;
@@ -153,6 +154,25 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // ── Jurusan / Program Keahlian ────────────────────────
+        $majorRpl = Major::firstOrCreate(
+            ['school_id' => $school->id, 'code' => 'RPL'],
+            [
+                'name' => 'Rekayasa Perangkat Lunak',
+                'description' => 'Fokus pengembangan perangkat lunak, web, mobile dan cloud computing.',
+                'head_of_major_id' => $guru->id,
+            ]
+        );
+
+        $majorTkj = Major::firstOrCreate(
+            ['school_id' => $school->id, 'code' => 'TKJ'],
+            [
+                'name' => 'Teknik Komputer & Jaringan',
+                'description' => 'Fokus infrastruktur jaringan, server Linux, keamanan siber, dan mikrotik.',
+                'head_of_major_id' => $kepsek->id,
+            ]
+        );
+
         // ── Tahun ajaran & kelas ─────────────────────────────
         $year = AcademicYear::firstOrCreate(
             ['school_id' => $school->id, 'year_label' => '2026/2027'],
@@ -160,16 +180,18 @@ class DatabaseSeeder extends Seeder
         );
 
         $classA = SchoolClass::firstOrCreate(
-            ['school_id' => $school->id, 'name' => 'X IPA 1'],
+            ['school_id' => $school->id, 'name' => 'X RPL 1'],
             [
                 'academic_year_id' => $year->id,
+                'major_id' => $majorRpl->id,
                 'homeroom_teacher_id' => $guru->id,
             ]
         );
         $classB = SchoolClass::firstOrCreate(
-            ['school_id' => $school->id, 'name' => 'X IPA 2'],
+            ['school_id' => $school->id, 'name' => 'X TKJ 1'],
             [
                 'academic_year_id' => $year->id,
+                'major_id' => $majorTkj->id,
                 'homeroom_teacher_id' => $kepsek->id,
             ]
         );
@@ -185,11 +207,11 @@ class DatabaseSeeder extends Seeder
         );
 
         $students = [
-            ['class_id' => $classA->id, 'guardian_id' => $guardian->id, 'nis' => '2601', 'nisn' => '0091234567', 'full_name' => 'Aisyah Putri', 'gender' => 'P', 'birth_date' => '2010-04-12', 'status' => 'aktif'],
-            ['class_id' => $classA->id, 'guardian_id' => null, 'nis' => '2602', 'nisn' => '0091234568', 'full_name' => 'Bagas Prakoso', 'gender' => 'L', 'birth_date' => '2010-08-03', 'status' => 'aktif'],
-            ['class_id' => $classA->id, 'guardian_id' => null, 'nis' => '2603', 'nisn' => '0091234569', 'full_name' => 'Citra Dewi', 'gender' => 'P', 'birth_date' => '2010-01-25', 'status' => 'aktif'],
-            ['class_id' => $classB->id, 'guardian_id' => null, 'nis' => '2604', 'nisn' => '0091234570', 'full_name' => 'Dimas Anggara', 'gender' => 'L', 'birth_date' => '2010-11-30', 'status' => 'aktif'],
-            ['class_id' => $classB->id, 'guardian_id' => null, 'nis' => '2605', 'nisn' => '0091234571', 'full_name' => 'Elsa Maharani', 'gender' => 'P', 'birth_date' => '2010-06-18', 'status' => 'aktif'],
+            ['class_id' => $classA->id, 'major_id' => $majorRpl->id, 'guardian_id' => $guardian->id, 'nis' => '2601', 'nisn' => '0091234567', 'full_name' => 'Aisyah Putri', 'gender' => 'P', 'birth_date' => '2010-04-12', 'status' => 'aktif'],
+            ['class_id' => $classA->id, 'major_id' => $majorRpl->id, 'guardian_id' => null, 'nis' => '2602', 'nisn' => '0091234568', 'full_name' => 'Bagas Prakoso', 'gender' => 'L', 'birth_date' => '2010-08-03', 'status' => 'aktif'],
+            ['class_id' => $classA->id, 'major_id' => $majorRpl->id, 'guardian_id' => null, 'nis' => '2603', 'nisn' => '0091234569', 'full_name' => 'Citra Dewi', 'gender' => 'P', 'birth_date' => '2010-01-25', 'status' => 'aktif'],
+            ['class_id' => $classB->id, 'major_id' => $majorTkj->id, 'guardian_id' => null, 'nis' => '2604', 'nisn' => '0091234570', 'full_name' => 'Dimas Anggara', 'gender' => 'L', 'birth_date' => '2010-11-30', 'status' => 'aktif'],
+            ['class_id' => $classB->id, 'major_id' => $majorTkj->id, 'guardian_id' => null, 'nis' => '2605', 'nisn' => '0091234571', 'full_name' => 'Elsa Maharani', 'gender' => 'P', 'birth_date' => '2010-06-18', 'status' => 'aktif'],
         ];
 
         foreach ($students as $data) {

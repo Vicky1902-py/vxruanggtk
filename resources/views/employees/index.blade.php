@@ -11,6 +11,16 @@
     <h1>Data Pegawai (GTK)</h1>
     <div class="sub">Direktori seluruh guru dan tenaga kependidikan sekolah beserta jabatan fungsional.</div>
   </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <a href="{{ route('employees.template') }}" class="btn btn-sm" title="Unduh template Excel untuk input cepat">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      Template Excel
+    </a>
+    <button type="button" class="btn btn-sm" data-dialog="#import-employee">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+      Import Excel / XLSX
+    </button>
+  </div>
 </div>
 
 <div class="two-col">
@@ -40,6 +50,11 @@
             <option value="{{ $position->id }}">{{ $position->name }}</option>
           @endforeach
         </select>
+      </div>
+
+      <div class="field">
+        <label>Akun Login Guru/Staf (Opsional)</label>
+        <input name="username" class="input" placeholder="mis. siti.rahma (kata sandi default: password)">
       </div>
 
       <div class="field">
@@ -76,6 +91,11 @@
                 </div>
                 <div>
                   <b style="color:var(--text);font-size:14px">{{ $employee->full_name }}</b>
+                  @if ($employee->user)
+                    <div style="font-size:11px;color:var(--accent);margin-top:1px">
+                      👤 Akun: {{ $employee->user->username }}
+                    </div>
+                  @endif
                 </div>
               </div>
             </td>
@@ -102,13 +122,49 @@
           </tr>
         @empty
           <tr>
-            <td colspan="5" class="empty">Belum ada pegawai terdata. Tambahkan melalui formulir di samping.</td>
+            <td colspan="5" class="empty">Belum ada pegawai terdata. Tambahkan melalui formulir di samping atau gunakan Import Excel.</td>
           </tr>
         @endforelse
       </tbody>
     </table>
   </div>
 </div>
+
+{{-- MODAL IMPORT EXCEL GTK --}}
+<dialog id="import-employee" class="modal glass">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h3 style="margin:0;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px">
+        <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        Import Data Pegawai / GTK (.xlsx / .csv)
+      </h3>
+      <button type="button" data-close class="side-close" style="position:static">✕</button>
+    </div>
+
+    <form action="{{ route('employees.import') }}" method="POST" enctype="multipart/form-data" class="stack">
+      @csrf
+      <p style="font-size:13px;color:var(--muted-2);margin-bottom:10px">
+        Unggah file Excel (<code>.xlsx</code>) atau <code>.csv</code> berisi data GTK. Kolom yang didukung:
+        <b>NIP, NAMA_LENGKAP, JABATAN, STATUS, USERNAME, EMAIL</b>.
+      </p>
+
+      <div class="field">
+        <label>Pilih File Excel / CSV (.xlsx / .csv)</label>
+        <input type="file" name="file" class="input" accept=".xlsx,.csv,.txt" required style="padding:10px">
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px">
+        <a href="{{ route('employees.template') }}" class="btn btn-sm" style="font-size:12px">
+          Unduh Format Contoh (.csv/.xlsx)
+        </a>
+        <div style="display:flex;gap:8px">
+          <button type="button" data-close class="btn btn-sm">Batal</button>
+          <button type="submit" class="btn btn-sm btn-ink">Mulai Import</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</dialog>
 
 @foreach ($employees as $employee)
 <dialog class="dlg" id="dlg-{{ $employee->id }}">

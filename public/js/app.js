@@ -147,6 +147,22 @@
     }
   });
 
+  // 7b. aaPanel Auxiliary Mini-Sidebar Toggle & LocalStorage Memory
+  var appShell = document.getElementById('appShell');
+  var auxToggleBtn = document.getElementById('auxToggleBtn');
+
+  if (appShell && localStorage.getItem('ruanggtk_sidebar_collapsed') === '1') {
+    appShell.classList.add('is-collapsed');
+  }
+
+  if (auxToggleBtn && appShell) {
+    auxToggleBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      var isCollapsed = appShell.classList.toggle('is-collapsed');
+      localStorage.setItem('ruanggtk_sidebar_collapsed', isCollapsed ? '1' : '0');
+    });
+  }
+
   // 8. Modal Dialog Controllers
   document.addEventListener('click', function (e) {
     var opener = e.target.closest('[data-dialog]');

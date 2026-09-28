@@ -9,7 +9,17 @@
       <span style="font-size:12px;color:var(--muted)">Manajemen Kelas &amp; Wali Kelas</span>
     </div>
     <h1>Data Kelas &amp; Rombel</h1>
-    <div class="sub">Kelola struktur rombongan belajar per tahun ajaran beserta penugasan wali kelas.</div>
+    <div class="sub">Kelola struktur rombongan belajar per tahun ajaran beserta penugasan wali kelas dan jurusan.</div>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <a href="{{ route('classes.template') }}" class="btn btn-sm" title="Unduh template Excel untuk input cepat">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      Template Excel
+    </a>
+    <button type="button" class="btn btn-sm" data-dialog="#import-class">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+      Import Excel / XLSX
+    </button>
   </div>
 </div>
 
@@ -23,20 +33,31 @@
       </h2>
       <form method="POST" action="{{ route('classes.store') }}" class="stack">
         @csrf
-        <div class="field">
-          <label>Tahun Ajaran *</label>
-          <select name="academic_year_id" class="select" required>
-            @foreach ($academicYears as $year)
-              <option value="{{ $year->id }}" {{ $year->is_active ? 'selected' : '' }}>
-                {{ $year->year_label }}{{ $year->is_active ? ' (Aktif)' : '' }}
-              </option>
-            @endforeach
-          </select>
+        <div class="two-col" style="gap:10px">
+          <div class="field">
+            <label>Tahun Ajaran *</label>
+            <select name="academic_year_id" class="select" required>
+              @foreach ($academicYears as $year)
+                <option value="{{ $year->id }}" {{ $year->is_active ? 'selected' : '' }}>
+                  {{ $year->year_label }}{{ $year->is_active ? ' (Aktif)' : '' }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+          <div class="field">
+            <label>Jurusan / Konsentrasi</label>
+            <select name="major_id" class="select">
+              <option value="">— Umum / Tanpa Jurusan —</option>
+              @foreach ($majors as $m)
+                <option value="{{ $m->id }}">{{ $m->code }} - {{ $m->name }}</option>
+              @endforeach
+            </select>
+          </div>
         </div>
 
         <div class="field">
           <label>Nama Rombel / Kelas *</label>
-          <input type="text" name="name" class="input" placeholder="mis. 7A, 8B, X-MIPA-1" required maxlength="30">
+          <input type="text" name="name" class="input" placeholder="mis. X RPL 1, XI TKJ 2" required maxlength="30">
         </div>
 
         <div class="field">
@@ -99,6 +120,7 @@
       <thead>
         <tr>
           <th>Nama Kelas</th>
+          <th>Jurusan</th>
           <th>Tahun Ajaran</th>
           <th>Wali Kelas</th>
           <th>Jml Siswa</th>
@@ -115,6 +137,13 @@
                 </span>
                 <b style="font-size:14.5px;color:var(--text)">Kelas {{ $class->name }}</b>
               </div>
+            </td>
+            <td>
+              @if ($class->major)
+                <span class="badge badge-ink" style="font-weight:700">{{ $class->major->code }}</span>
+              @else
+                <span style="color:var(--muted);font-size:12px">Umum</span>
+              @endif
             </td>
             <td>
               <span class="badge {{ $class->academicYear?->is_active ? 'badge-ok' : 'badge-blue' }}">{{ $class->academicYear?->year_label ?? '—' }}</span>
@@ -140,13 +169,49 @@
           </tr>
         @empty
           <tr>
-            <td colspan="5" class="empty">Belum ada rombel kelas yang terdaftar. Tambahkan lewat formulir di samping.</td>
+            <td colspan="6" class="empty">Belum ada rombel kelas yang terdaftar. Tambahkan lewat formulir di samping atau gunakan Import Excel.</td>
           </tr>
         @endforelse
       </tbody>
     </table>
   </div>
 </div>
+
+{{-- MODAL IMPORT EXCEL KELAS --}}
+<dialog id="import-class" class="modal glass">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h3 style="margin:0;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px">
+        <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        Import Data Rombel Kelas (.xlsx / .csv)
+      </h3>
+      <button type="button" data-close class="side-close" style="position:static">✕</button>
+    </div>
+
+    <form action="{{ route('classes.import') }}" method="POST" enctype="multipart/form-data" class="stack">
+      @csrf
+      <p style="font-size:13px;color:var(--muted-2);margin-bottom:10px">
+        Unggah file Excel (<code>.xlsx</code>) atau <code>.csv</code>. Kolom yang didukung:
+        <b>NAMA_KELAS, KODE_JURUSAN, TAHUN_AJARAN, NIP_WALI_KELAS</b>.
+      </p>
+
+      <div class="field">
+        <label>Pilih File Excel / CSV (.xlsx / .csv)</label>
+        <input type="file" name="file" class="input" accept=".xlsx,.csv,.txt" required style="padding:10px">
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px">
+        <a href="{{ route('classes.template') }}" class="btn btn-sm" style="font-size:12px">
+          Unduh Format Contoh (.csv/.xlsx)
+        </a>
+        <div style="display:flex;gap:8px">
+          <button type="button" data-close class="btn btn-sm">Batal</button>
+          <button type="submit" class="btn btn-sm btn-ink">Mulai Import</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</dialog>
 
 @foreach ($classes as $class)
 {{-- Dialog Edit Kelas --}}
@@ -160,6 +225,17 @@
         @foreach ($academicYears as $year)
           <option value="{{ $year->id }}" {{ $class->academic_year_id === $year->id ? 'selected' : '' }}>
             {{ $year->year_label }}{{ $year->is_active ? ' (Aktif)' : '' }}
+          </option>
+        @endforeach
+      </select>
+    </div>
+    <div class="field">
+      <label>Jurusan / Peminatan</label>
+      <select name="major_id" class="select">
+        <option value="">— Umum / Tanpa Jurusan —</option>
+        @foreach ($majors as $m)
+          <option value="{{ $m->id }}" {{ $class->major_id === $m->id ? 'selected' : '' }}>
+            {{ $m->code }} - {{ $m->name }}
           </option>
         @endforeach
       </select>

@@ -84,16 +84,33 @@ Route::middleware('auth')->group(function () {
 
     // Manajemen Akademik & Data: admin, staff_tu, kepsek
     Route::middleware('role:admin,staff_tu,kepsek')->group(function () {
+        // Jurusan / Program Keahlian
+        Route::get('jurusan-template', [\App\Http\Controllers\MajorController::class, 'template'])->name('majors.template');
+        Route::post('jurusan-import', [\App\Http\Controllers\MajorController::class, 'import'])->name('majors.import');
+        Route::resource('jurusan', \App\Http\Controllers\MajorController::class)
+            ->only(['index', 'store', 'update', 'destroy'])
+            ->parameters(['jurusan' => 'major'])
+            ->names('majors');
+
+        // Peserta Didik (Siswa)
+        Route::get('siswa-template', [StudentController::class, 'template'])->name('students.template');
+        Route::post('siswa-import', [StudentController::class, 'import'])->name('students.import');
         Route::resource('siswa', StudentController::class)
             ->only(['index', 'store', 'update', 'destroy'])
             ->parameters(['siswa' => 'student'])
             ->names('students');
 
+        // Tenaga Pendidik & Kependidikan (GTK)
+        Route::get('pegawai-template', [EmployeeController::class, 'template'])->name('employees.template');
+        Route::post('pegawai-import', [EmployeeController::class, 'import'])->name('employees.import');
         Route::resource('pegawai', EmployeeController::class)
             ->only(['index', 'store', 'update', 'destroy'])
             ->parameters(['pegawai' => 'employee'])
             ->names('employees');
 
+        // Rombongan Belajar (Kelas)
+        Route::get('kelas-template', [SchoolClassController::class, 'template'])->name('classes.template');
+        Route::post('kelas-import', [SchoolClassController::class, 'import'])->name('classes.import');
         Route::resource('kelas', SchoolClassController::class)
             ->only(['index', 'store', 'update', 'destroy'])
             ->parameters(['kelas' => 'class'])

@@ -2,24 +2,30 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="page-head">
+{{-- Page Head with aaPanel Status Indicators --}}
+<div class="page-head" style="align-items: flex-start;">
   <div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap">
       <span class="cs-pill" style="font-size:11px;padding:3px 12px">
         <span class="dot"></span>
         {{ $school->name }}
       </span>
+      <span class="badge badge-ok" style="font-size:11px">
+        ● Multi-Tenant Isolation Active
+      </span>
       <span style="font-size:12px;color:var(--muted)">
-        TA {{ optional($school->academicYears()->where('is_active', true)->first())->year_label ?? '2026/2027' }}
+        TA {{ $serverInfo['active_year'] }}
       </span>
     </div>
     <h1>
       Selamat datang di <span class="brand-ruanggtk"><span class="brand-ruanggtk-text" style="font-size:27px">Ruang<span class="gtk-tag">GTK</span></span><span class="brand-beam"></span></span>, {{ auth()->user()->username }} 👋
     </h1>
-    <div class="sub">Ikhtisar telemetri GTK, kehadiran peserta didik, dan operasional sekolah hari ini.</div>
+    <div class="sub">Pusat kendali telemetri operasional sekolah, peserta didik, GTK, jurusan, dan arus kas pendidikan.</div>
   </div>
-  <div style="display:flex;align-items:center;gap:10px">
-    <span class="badge badge-ink" style="padding:4px 14px;font-size:12.5px">{{ strtoupper(auth()->user()->role?->name ?? 'User') }}</span>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <span class="badge badge-ink" style="padding:5px 16px;font-size:12.5px;letter-spacing:0.04em">
+      {{ strtoupper(auth()->user()->role?->name ?? 'User') }}
+    </span>
   </div>
 </div>
 
@@ -39,14 +45,17 @@
           <div>
             <b style="font-size:16px;color:var(--text)">{{ $child->full_name }}</b>
             <div style="font-size:12px;color:var(--muted);margin-top:2px">
-              Kelas {{ $child->schoolClass?->name ?? '—' }} · NIS: {{ $child->nis ?? '—' }} · NISN: {{ $child->nisn ?? '—' }}
+              Kelas {{ $child->schoolClass?->name ?? '—' }}
+              @if ($child->major)
+                · Jurusan {{ $child->major->name }} ({{ $child->major->code }})
+              @endif
+              · NIS: {{ $child->nis ?? '—' }} · NISN: {{ $child->nisn ?? '—' }}
             </div>
           </div>
           <span class="badge badge-ok">Status: {{ ucfirst($child->status) }}</span>
         </div>
 
         <div class="two-col" style="gap:14px">
-          {{-- Kehadiran Terakhir --}}
           <div>
             <div style="font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:6px">📅 Kehadiran Terakhir:</div>
             <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -68,7 +77,6 @@
             </div>
           </div>
 
-          {{-- Status Tagihan SPP --}}
           <div>
             <div style="font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:6px">💳 Tagihan Sekolah:</div>
             <div style="display:grid;gap:6px">
@@ -91,15 +99,94 @@
 </div>
 @endif
 
-{{-- STAT CARDS (Untuk Admin, Guru, TU, Bendahara, Kepsek) --}}
 @if ($userRole !== 'wali')
-<div class="stat-grid" style="margin-top:8px">
+{{-- ════════════════════════════════════════════════════════════════════
+     1. AAPANEL CIRCULAR TELEMETRY GAUGES
+     ════════════════════════════════════════════════════════════════════ --}}
+<div class="aapanel-gauges-grid" style="margin-top:16px">
+  {{-- Gauge 1: Presensi Siswa --}}
+  <div class="glass aapanel-gauge-card">
+    <div class="gauge-ring-wrap">
+      <svg viewBox="0 0 100 100" class="gauge-ring">
+        <circle class="ring-bg" cx="50" cy="50" r="40"/>
+        <circle class="ring-fill ring-cyan" cx="50" cy="50" r="40"
+          style="stroke-dasharray: 251.2; stroke-dashoffset: {{ 251.2 - (251.2 * ($telemetry['attendance_rate'] / 100)) }};"/>
+      </svg>
+      <div class="gauge-val">
+        <strong>{{ $telemetry['attendance_rate'] }}%</strong>
+      </div>
+    </div>
+    <div class="gauge-info">
+      <h4>Presensi Siswa</h4>
+      <p>Rasio kehadiran hari ini</p>
+    </div>
+  </div>
+
+  {{-- Gauge 2: Realisasi Kas SPP --}}
+  <div class="glass aapanel-gauge-card">
+    <div class="gauge-ring-wrap">
+      <svg viewBox="0 0 100 100" class="gauge-ring">
+        <circle class="ring-bg" cx="50" cy="50" r="40"/>
+        <circle class="ring-fill ring-gold" cx="50" cy="50" r="40"
+          style="stroke-dasharray: 251.2; stroke-dashoffset: {{ 251.2 - (251.2 * ($telemetry['spp_rate'] / 100)) }};"/>
+      </svg>
+      <div class="gauge-val">
+        <strong>{{ $telemetry['spp_rate'] }}%</strong>
+      </div>
+    </div>
+    <div class="gauge-info">
+      <h4>Realisasi Kas SPP</h4>
+      <p>Pembayaran diterima</p>
+    </div>
+  </div>
+
+  {{-- Gauge 3: Utilisasi Rombel --}}
+  <div class="glass aapanel-gauge-card">
+    <div class="gauge-ring-wrap">
+      <svg viewBox="0 0 100 100" class="gauge-ring">
+        <circle class="ring-bg" cx="50" cy="50" r="40"/>
+        <circle class="ring-fill ring-blue" cx="50" cy="50" r="40"
+          style="stroke-dasharray: 251.2; stroke-dashoffset: {{ 251.2 - (251.2 * ($telemetry['capacity_rate'] / 100)) }};"/>
+      </svg>
+      <div class="gauge-val">
+        <strong>{{ $telemetry['capacity_rate'] }}%</strong>
+      </div>
+    </div>
+    <div class="gauge-info">
+      <h4>Kapasitas Rombel</h4>
+      <p>{{ $stats['students'] }} siswa di {{ $stats['classes'] }} kelas</p>
+    </div>
+  </div>
+
+  {{-- Gauge 4: GTK Aktif --}}
+  <div class="glass aapanel-gauge-card">
+    <div class="gauge-ring-wrap">
+      <svg viewBox="0 0 100 100" class="gauge-ring">
+        <circle class="ring-bg" cx="50" cy="50" r="40"/>
+        <circle class="ring-fill ring-emerald" cx="50" cy="50" r="40"
+          style="stroke-dasharray: 251.2; stroke-dashoffset: {{ 251.2 - (251.2 * ($telemetry['gtk_rate'] / 100)) }};"/>
+      </svg>
+      <div class="gauge-val">
+        <strong>{{ $telemetry['gtk_rate'] }}%</strong>
+      </div>
+    </div>
+    <div class="gauge-info">
+      <h4>GTK Bertugas</h4>
+      <p>{{ $stats['employees'] }} tenaga kependidikan</p>
+    </div>
+  </div>
+</div>
+
+{{-- ════════════════════════════════════════════════════════════════════
+     2. AAPANEL CORE STATS BAR
+     ════════════════════════════════════════════════════════════════════ --}}
+<div class="stat-grid" style="margin-top:16px">
   <div class="glass stat">
     <div class="count-pill">
       <strong class="count-up" data-count="{{ $stats['students'] }}">0</strong>
       <small>Peserta Didik</small>
     </div>
-    <div class="stat-label">Total siswa terdaftar aktif</div>
+    <div class="stat-label">Siswa terdaftar aktif di sistem</div>
     <div class="stat-icon">
       <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3.5 20c.5-4 2.6-6 5.5-6s5 2 5.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5c2.5.2 4 1.8 4.5 4.5"/></svg>
     </div>
@@ -110,7 +197,7 @@
       <strong class="count-up" data-count="{{ $stats['classes'] }}">0</strong>
       <small>Rombel Kelas</small>
     </div>
-    <div class="stat-label">Kelas aktif tahun ajaran ini</div>
+    <div class="stat-label">Rombongan belajar aktif</div>
     <div class="stat-icon">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-6 9 6"/><path d="M5 9v9a2 2 0 002 2h10a2 2 0 002-2V9"/></svg>
     </div>
@@ -118,159 +205,217 @@
 
   <div class="glass stat">
     <div class="count-pill">
-      <strong class="count-up" data-count="{{ $stats['employees'] }}">0</strong>
-      <small>Tenaga GTK</small>
+      <strong class="count-up" data-count="{{ $stats['majors'] }}">0</strong>
+      <small>Program Keahlian</small>
     </div>
-    <div class="stat-label">Guru &amp; staf kependidikan</div>
+    <div class="stat-label">Jurusan keahlian terintegrasi</div>
     <div class="stat-icon">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 20.5c.7-4.5 3.2-7 7-7s6.3 2.5 7 7"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
     </div>
   </div>
 
   <div class="glass stat">
     <div class="count-pill">
-      <strong>Rp <span class="count-up" data-count="{{ (int) $stats['unpaid_amount'] }}">0</span></strong>
-      <small>{{ $stats['unpaid_bills'] }} belum lunas</small>
+      <strong>Rp <span class="count-up" data-count="{{ (int) $stats['paid_amount'] }}">0</span></strong>
+      <small>Kas Masuk</small>
     </div>
-    <div class="stat-label">Tunggakan SPP (Terkumpul: Rp {{ number_format($stats['paid_amount'], 0, ',', '.') }})</div>
+    <div class="stat-label">Tunggakan: Rp {{ number_format($stats['unpaid_amount'], 0, ',', '.') }}</div>
     <div class="stat-icon">
       <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10.5h18"/></svg>
     </div>
   </div>
 </div>
-@endif
 
-<div class="two-col" style="margin-top:20px">
-  {{-- Pengumuman Sekolah --}}
-  <div class="glass panel">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <h2 class="panel-title" style="margin:0">
-        <svg viewBox="0 0 24 24"><path d="M4 11l12-6v14L4 13v-2z"/><path d="M16 8.5c2 .5 3 1.7 3 3.5s-1 3-3 3.5"/></svg>
-        Warta &amp; Pengumuman Sekolah
-      </h2>
-      <a href="{{ route('announcements.index') }}" style="font-size:12px;color:var(--accent)">Lihat Semua →</a>
+{{-- ════════════════════════════════════════════════════════════════════
+     3. AAPANEL INTERACTIVE CHARTS SECTION (Grafik yang Keren)
+     ════════════════════════════════════════════════════════════════════ --}}
+<div class="aapanel-charts-grid" style="margin-top:20px">
+  {{-- Chart 1: Tren Presensi 7 Hari Terakhir (SVG Vector Area Chart) --}}
+  <div class="glass panel chart-card-wide">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+      <div>
+        <h2 class="panel-title" style="margin:0">
+          <svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 16l4-6 4 4 5-8"/></svg>
+          Grafik Tren Presensi Siswa (7 Hari Terakhir)
+        </h2>
+        <div class="sub" style="margin:2px 0 0">Fluktuasi kehadiran, izin, dan alpa harian sekolah.</div>
+      </div>
+      <div style="display:flex;gap:12px;font-size:12px;align-items:center">
+        <span style="display:inline-flex;align-items:center;gap:5px;color:#38bdf8">
+          <span style="width:10px;height:10px;background:#38bdf8;border-radius:2px"></span> Hadir
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:5px;color:#f59e0b">
+          <span style="width:10px;height:10px;background:#f59e0b;border-radius:2px"></span> Izin / Sakit
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:5px;color:#ef4444">
+          <span style="width:10px;height:10px;background:#ef4444;border-radius:2px"></span> Alpa
+        </span>
+      </div>
     </div>
-    <div class="stack">
-      @forelse ($stats['announcements'] as $ann)
-        <div class="glass-soft ann-item">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-            <h3 style="color:var(--text);font-size:14px">{{ $ann->title }}</h3>
-            <span class="badge badge-blue" style="font-size:10.5px">{{ $ann->schoolClass?->name ?? 'Umum' }}</span>
+
+    {{-- Vector Chart Container --}}
+    <div class="aapanel-chart-box">
+      @php
+        $maxHadir = max(1, collect($chart7Days)->max('hadir'));
+      @endphp
+      <div class="chart-bars-wrap">
+        @foreach ($chart7Days as $idx => $d)
+          @php
+            $heightPct = round(($d['hadir'] / $maxHadir) * 100);
+          @endphp
+          <div class="chart-bar-col" title="{{ $d['date'] }}: {{ $d['hadir'] }} Hadir, {{ $d['izin'] }} Izin, {{ $d['alpa'] }} Alpa">
+            <div class="chart-col-tooltip">
+              <b>{{ $d['date'] }}</b>
+              <div style="color:#38bdf8">Hadir: {{ $d['hadir'] }}</div>
+              <div style="color:#f59e0b">Izin: {{ $d['izin'] }}</div>
+              <div style="color:#ef4444">Alpa: {{ $d['alpa'] }}</div>
+            </div>
+            <div class="chart-col-body">
+              <div class="bar-slice bar-hadir" style="height: {{ $heightPct }}%"></div>
+              @if ($d['izin'] > 0)
+                <div class="bar-slice bar-izin" style="height: {{ max(4, round(($d['izin'] / $maxHadir) * 100)) }}%"></div>
+              @endif
+              @if ($d['alpa'] > 0)
+                <div class="bar-slice bar-alpa" style="height: {{ max(4, round(($d['alpa'] / $maxHadir) * 100)) }}%"></div>
+              @endif
+            </div>
+            <div class="chart-col-label">{{ $d['date'] }}</div>
           </div>
-          <p style="font-size:12.5px">{{ \Illuminate\Support\Str::limit($ann->content, 120) }}</p>
-          <div class="ann-meta" style="margin-top:4px">
-            <span style="display:inline-flex;align-items:center;gap:4px">
-              📅 {{ $ann->published_at?->translatedFormat('d F Y') }}
+        @endforeach
+      </div>
+    </div>
+  </div>
+
+  {{-- Chart 2: Distribusi Siswa per Jurusan / Peminatan --}}
+  <div class="glass panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <h2 class="panel-title" style="margin:0">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
+        Komposisi Siswa per Jurusan
+      </h2>
+      <a href="{{ route('majors.index') }}" style="font-size:12px;color:var(--accent)">Kelola →</a>
+    </div>
+
+    <div class="stack" style="gap:12px">
+      @forelse ($majorsDistribution as $md)
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;font-size:12.5px">
+            <span style="font-weight:600;color:var(--text)">
+              <span class="badge badge-ink" style="padding:1px 6px;font-size:10px;margin-right:4px">{{ $md['code'] }}</span>
+              {{ $md['name'] }}
             </span>
+            <span style="color:var(--muted)"><b>{{ $md['count'] }}</b> siswa ({{ $md['percent'] }}%)</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-bar-fill" style="width: {{ $md['percent'] }}%"></div>
           </div>
         </div>
       @empty
-        <div class="empty">Belum ada pengumuman untuk sekolah Anda.</div>
+        <div class="empty">Belum ada jurusan keahlian. <a href="{{ route('majors.index') }}" style="color:var(--accent)">+ Tambah Jurusan</a></div>
       @endforelse
     </div>
   </div>
+</div>
 
-  {{-- Akses Cepat Modul --}}
+{{-- ════════════════════════════════════════════════════════════════════
+     4. AAPANEL SYSTEM TELEMETRY & TASK BAR
+     ════════════════════════════════════════════════════════════════════ --}}
+<div class="two-col" style="margin-top:20px">
+  {{-- aaPanel System Environment --}}
   <div class="glass panel">
-    <h2 class="panel-title">
-      <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="2.5"/><path d="M8 2.5v3M16 2.5v3M4 9.5h16"/></svg>
-      Akses Cepat Modul
-    </h2>
-    <div class="stack">
-      @if (in_array($userRole, ['admin', 'guru', 'kepsek']))
-      <div class="glass-soft ann-item">
-        <div style="display:flex;align-items:center;gap:12px">
-          <span class="icon-chip icon-sm is-blue">
-            <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="2.5"/><path d="M8 2.5v3M16 2.5v3M4 9.5h16"/><path d="M9 14.5l2 2 4-4"/></svg>
-          </span>
-          <div>
-            <h3 style="font-size:14px">Presensi Siswa (Harian &amp; Leger)</h3>
-            <p style="font-size:12px;color:var(--muted)">Input harian &amp; rekap bulanan kelas.</p>
-          </div>
-        </div>
-        <div class="ann-meta" style="margin-top:4px">
-          <a href="{{ route('attendance.index') }}" class="btn btn-sm btn-ink" style="height:28px;font-size:11.5px;padding:0 12px">
-            Buka Presensi →
-          </a>
-        </div>
-      </div>
-      @endif
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <h2 class="panel-title" style="margin:0">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+        Telemetri Server &amp; Environment
+      </h2>
+      <span class="badge badge-ok" style="font-size:11px">● System Healthy</span>
+    </div>
 
-      @if (in_array($userRole, ['admin', 'guru', 'staff_tu', 'kepsek']))
-      <div class="glass-soft ann-item">
-        <div style="display:flex;align-items:center;gap:12px">
-          <span class="icon-chip icon-sm is-ok">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 20.5c.7-4.5 3.2-7 7-7s6.3 2.5 7 7"/></svg>
-          </span>
-          <div>
-            <h3 style="font-size:14px">Presensi Pegawai (GTK)</h3>
-            <p style="font-size:12px;color:var(--muted)">Check-in mandiri &amp; rekap presensi GTK.</p>
-          </div>
-        </div>
-        <div class="ann-meta" style="margin-top:4px">
-          <a href="{{ route('attendance-employee.index') }}" class="btn btn-sm" style="height:28px;font-size:11.5px;padding:0 12px">
-            Presensi GTK →
-          </a>
-        </div>
+    <div class="aapanel-info-grid">
+      <div class="info-row">
+        <span class="lbl">Platform Engine</span>
+        <span class="val">PHP {{ $serverInfo['php_version'] }} · Laravel {{ $serverInfo['laravel_version'] }}</span>
       </div>
-      @endif
-
-      @if (in_array($userRole, ['admin', 'staff_tu', 'kepsek']))
-      <div class="glass-soft ann-item">
-        <div style="display:flex;align-items:center;gap:12px">
-          <span class="icon-chip icon-sm">
-            <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3.5 20c.5-4 2.6-6 5.5-6s5 2 5.5 6"/></svg>
-          </span>
-          <div>
-            <h3 style="font-size:14px">Direktori Siswa &amp; Rombel</h3>
-            <p style="font-size:12px;color:var(--muted)">Pendaftaran, penempatan kelas &amp; wali.</p>
-          </div>
-        </div>
-        <div class="ann-meta" style="margin-top:4px">
-          <a href="{{ route('students.index') }}" class="btn btn-sm" style="height:28px;font-size:11.5px;padding:0 12px">
-            Kelola Siswa →
-          </a>
-        </div>
+      <div class="info-row">
+        <span class="lbl">Database Engine</span>
+        <span class="val">MySQL 8.0 (Driver: {{ $serverInfo['db_driver'] }})</span>
       </div>
-      @endif
-
-      @if (in_array($userRole, ['admin', 'bendahara', 'kepsek']))
-      <div class="glass-soft ann-item">
-        <div style="display:flex;align-items:center;gap:12px">
-          <span class="icon-chip icon-sm is-ink">
-            <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10.5h18"/></svg>
-          </span>
-          <div>
-            <h3 style="font-size:14px">Tagihan &amp; Pembayaran SPP</h3>
-            <p style="font-size:12px;color:var(--muted)">Generate tagihan &amp; cetak kuitansi resmi.</p>
-          </div>
-        </div>
-        <div class="ann-meta" style="margin-top:4px">
-          <a href="{{ route('bills.index') }}" class="btn btn-sm" style="height:28px;font-size:11.5px;padding:0 12px">
-            Keuangan Siswa →
-          </a>
-        </div>
+      <div class="info-row">
+        <span class="lbl">Host OS</span>
+        <span class="val">{{ $serverInfo['server_os'] }} (cPanel Cloud Hosting)</span>
       </div>
-      @endif
-
-      {{-- Profil Akun --}}
-      <div class="glass-soft ann-item">
-        <div style="display:flex;align-items:center;gap:12px">
-          <span class="icon-chip icon-sm">
-            <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
-          </span>
-          <div>
-            <h3 style="font-size:14px">Profil &amp; Keamanan Akun</h3>
-            <p style="font-size:12px;color:var(--muted)">Perbarui kata sandi akun Anda.</p>
-          </div>
-        </div>
-        <div class="ann-meta" style="margin-top:4px">
-          <a href="{{ route('profile.index') }}" class="btn btn-sm" style="height:28px;font-size:11.5px;padding:0 12px">
-            Atur Sandi →
-          </a>
-        </div>
+      <div class="info-row">
+        <span class="lbl">Tenant Domain</span>
+        <span class="val" style="color:var(--accent)">{{ $school->subdomain }}.ruanggtk.my.id</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl">Tahun Ajaran Aktif</span>
+        <span class="val">{{ $serverInfo['active_year'] }}</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl">Waktu Server</span>
+        <span class="val" style="font-family:monospace;font-size:12px">{{ $serverInfo['server_time'] }}</span>
       </div>
     </div>
   </div>
+
+  {{-- aaPanel Quick Actions Hub --}}
+  <div class="glass panel">
+    <h2 class="panel-title">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+      Akses Cepat &amp; Import Data
+    </h2>
+
+    <div class="quick-tools-grid">
+      <a href="{{ route('students.index') }}" class="quick-tool-card glass-soft">
+        <span class="icon-chip is-blue">📥</span>
+        <div>
+          <b>Import Siswa</b>
+          <small>Excel / CSV massal</small>
+        </div>
+      </a>
+
+      <a href="{{ route('employees.index') }}" class="quick-tool-card glass-soft">
+        <span class="icon-chip is-ok">🧑‍🏫</span>
+        <div>
+          <b>Import GTK</b>
+          <small>Guru &amp; Tenaga Usaha</small>
+        </div>
+      </a>
+
+      <a href="{{ route('classes.index') }}" class="quick-tool-card glass-soft">
+        <span class="icon-chip is-ink">🏫</span>
+        <div>
+          <b>Rombel Kelas</b>
+          <small>Struktur kelas &amp; wali</small>
+        </div>
+      </a>
+
+      <a href="{{ route('majors.index') }}" class="quick-tool-card glass-soft">
+        <span class="icon-chip">🎓</span>
+        <div>
+          <b>Data Jurusan</b>
+          <small>Program keahlian</small>
+        </div>
+      </a>
+
+      <a href="{{ route('attendance.index') }}" class="quick-tool-card glass-soft">
+        <span class="icon-chip is-ok">📊</span>
+        <div>
+          <b>Rekap Presensi</b>
+          <small>Matriks 1-31 &amp; Cetak</small>
+        </div>
+      </a>
+
+      <a href="{{ route('bills.index') }}" class="quick-tool-card glass-soft">
+        <span class="icon-chip is-ink">🧾</span>
+        <div>
+          <b>Kasir &amp; SPP</b>
+          <small>Kuitansi resmi cetak</small>
+        </div>
+      </a>
+    </div>
+  </div>
 </div>
+@endif
 @endsection

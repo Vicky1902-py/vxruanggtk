@@ -10,7 +10,7 @@ class Student extends Model
     use BelongsToSchool;
 
     protected $fillable = [
-        'school_id', 'class_id', 'guardian_id', 'nis', 'nisn',
+        'school_id', 'class_id', 'major_id', 'guardian_id', 'nis', 'nisn',
         'full_name', 'gender', 'birth_date', 'status', 'photo_url',
     ];
 
@@ -22,6 +22,11 @@ class Student extends Model
     public function schoolClass()
     {
         return $this->belongsTo(SchoolClass::class, 'class_id');
+    }
+
+    public function major()
+    {
+        return $this->belongsTo(Major::class);
     }
 
     public function guardian()

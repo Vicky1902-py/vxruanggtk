@@ -30,4 +30,9 @@ class Employee extends Model
     {
         return $this->hasMany(AttendanceEmployee::class);
     }
+
+    public function headOfMajors()
+    {
+        return $this->hasMany(Major::class, 'head_of_major_id');
+    }
 }

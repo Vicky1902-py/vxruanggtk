@@ -11,11 +11,22 @@ class SchoolClass extends Model
 
     protected $table = 'classes';
 
-    protected $fillable = ['school_id', 'academic_year_id', 'name', 'homeroom_teacher_id'];
+    protected $fillable = [
+        'school_id',
+        'academic_year_id',
+        'major_id',
+        'name',
+        'homeroom_teacher_id',
+    ];
 
     public function academicYear()
     {
         return $this->belongsTo(AcademicYear::class);
+    }
+
+    public function major()
+    {
+        return $this->belongsTo(Major::class);
     }
 
     public function homeroomTeacher()
