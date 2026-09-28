@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#030712">
+<meta name="theme-color" content="#0284c7">
 <title>@yield('title', 'Kontrol Global') — Ruang GTK Super Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,20 +12,19 @@
 <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ @filemtime(public_path('css/app.css')) }}">
 </head>
 <body>
-<div class="intro-veil" aria-hidden="true"><div class="intro-mark"><img src="{{ asset('img/logo.svg') }}" alt="Logo Ruang GTK"></div></div>
+<header class="mobile-header glass-soft">
+  <button class="hamburger" id="hamburgerBtn" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="sidebar">
+    <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="brand-mark god-mark" style="width:34px;height:34px;border-radius:10px"><img src="{{ asset('img/logo.svg') }}" alt="Logo"></div>
+    <b style="font-size:15px;color:var(--text)">GOD MODE</b>
+  </div>
+</header>
 
 <div class="side-overlay" id="sideOverlay" aria-hidden="true"></div>
 
 <div class="shell god-shell">
-  <header class="mobile-header glass-soft">
-    <button class="hamburger" id="hamburgerBtn" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="sidebar">
-      <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-    </button>
-    <div style="display:flex;align-items:center;gap:10px">
-      <div class="brand-mark god-mark" style="width:34px;height:34px;border-radius:10px"><img src="{{ asset('img/logo.svg') }}" alt="Logo"></div>
-      <b style="font-size:15px;color:var(--text)">GOD MODE</b>
-    </div>
-  </header>
 
   <aside class="side glass-soft" id="sidebar" role="navigation" aria-label="Menu Super Admin">
     <button class="side-close" id="sideClose" aria-label="Tutup menu">

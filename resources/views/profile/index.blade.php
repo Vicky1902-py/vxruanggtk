@@ -21,8 +21,8 @@
       Informasi Akun
     </h2>
 
-    <div style="display:flex;align-items:center;gap:16px;padding:16px;background:rgba(255,255,255,0.03);border:1px solid var(--line-light);border-radius:var(--radius-md);margin-bottom:18px">
-      <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#0284c7,#2563eb);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#fff;box-shadow:0 0 15px rgba(56,189,248,0.3)">
+    <div style="display:flex;align-items:center;gap:16px;padding:16px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:var(--radius-md);margin-bottom:18px">
+      <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#0284c7,#2563eb);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#fff;box-shadow:0 4px 14px rgba(2,132,199,0.35)">
         {{ strtoupper(substr($user->username, 0, 2)) }}
       </div>
       <div>

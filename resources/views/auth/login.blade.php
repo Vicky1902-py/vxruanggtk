@@ -39,7 +39,7 @@
 
     {{-- Quick Demo Credential Autofill --}}
     <div class="demo-hint">
-      <div style="font-weight:600;color:#fff;margin-bottom:6px;font-size:12px">⚡ Akses Cepat Akun Demo (Klik untuk Isi Langsung):</div>
+      <div style="font-weight:700;color:#0369a1;margin-bottom:8px;font-size:12px">⚡ Akses Cepat Akun Demo (Klik untuk Isi Langsung):</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <button type="button" class="btn btn-sm" style="height:26px;font-size:11px;padding:0 9px" data-demo-subdomain="demoschool" data-demo-user="admin" data-demo-pass="password">
           👑 Admin

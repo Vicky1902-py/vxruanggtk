@@ -121,7 +121,7 @@
         <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><path d="M12 4v16m8-8H4"/></svg>
         Tambah Program Keahlian (Jurusan)
       </h3>
-      <button type="button" data-close class="side-close" style="position:static">✕</button>
+      <button type="button" data-close class="modal-close" aria-label="Tutup">✕</button>
     </div>
 
     <form action="{{ route('majors.store') }}" method="POST" class="stack">
@@ -168,7 +168,7 @@
         <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         Edit Program Keahlian
       </h3>
-      <button type="button" data-close class="side-close" style="position:static">✕</button>
+      <button type="button" data-close class="modal-close" aria-label="Tutup">✕</button>
     </div>
 
     <form id="editMajorForm" action="" method="POST" class="stack">
@@ -216,7 +216,7 @@
         <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
         Import Data Jurusan (Excel .xlsx)
       </h3>
-      <button type="button" data-close class="side-close" style="position:static">✕</button>
+      <button type="button" data-close class="modal-close" aria-label="Tutup">✕</button>
     </div>
 
     <form action="{{ route('majors.import') }}" method="POST" enctype="multipart/form-data" class="stack">

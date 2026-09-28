@@ -138,7 +138,7 @@
         <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
         Import Data Pegawai / GTK (Excel .xlsx)
       </h3>
-      <button type="button" data-close class="side-close" style="position:static">✕</button>
+      <button type="button" data-close class="modal-close" aria-label="Tutup">✕</button>
     </div>
 
     <form action="{{ route('employees.import') }}" method="POST" enctype="multipart/form-data" class="stack">

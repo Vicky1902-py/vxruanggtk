@@ -81,7 +81,7 @@
             <div style="font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:6px">💳 Tagihan Sekolah:</div>
             <div style="display:grid;gap:6px">
               @forelse ($child->bills as $b)
-                <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:rgba(255,255,255,0.02);border-radius:var(--radius-sm);font-size:12px">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:var(--radius-sm);font-size:12px">
                   <span>{{ $b->paymentType?->name }} (Rp {{ number_format($b->amount, 0, ',', '.') }})</span>
                   <span class="badge {{ $b->status === 'lunas' ? 'badge-ok' : 'badge-bad' }}">{{ strtoupper($b->status) }}</span>
                 </div>

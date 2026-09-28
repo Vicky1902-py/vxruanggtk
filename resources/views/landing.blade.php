@@ -43,21 +43,21 @@
       </a>
     </div>
 
-    <!-- ConSentinel Quick Telemetry Metrics Strip -->
+    <!-- Telemetry Metrics Strip -->
     <div style="display:flex;gap:26px;margin-top:44px;flex-wrap:wrap">
       <div>
-        <b style="font-size:21px;color:#ffffff;display:block">100%</b>
-        <small style="color:var(--muted);font-size:12px">Isolasi Data Subdomain</small>
+        <b style="font-size:22px;font-weight:800;color:#0f172a;display:block">100%</b>
+        <small style="color:#475569;font-size:12.5px;font-weight:600">Isolasi Data Subdomain</small>
       </div>
-      <div style="width:1px;background:var(--line);height:34px;align-self:center"></div>
+      <div style="width:1px;background:#cbd5e1;height:34px;align-self:center"></div>
       <div>
-        <b style="font-size:21px;color:var(--accent);display:block">Real-time</b>
-        <small style="color:var(--muted);font-size:12px">Presensi Siswa &amp; GTK</small>
+        <b style="font-size:22px;font-weight:800;color:#0284c7;display:block">Real-time</b>
+        <small style="color:#475569;font-size:12.5px;font-weight:600">Presensi Siswa &amp; GTK</small>
       </div>
-      <div style="width:1px;background:var(--line);height:34px;align-self:center"></div>
+      <div style="width:1px;background:#cbd5e1;height:34px;align-self:center"></div>
       <div>
-        <b style="font-size:21px;color:var(--green);display:block">Otomatis</b>
-        <small style="color:var(--muted);font-size:12px">Manajemen Keuangan &amp; SPP</small>
+        <b style="font-size:22px;font-weight:800;color:#16a34a;display:block">Otomatis</b>
+        <small style="color:#475569;font-size:12.5px;font-weight:600">Manajemen Keuangan &amp; SPP</small>
       </div>
     </div>
   </div>
@@ -175,9 +175,9 @@
       </div>
     </div>
 
-    <div style="margin-top:20px;padding:16px 20px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.03);border:1px solid var(--line-light);display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <div style="margin-top:20px;padding:16px 20px;border-radius:var(--radius-sm);background:#f0f9ff;border:1px solid #bae6fd;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
       <span class="badge badge-blue">Roadmap Lanjutan</span>
-      <span style="font-size:13px;color:var(--muted-2)">
+      <span style="font-size:13px;color:#334155;line-height:1.5">
         Payment Gateway otomatis (VA &amp; QRIS), Notifikasi WhatsApp Wali Murid, Presensi Selfie + GPS Geolocation, Tabungan Siswa, dan Payroll GTK.
       </span>
     </div>

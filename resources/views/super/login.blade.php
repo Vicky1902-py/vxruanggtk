@@ -12,7 +12,7 @@
           <span class="brand-ruanggtk-text" style="font-size:22px">Ruang<span class="gtk-tag">GTK</span></span>
           <span class="brand-beam"></span>
         </div>
-        <h2 style="font-size:16px;color:#fef08a;margin-top:6px">Kontrol Global Super Admin</h2>
+        <h2 style="font-size:16px;color:#0f172a;margin-top:6px;font-weight:700">Kontrol Global Super Admin</h2>
       </div>
     </div>
 
@@ -33,9 +33,9 @@
       </button>
     </form>
 
-    <div class="demo-hint" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.25)">
-      <div style="font-weight:600;color:#fef08a;margin-bottom:4px;font-size:12px">Akun Super Admin Default:</div>
-      <div style="font-size:12px;color:var(--muted-2)">
+    <div class="demo-hint" style="background:#fffbeb;border-color:#fde68a">
+      <div style="font-weight:700;color:#b45309;margin-bottom:4px;font-size:12px">⚡ Akun Super Admin Default:</div>
+      <div style="font-size:12px;color:#334155">
         Username: <code>god</code> · Password: <code>godmode123</code>
       </div>
     </div>

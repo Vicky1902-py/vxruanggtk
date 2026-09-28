@@ -1453,6 +1453,29 @@ dialog::backdrop {
   padding: 24px;
 }
 
+.modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  transition: all 0.15s ease;
+  flex: none;
+}
+
+.modal-close:hover {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
 dialog h3 {
   font-size: 18px;
   color: #0f172a;
@@ -1494,6 +1517,272 @@ dialog h3 {
   text-align: center;
   color: #64748b;
   font-size: 13.5px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LANDING PAGE (Ruang GTK — Sky Blue & Crisp White Desktop Theme)
+   ═══════════════════════════════════════════════════════════════════ */
+.landing-nav {
+  position: fixed;
+  left: 50%;
+  top: 20px;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #bae6fd;
+  box-shadow: 0 10px 30px rgba(2, 132, 199, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.landing-nav a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.landing-nav a:hover {
+  background: #f0f9ff;
+  color: #0284c7;
+}
+
+.landing-hero {
+  position: relative;
+  z-index: 1;
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 120px 24px 60px;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 48px;
+  align-items: center;
+  min-height: 85vh;
+}
+
+.hero-animated-title {
+  font-size: clamp(32px, 4.2vw, 50px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+  color: #0f172a;
+  margin: 16px 0;
+}
+
+.highlight-caustic {
+  background: linear-gradient(120deg, #0284c7, #0ea5e9, #0369a1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.landing-hero .lede {
+  margin-top: 14px;
+  font-size: 17px;
+  line-height: 1.65;
+  color: #334155;
+  max-width: 54ch;
+}
+
+.landing-cta {
+  margin-top: 32px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hero-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.hero-visual img {
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(2, 132, 199, 0.12);
+  animation: floatySentinel 8s ease-in-out infinite;
+}
+
+@keyframes floatySentinel {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.landing-section-title {
+  text-align: center;
+  font-size: clamp(26px, 3.4vw, 38px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: #0f172a;
+  margin: 12px 0 8px;
+}
+
+.landing-section-sub {
+  text-align: center;
+  color: #475569;
+  font-size: 15.5px;
+  margin-bottom: 36px;
+  max-width: 60ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.landing-feature {
+  padding: 24px;
+  display: grid;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 18px rgba(2, 132, 199, 0.05);
+  transition: all 0.25s ease;
+}
+
+.landing-feature:hover {
+  transform: translateY(-4px);
+  border-color: #bae6fd;
+  box-shadow: 0 12px 36px rgba(2, 132, 199, 0.12);
+}
+
+.landing-feature h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.landing-feature p {
+  font-size: 13.5px;
+  color: #475569;
+  line-height: 1.55;
+}
+
+.landing-foot {
+  padding: 40px 24px;
+  text-align: center;
+  font-size: 13px;
+  color: #64748b;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 40px;
+  background: #ffffff;
+}
+
+.landing-foot a {
+  color: #0284c7;
+  text-decoration: none;
+}
+.landing-foot a:hover {
+  color: #0369a1;
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .landing-hero {
+    grid-template-columns: 1fr;
+    padding-top: 100px;
+    gap: 32px;
+  }
+  .hero-visual img {
+    max-width: 100%;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   AUTHENTICATION SCREENS (Login & Super Login)
+   ═══════════════════════════════════════════════════════════════════ */
+.center-screen {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+}
+
+.auth-card {
+  width: min(460px, 100%);
+  padding: 36px 32px;
+  background: #ffffff;
+  border: 1px solid #bae6fd;
+  border-radius: var(--radius);
+  box-shadow: 0 10px 40px rgba(2, 132, 199, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.auth-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 26px;
+  text-align: center;
+}
+
+.auth-brand .mark {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.35);
+  overflow: hidden;
+}
+
+.auth-brand .mark img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.demo-hint {
+  margin-top: 20px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.demo-hint code {
+  background: #e0f2fe;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #0369a1;
+  font-weight: 600;
 }
 
 /* ═══════════════════════════════════════════════════════════════════

@@ -181,8 +181,8 @@
 {{-- Modal Pembayaran --}}
 <dialog class="dlg" id="pay-{{ $bill->id }}">
   <h3>Pencatatan Pembayaran — {{ $bill->student?->full_name }}</h3>
-  <div style="padding:12px 14px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.04);border:1px solid var(--line-light);margin-bottom:14px">
-    <div style="font-size:13px;color:var(--muted)">Tagihan: <b style="color:var(--text)">{{ $bill->paymentType?->name }}</b></div>
+  <div style="padding:12px 14px;border-radius:var(--radius-sm);background:#f0f9ff;border:1px solid #bae6fd;margin-bottom:14px">
+    <div style="font-size:13px;color:#334155">Tagihan: <b style="color:var(--text)">{{ $bill->paymentType?->name }}</b></div>
     <div style="font-size:14px;color:var(--amber);margin-top:2px;font-weight:700">
       Total: Rp {{ number_format($bill->amount, 0, ',', '.') }}
       @if ($alreadyPaid > 0)
@@ -230,7 +230,7 @@
       <h3 style="font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:var(--accent);margin:0">Kuitansi Pembayaran Siswa</h3>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;margin-bottom:14px;background:rgba(255,255,255,0.02);padding:10px 12px;border-radius:var(--radius-sm)">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;margin-bottom:14px;background:#f8fafc;border:1px solid #e2e8f0;padding:10px 12px;border-radius:var(--radius-sm)">
       <div>
         <span style="color:var(--muted)">Nama Siswa:</span>
         <div style="font-weight:700;color:var(--text)">{{ $bill->student?->full_name }}</div>

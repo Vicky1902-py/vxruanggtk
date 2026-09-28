@@ -54,9 +54,9 @@
     </div>
 
     @if (session('god_impersonating'))
-      <div class="god-banner" style="margin:0 2px 8px;padding:10px 14px;border-radius:14px;font-size:12.5px;font-weight:600;color:#fef08a;background:linear-gradient(135deg,rgba(245,158,11,0.22),rgba(239,68,68,0.15));border:1px solid rgba(245,158,11,0.45);display:grid;gap:4px">
+      <div class="god-banner" style="margin:0 2px 8px;padding:10px 14px;border-radius:14px;font-size:12.5px;font-weight:700;color:#92400e;background:#fef3c7;border:1px solid #fcd34d;display:grid;gap:4px">
         <span>⚡ GOD MODE · {{ session('god_school_name') }}</span>
-        <a href="{{ route('god.exit') }}" style="color:#fde68a;text-decoration:underline">Keluar God Mode →</a>
+        <a href="{{ route('god.exit') }}" style="color:#b45309;text-decoration:underline;font-weight:600">Keluar God Mode →</a>
       </div>
     @endif
 

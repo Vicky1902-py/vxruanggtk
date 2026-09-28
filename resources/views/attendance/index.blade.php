@@ -13,7 +13,7 @@
   </div>
 
   {{-- Switch Tab Mode --}}
-  <div style="display:flex;gap:6px;background:rgba(255,255,255,0.04);padding:4px;border-radius:var(--radius-pill);border:1px solid var(--line-light)">
+  <div style="display:flex;gap:6px;background:#ffffff;padding:4px;border-radius:var(--radius-pill);border:1px solid #cbd5e1;box-shadow:0 2px 8px rgba(0,0,0,0.04)">
     <a href="{{ route('attendance.index', ['mode' => 'harian', 'class_id' => $classId, 'date' => $date]) }}" 
        class="btn btn-sm {{ $mode === 'harian' ? 'btn-ink' : '' }}" 
        style="height:32px;font-size:12px;border-radius:var(--radius-pill)">
