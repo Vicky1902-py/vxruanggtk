@@ -90,4 +90,11 @@ class BillController extends Controller
 
         return back()->with('toast', 'Pembayaran berhasil dicatat.');
     }
+
+    public function destroy(Bill $bill)
+    {
+        $bill->delete();
+
+        return back()->with('toast', 'Data tagihan berhasil dihapus.');
+    }
 }

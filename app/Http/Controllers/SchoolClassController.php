@@ -11,7 +11,7 @@ class SchoolClassController extends Controller
 {
     public function index()
     {
-        $classes = SchoolClass::with(['academicYear', 'homeroomTeacher'])
+        $classes = SchoolClass::with(['academicYear', 'homeroomTeacher', 'students'])
             ->orderBy('name')->get();
         $academicYears = AcademicYear::orderByDesc('year_label')->get();
         $teachers = Employee::orderBy('full_name')->get();
@@ -54,5 +54,33 @@ class SchoolClassController extends Controller
         $class->delete();
 
         return back()->with('toast', 'Kelas berhasil dihapus.');
+    }
+
+    public function storeYear(Request $request)
+    {
+        $data = $request->validate([
+            'year_label' => ['required', 'string', 'max:20'],
+        ]);
+
+        $exists = AcademicYear::where('year_label', $data['year_label'])->exists();
+        if ($exists) {
+            return back()->with('toast', 'Tahun ajaran tersebut sudah ada.');
+        }
+
+        AcademicYear::create([
+            'school_id' => auth()->user()->school_id,
+            'year_label' => $data['year_label'],
+            'is_active' => false,
+        ]);
+
+        return back()->with('toast', 'Tahun ajaran ' . $data['year_label'] . ' berhasil ditambahkan.');
+    }
+
+    public function activateYear(AcademicYear $year)
+    {
+        AcademicYear::where('is_active', true)->update(['is_active' => false]);
+        $year->update(['is_active' => true]);
+
+        return back()->with('toast', 'Tahun ajaran aktif diubah ke ' . $year->year_label . '.');
     }
 }

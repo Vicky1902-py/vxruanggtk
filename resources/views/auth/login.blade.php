@@ -39,16 +39,25 @@
 
     {{-- Quick Demo Credential Autofill --}}
     <div class="demo-hint">
-      <div style="font-weight:600;color:#fff;margin-bottom:6px;font-size:12.5px">⚡ Akses Cepat Akun Demo (Klik untuk Isi):</div>
+      <div style="font-weight:600;color:#fff;margin-bottom:6px;font-size:12px">⚡ Akses Cepat Akun Demo (Klik untuk Isi Langsung):</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button type="button" class="btn btn-sm" style="height:26px;font-size:11.5px;padding:0 10px" data-demo-subdomain="demoschool" data-demo-user="admin" data-demo-pass="password">
-          Admin Sekolah
+        <button type="button" class="btn btn-sm" style="height:26px;font-size:11px;padding:0 9px" data-demo-subdomain="demoschool" data-demo-user="admin" data-demo-pass="password">
+          👑 Admin
         </button>
-        <button type="button" class="btn btn-sm" style="height:26px;font-size:11.5px;padding:0 10px" data-demo-subdomain="demoschool" data-demo-user="bsantoso" data-demo-pass="password">
-          Guru (Budi S.)
+        <button type="button" class="btn btn-sm" style="height:26px;font-size:11px;padding:0 9px" data-demo-subdomain="demoschool" data-demo-user="bendahara" data-demo-pass="password">
+          💰 Bendahara
         </button>
-        <button type="button" class="btn btn-sm" style="height:26px;font-size:11.5px;padding:0 10px" data-demo-subdomain="demoschool" data-demo-user="wali.ahmad" data-demo-pass="password">
-          Wali Murid
+        <button type="button" class="btn btn-sm" style="height:26px;font-size:11px;padding:0 9px" data-demo-subdomain="demoschool" data-demo-user="bsantoso" data-demo-pass="password">
+          👨‍🏫 Guru (Budi)
+        </button>
+        <button type="button" class="btn btn-sm" style="height:26px;font-size:11px;padding:0 9px" data-demo-subdomain="demoschool" data-demo-user="tu.siti" data-demo-pass="password">
+          📋 Staf TU
+        </button>
+        <button type="button" class="btn btn-sm" style="height:26px;font-size:11px;padding:0 9px" data-demo-subdomain="demoschool" data-demo-user="kepsek.hendra" data-demo-pass="password">
+          🎓 Kepsek
+        </button>
+        <button type="button" class="btn btn-sm" style="height:26px;font-size:11px;padding:0 9px" data-demo-subdomain="demoschool" data-demo-user="wali.ahmad" data-demo-pass="password">
+          👨‍👩‍👦 Wali Murid
         </button>
       </div>
     </div>

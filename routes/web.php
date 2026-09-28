@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\AttendanceEmployeeController;
 use App\Http\Controllers\AttendanceStudentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BillController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\GodController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\PublicPageController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SuperAuthController;
@@ -56,14 +58,32 @@ Route::get('/god/keluar', [GodController::class, 'exitGodMode'])->name('god.exit
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Presensi: admin & guru
-    Route::middleware('role:admin,guru')->group(function () {
+    // Profil Akun & Ganti Password (semua user)
+    Route::get('/profil', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profil/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+
+    // Pengumuman: dapat dibaca seluruh warga sekolah terdaftar
+    Route::get('pengumuman', [AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::middleware('role:admin')->group(function () {
+        Route::post('pengumuman', [AnnouncementController::class, 'store'])->name('announcements.store');
+        Route::delete('pengumuman/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+    });
+
+    // Presensi Siswa: admin, guru, kepsek
+    Route::middleware('role:admin,guru,kepsek')->group(function () {
         Route::get('presensi', [AttendanceStudentController::class, 'index'])->name('attendance.index');
         Route::post('presensi', [AttendanceStudentController::class, 'store'])->name('attendance.store');
     });
 
-    // Manajemen data: admin & TU
-    Route::middleware('role:admin,staff_tu')->group(function () {
+    // Presensi Pegawai (GTK): admin, staff_tu, kepsek, guru
+    Route::middleware('role:admin,staff_tu,kepsek,guru')->group(function () {
+        Route::get('presensi-pegawai', [AttendanceEmployeeController::class, 'index'])->name('attendance-employee.index');
+        Route::post('presensi-pegawai/checkin', [AttendanceEmployeeController::class, 'selfCheckIn'])->name('attendance-employee.checkin');
+        Route::post('presensi-pegawai', [AttendanceEmployeeController::class, 'store'])->name('attendance-employee.store');
+    });
+
+    // Manajemen Akademik & Data: admin, staff_tu, kepsek
+    Route::middleware('role:admin,staff_tu,kepsek')->group(function () {
         Route::resource('siswa', StudentController::class)
             ->only(['index', 'store', 'update', 'destroy'])
             ->parameters(['siswa' => 'student'])
@@ -73,24 +93,22 @@ Route::middleware('auth')->group(function () {
             ->only(['index', 'store', 'update', 'destroy'])
             ->parameters(['pegawai' => 'employee'])
             ->names('employees');
-    });
 
-    // Modul penuh: admin
-    Route::middleware('role:admin')->group(function () {
         Route::resource('kelas', SchoolClassController::class)
             ->only(['index', 'store', 'update', 'destroy'])
             ->parameters(['kelas' => 'class'])
             ->names('classes');
 
+        Route::post('tahun-ajaran', [SchoolClassController::class, 'storeYear'])->name('academic-years.store');
+        Route::post('tahun-ajaran/{year}/aktifkan', [SchoolClassController::class, 'activateYear'])->name('academic-years.activate');
+    });
+
+    // Keuangan & SPP: admin & bendahara
+    Route::middleware('role:admin,bendahara')->group(function () {
         Route::resource('tagihan', BillController::class)
-            ->only(['index', 'store'])
+            ->only(['index', 'store', 'destroy'])
             ->parameters(['tagihan' => 'bill'])
             ->names('bills');
         Route::post('tagihan/{bill}/bayar', [BillController::class, 'pay'])->name('bills.pay');
-
-        Route::resource('pengumuman', AnnouncementController::class)
-            ->only(['index', 'store', 'destroy'])
-            ->parameters(['pengumuman' => 'announcement'])
-            ->names('announcements');
     });
 });

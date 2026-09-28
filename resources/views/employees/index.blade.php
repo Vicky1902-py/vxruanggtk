@@ -5,7 +5,7 @@
 <div class="page-head">
   <div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-      <span class="vtx-pill" style="font-size:11px;padding:3px 12px"><span class="dot"></span> Direktori GTK</span>
+      <span class="cs-pill" style="font-size:11px;padding:3px 12px"><span class="dot"></span> Direktori GTK</span>
       <span style="font-size:12px;color:var(--muted)">Pendidik &amp; Tenaga Kependidikan</span>
     </div>
     <h1>Data Pegawai (GTK)</h1>

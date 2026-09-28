@@ -56,9 +56,31 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
         ]);
 
+        $bendaharaUser = User::create([
+            'school_id' => $school->id,
+            'role_id' => $roles['bendahara']->id,
+            'username' => 'bendahara',
+            'password' => Hash::make('password'),
+        ]);
+
+        $tuUser = User::create([
+            'school_id' => $school->id,
+            'role_id' => $roles['staff_tu']->id,
+            'username' => 'tu.siti',
+            'password' => Hash::make('password'),
+        ]);
+
+        $kepsekUser = User::create([
+            'school_id' => $school->id,
+            'role_id' => $roles['kepsek']->id,
+            'username' => 'kepsek.hendra',
+            'password' => Hash::make('password'),
+        ]);
+
         // ── Kepegawaian ──────────────────────────────────────
         $posGuru = Position::create(['school_id' => $school->id, 'name' => 'Guru', 'base_salary' => 4500000]);
         $posTu = Position::create(['school_id' => $school->id, 'name' => 'Tenaga Usaha', 'base_salary' => 3200000]);
+        $posBendahara = Position::create(['school_id' => $school->id, 'name' => 'Bendahara Sekolah', 'base_salary' => 4000000]);
         $posKepsek = Position::create(['school_id' => $school->id, 'name' => 'Kepala Sekolah', 'base_salary' => 6000000]);
 
         $guru = Employee::create([
@@ -73,14 +95,25 @@ class DatabaseSeeder extends Seeder
         Employee::create([
             'school_id' => $school->id,
             'position_id' => $posTu->id,
+            'user_id' => $tuUser->id,
             'nip' => '199003152015021004',
             'full_name' => 'Siti Rahayu',
+            'status' => 'aktif',
+        ]);
+
+        Employee::create([
+            'school_id' => $school->id,
+            'position_id' => $posBendahara->id,
+            'user_id' => $bendaharaUser->id,
+            'nip' => '198807202012012005',
+            'full_name' => 'Rina Marlina, S.E.',
             'status' => 'aktif',
         ]);
 
         $kepsek = Employee::create([
             'school_id' => $school->id,
             'position_id' => $posKepsek->id,
+            'user_id' => $kepsekUser->id,
             'nip' => '197506102005011002',
             'full_name' => 'Drs. Hendra Wijaya, M.Pd.',
             'status' => 'aktif',

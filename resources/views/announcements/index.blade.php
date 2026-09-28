@@ -5,16 +5,19 @@
 <div class="page-head">
   <div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-      <span class="vtx-pill" style="font-size:11px;padding:3px 12px"><span class="dot" style="background:var(--emerald);box-shadow:0 0 10px var(--emerald)"></span> Pusat Informasi</span>
-      <span style="font-size:12px;color:var(--muted)">Komunikasi Internal GTK</span>
+      <span class="cs-pill" style="font-size:11px;padding:3px 12px"><span class="dot" style="background:var(--emerald);box-shadow:0 0 10px var(--emerald)"></span> Pusat Informasi</span>
+      <span style="font-size:12px;color:var(--muted)">Komunikasi Internal GTK &amp; Warga Sekolah</span>
     </div>
     <h1>Pengumuman Sekolah</h1>
-    <div class="sub">Publikasikan informasi resmi ke seluruh warga sekolah atau rombel kelas tertentu.</div>
+    <div class="sub">Warta resmi sekolah, edaran akademik, dan agenda kegiatan per rombel kelas.</div>
   </div>
 </div>
 
-<div class="two-col">
-  {{-- Form Publikasi Pengumuman --}}
+@php $isAdmin = auth()->user()?->role?->name === 'admin'; @endphp
+
+<div class="{{ $isAdmin ? 'two-col' : '' }}">
+  {{-- Form Publikasi Pengumuman (Khusus Admin) --}}
+  @if ($isAdmin)
   <div class="glass panel">
     <h2 class="panel-title">
       <svg viewBox="0 0 24 24"><path d="M4 11l12-6v14L4 13v-2z"/><path d="M16 8.5c2 .5 3 1.7 3 3.5s-1 3-3 3.5"/><path d="M7.5 14v4.5a1.5 1.5 0 003 0V15"/></svg>
@@ -29,7 +32,7 @@
 
       <div class="field">
         <label>Isi Pesan / Edaran *</label>
-        <textarea name="content" class="textarea" required placeholder="Tuliskan detail pengumuman yang akan dibaca oleh GTK, siswa, dan wali..."></textarea>
+        <textarea name="content" class="textarea" required placeholder="Tuliskan detail pengumuman yang akan dibaca oleh GTK, siswa, dan wali..." style="min-height:130px"></textarea>
       </div>
 
       <div class="field">
@@ -47,9 +50,10 @@
       </button>
     </form>
   </div>
+  @endif
 
   {{-- Feed Pengumuman --}}
-  <div class="stack">
+  <div class="stack" style="{{ ! $isAdmin ? 'max-width:860px;margin:0 auto' : '' }}">
     @forelse ($announcements as $ann)
       <div class="glass ann-item">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
@@ -59,13 +63,15 @@
             </span>
             <h3 style="color:var(--text);font-size:16px;margin-top:4px">{{ $ann->title }}</h3>
           </div>
+          @if ($isAdmin)
           <form method="POST" action="{{ route('announcements.destroy', $ann) }}" data-confirm="Hapus pengumuman '{{ $ann->title }}'?" style="flex:none">
             @csrf @method('DELETE')
             <button class="btn btn-sm btn-danger" style="height:30px;padding:0 12px;font-size:12px">Hapus</button>
           </form>
+          @endif
         </div>
 
-        <p style="margin-top:6px;line-height:1.65">{{ $ann->content }}</p>
+        <p style="margin-top:6px;line-height:1.65;white-space:pre-line">{{ $ann->content }}</p>
 
         <div class="ann-meta" style="margin-top:8px;padding-top:10px;border-top:1px solid var(--line-light)">
           <span>🕒 Diterbitkan: {{ $ann->published_at?->translatedFormat('l, d F Y — H:i') }} WIB</span>

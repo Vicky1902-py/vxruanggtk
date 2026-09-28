@@ -1510,3 +1510,48 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1) opacity(0.65);
   cursor: pointer;
 }
+
+/* ── Print Styles for Receipts & Reports ─────────────────── */
+.receipt-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line-light);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+  .side, .mobile-header, .side-overlay, .intro-veil, .page-head, .actions, .dlg-actions, button, a.btn, .toast, .brand-beam, .brand-spark {
+    display: none !important;
+  }
+  .main, .shell {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  dialog.dlg[open] {
+    display: block !important;
+    position: static !important;
+    border: 1px solid #e5e7eb !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 15px !important;
+  }
+  .receipt-box {
+    border: 2px dashed #9ca3af !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    padding: 24px !important;
+  }
+  .receipt-box * {
+    color: #111827 !important;
+  }
+}
+

@@ -5,7 +5,7 @@
 <div class="page-head">
   <div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-      <span class="vtx-pill" style="font-size:11px;padding:3px 12px"><span class="dot" style="background:var(--amber);box-shadow:0 0 10px var(--amber)"></span> Modul Keuangan</span>
+      <span class="cs-pill" style="font-size:11px;padding:3px 12px"><span class="dot" style="background:var(--amber);box-shadow:0 0 10px var(--amber)"></span> Modul Keuangan</span>
       <span style="font-size:12px;color:var(--muted)">Manajemen Tagihan &amp; SPP Siswa</span>
     </div>
     <h1>Tagihan &amp; Pembayaran</h1>
@@ -148,12 +148,19 @@
             <td>
               <div class="actions">
                 @if ($bill->status !== 'lunas')
-                  <button class="btn btn-sm btn-ink" data-dialog="#pay-{{ $bill->id }}" style="height:32px;padding:0 14px">
+                  <button class="btn btn-sm btn-ink" data-dialog="#pay-{{ $bill->id }}" style="height:30px;padding:0 12px;font-size:12px">
                     💳 Bayar
                   </button>
-                @else
-                  <span style="color:var(--green);font-size:12px;font-weight:600">✓ Selesai</span>
                 @endif
+                @if ($paid > 0)
+                  <button class="btn btn-sm" data-dialog="#receipt-{{ $bill->id }}" style="height:30px;padding:0 12px;font-size:12px">
+                    🧾 Kuitansi
+                  </button>
+                @endif
+                <form method="POST" action="{{ route('bills.destroy', $bill) }}" data-confirm="Hapus permanen tagihan {{ $bill->paymentType?->name }} untuk {{ $bill->student?->full_name }}?">
+                  @csrf @method('DELETE')
+                  <button class="btn btn-sm btn-danger" style="height:30px;padding:0 10px;font-size:12px">Hapus</button>
+                </form>
               </div>
             </td>
           </tr>
@@ -167,15 +174,17 @@
   </div>
 </div>
 
-{{-- Dialog Pencatatan Pembayaran --}}
+{{-- Dialog Pencatatan Pembayaran & Kuitansi --}}
 @foreach ($bills as $bill)
+@php $alreadyPaid = (float) $bill->payments->sum('amount_paid'); @endphp
+
+{{-- Modal Pembayaran --}}
 <dialog class="dlg" id="pay-{{ $bill->id }}">
   <h3>Pencatatan Pembayaran — {{ $bill->student?->full_name }}</h3>
   <div style="padding:12px 14px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.04);border:1px solid var(--line-light);margin-bottom:14px">
     <div style="font-size:13px;color:var(--muted)">Tagihan: <b style="color:var(--text)">{{ $bill->paymentType?->name }}</b></div>
     <div style="font-size:14px;color:var(--amber);margin-top:2px;font-weight:700">
       Total: Rp {{ number_format($bill->amount, 0, ',', '.') }}
-      @php $alreadyPaid = (float) $bill->payments->sum('amount_paid'); @endphp
       @if ($alreadyPaid > 0)
         (Sisa: Rp {{ number_format($bill->amount - $alreadyPaid, 0, ',', '.') }})
       @endif
@@ -201,6 +210,91 @@
       <button class="btn btn-ink" data-loading="Menyimpan Pembayaran...">Catat Pembayaran</button>
     </div>
   </form>
+</dialog>
+
+{{-- Modal Cetak Kuitansi / Bukti Bayar Resmi --}}
+<dialog class="dlg" id="receipt-{{ $bill->id }}" style="max-width:540px">
+  <div class="receipt-box" id="print-area-{{ $bill->id }}">
+    <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--accent);padding-bottom:12px;margin-bottom:14px">
+      <div>
+        <h2 style="font-size:17px;font-weight:800;color:var(--text);margin:0">{{ auth()->user()->school->name }}</h2>
+        <div style="font-size:12px;color:var(--muted)">Sistem Informasi Manajemen Sekolah · Ruang GTK</div>
+      </div>
+      <div style="text-align:right">
+        <span class="badge badge-ok" style="font-size:11.5px">BUKTI RESMI</span>
+        <div style="font-size:11px;color:var(--muted);margin-top:3px">No: KW-{{ str_pad($bill->id, 5, '0', STR_PAD_LEFT) }}</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:16px">
+      <h3 style="font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:var(--accent);margin:0">Kuitansi Pembayaran Siswa</h3>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;margin-bottom:14px;background:rgba(255,255,255,0.02);padding:10px 12px;border-radius:var(--radius-sm)">
+      <div>
+        <span style="color:var(--muted)">Nama Siswa:</span>
+        <div style="font-weight:700;color:var(--text)">{{ $bill->student?->full_name }}</div>
+      </div>
+      <div>
+        <span style="color:var(--muted)">NIS / Kelas:</span>
+        <div style="color:var(--text)">{{ $bill->student?->nis ?? '—' }} · Kelas {{ $bill->student?->schoolClass?->name ?? '—' }}</div>
+      </div>
+      <div>
+        <span style="color:var(--muted)">Uraian Tagihan:</span>
+        <div style="font-weight:600;color:var(--text)">{{ $bill->paymentType?->name }}</div>
+      </div>
+      <div>
+        <span style="color:var(--muted)">Status:</span>
+        <div><b style="color:{{ $bill->status === 'lunas' ? 'var(--green)' : 'var(--amber)' }}">{{ strtoupper($bill->status) }}</b></div>
+      </div>
+    </div>
+
+    <div style="font-size:13px;margin-bottom:12px">
+      <div style="font-weight:600;color:var(--text);margin-bottom:6px">Riwayat Pembayaran:</div>
+      <table style="width:100%;font-size:12px;border-collapse:collapse">
+        <thead>
+          <tr style="border-bottom:1px solid var(--line-light);text-align:left;color:var(--muted)">
+            <th style="padding:4px 0">Tanggal</th>
+            <th style="padding:4px 0">Metode</th>
+            <th style="padding:4px 0;text-align:right">Jumlah</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach ($bill->payments as $pmt)
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+              <td style="padding:6px 0">{{ $pmt->paid_at?->format('d/m/Y H:i') }}</td>
+              <td style="padding:6px 0"><span class="badge badge-blue" style="font-size:10px">{{ $pmt->method }}</span></td>
+              <td style="padding:6px 0;text-align:right;font-weight:600;color:var(--green)">Rp {{ number_format($pmt->amount_paid, 0, ',', '.') }}</td>
+            </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);border-radius:var(--radius-sm);margin-top:10px">
+      <div>
+        <span style="font-size:12px;color:var(--muted)">Total Terbayar:</span>
+        <div style="font-size:16px;font-weight:800;color:var(--accent)">Rp {{ number_format($alreadyPaid, 0, ',', '.') }}</div>
+      </div>
+      <div style="text-align:right">
+        <span style="font-size:12px;color:var(--muted)">Total Biaya:</span>
+        <div style="font-size:14px;font-weight:700;color:var(--text)">Rp {{ number_format($bill->amount, 0, ',', '.') }}</div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:20px;padding-top:12px;font-size:12px;color:var(--muted)">
+      <div>Dicetak pada: {{ now()->translatedFormat('d F Y, H:i') }} WIB</div>
+      <div style="text-align:center">
+        <div>Bendahara / Kasir</div>
+        <div style="margin-top:30px;font-weight:600;color:var(--text)">( {{ auth()->user()->username }} )</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dlg-actions" style="margin-top:14px">
+    <button type="button" class="btn" data-close>Tutup</button>
+    <button type="button" class="btn btn-ink" onclick="window.print()">🖨️ Cetak Kuitansi</button>
+  </div>
 </dialog>
 @endforeach
 @endsection
