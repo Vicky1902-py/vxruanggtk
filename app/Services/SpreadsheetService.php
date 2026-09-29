@@ -204,13 +204,16 @@ class SpreadsheetService
     /**
      * Buat dan unduh file Microsoft Excel OpenXML (.xlsx) asli secara streaming.
      */
-    public function downloadXlsx(string $filename, array $headers, array $sampleRows = []): StreamedResponse
+    public function downloadXlsx(string $filename, array $headers, array $sampleRows = [], string $sheetName = 'Data'): StreamedResponse
     {
         if (!str_ends_with(strtolower($filename), '.xlsx')) {
             $filename .= '.xlsx';
         }
 
-        return response()->streamDownload(function () use ($headers, $sampleRows) {
+        $safeSheetName = preg_replace('/[\\\\\/\?\*\[\]:]/', ' ', $sheetName);
+        $safeSheetName = trim(substr($safeSheetName ?: 'Data', 0, 31));
+
+        return response()->streamDownload(function () use ($headers, $sampleRows, $safeSheetName) {
             $tempFile = tempnam(sys_get_temp_dir(), 'xlsx_tmpl_');
             $zip = new ZipArchive();
 
@@ -241,7 +244,7 @@ class SpreadsheetService
                 // 4. xl/workbook.xml
                 $zip->addFromString('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' .
                     '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' .
-                    '<sheets><sheet name="Template Data" sheetId="1" r:id="rId1"/></sheets>' .
+                    '<sheets><sheet name="' . htmlspecialchars($safeSheetName, ENT_XML1, 'UTF-8') . '" sheetId="1" r:id="rId1"/></sheets>' .
                     '</workbook>');
 
                 // 5. xl/styles.xml (Format font standar Calibri 11pt)
@@ -293,6 +296,14 @@ class SpreadsheetService
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
             'Cache-Control' => 'no-store, no-cache',
         ]);
+    }
+
+    /**
+     * Export dataset ke file Excel (.xlsx).
+     */
+    public function exportXlsx(string $filename, array $headers, array $rows = [], string $sheetName = 'Data'): StreamedResponse
+    {
+        return $this->downloadXlsx($filename, $headers, $rows, $sheetName);
     }
 
     /**

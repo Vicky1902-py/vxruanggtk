@@ -99,4 +99,68 @@ class AttendanceStudentController extends Controller
             'date' => $date,
         ])->with('toast', 'Presensi tanggal ' . $date . ' berhasil disimpan.');
     }
+
+    public function export(Request $request, \App\Services\SpreadsheetService $service)
+    {
+        $classId = $request->input('class_id');
+        $month = $request->input('month', date('Y-m'));
+
+        $selectedClass = $classId ? SchoolClass::find($classId) : SchoolClass::first();
+        if (!$selectedClass) {
+            return back()->with('toast', 'Pilih kelas terlebih dahulu.');
+        }
+
+        $students = Student::where('class_id', $selectedClass->id)->orderBy('full_name')->get();
+
+        $carbonMonth = \Illuminate\Support\Carbon::parse($month . '-01');
+        $startDate = $carbonMonth->copy()->startOfMonth()->toDateString();
+        $endDate = $carbonMonth->copy()->endOfMonth()->toDateString();
+
+        $attendances = AttendanceStudent::whereBetween('att_date', [$startDate, $endDate])
+            ->whereIn('student_id', $students->pluck('id'))
+            ->get();
+
+        $headers = [
+            'NO',
+            'NIS',
+            'NAMA_SISWA',
+            'KELAS',
+            'BULAN',
+            'HADIR (H)',
+            'IZIN (I)',
+            'SAKIT (S)',
+            'ALPA (A)',
+            'TOTAL_PERTEMUAN',
+            'PERSENTASE_KEHADIRAN',
+        ];
+
+        $rows = [];
+        $no = 1;
+        foreach ($students as $student) {
+            $stAtts = $attendances->where('student_id', $student->id);
+            $h = $stAtts->where('status', 'hadir')->count();
+            $i = $stAtts->where('status', 'izin')->count();
+            $s = $stAtts->where('status', 'sakit')->count();
+            $a = $stAtts->where('status', 'alpa')->count();
+            $total = $h + $i + $s + $a;
+            $pct = $total > 0 ? round(($h / $total) * 100, 1) . '%' : '0%';
+
+            $rows[] = [
+                $no++,
+                $student->nis ?? '-',
+                $student->full_name,
+                'Kelas ' . $selectedClass->name,
+                $carbonMonth->translatedFormat('F Y'),
+                $h,
+                $i,
+                $s,
+                $a,
+                $total,
+                $pct,
+            ];
+        }
+
+        $filename = 'rekap_presensi_' . str_replace(' ', '_', $selectedClass->name) . '_' . $month . '.xlsx';
+        return $service->exportXlsx($filename, $headers, $rows, 'Rekap Presensi Siswa');
+    }
 }

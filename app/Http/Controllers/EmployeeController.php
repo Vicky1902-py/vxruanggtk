@@ -35,8 +35,8 @@ class EmployeeController extends Controller
         ]);
 
         $data['school_id'] = $schoolId;
-        $data['position_id'] = $data['position_id'] ?: null;
-        $data['nip'] = $data['nip'] ?: null;
+        $data['position_id'] = $data['position_id'] ?? null;
+        $data['nip'] = $data['nip'] ?? null;
 
         // Buat user akun jika diminta
         $userId = null;
@@ -68,8 +68,8 @@ class EmployeeController extends Controller
             'status' => ['required', 'in:aktif,nonaktif'],
         ]);
 
-        $data['position_id'] = $data['position_id'] ?: null;
-        $data['nip'] = $data['nip'] ?: null;
+        $data['position_id'] = $data['position_id'] ?? null;
+        $data['nip'] = $data['nip'] ?? null;
 
         $employee->update($data);
 
@@ -185,5 +185,39 @@ class EmployeeController extends Controller
         }
 
         return back()->with('toast', "Berhasil mengimpor {$imported} data GTK / Pegawai!");
+    }
+
+    public function export(Request $request, SpreadsheetService $service)
+    {
+        $employees = Employee::with(['position', 'user.role'])->orderBy('full_name')->get();
+
+        $headers = [
+            'NO',
+            'NIP / NUPTK',
+            'NAMA_LENGKAP',
+            'JABATAN',
+            'STATUS',
+            'USERNAME_AKUN',
+            'EMAIL',
+            'ROLE_AKUN',
+        ];
+
+        $rows = [];
+        $no = 1;
+        foreach ($employees as $e) {
+            $rows[] = [
+                $no++,
+                $e->nip ?? '-',
+                $e->full_name,
+                $e->position?->name ?? 'Staf / Pendidik',
+                ucfirst($e->status),
+                $e->user?->username ?? '-',
+                $e->user?->email ?? '-',
+                $e->user?->role?->name ?? '-',
+            ];
+        }
+
+        $filename = 'data_gtk_' . date('Ymd_His') . '.xlsx';
+        return $service->exportXlsx($filename, $headers, $rows, 'Data GTK');
     }
 }

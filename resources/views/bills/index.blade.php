@@ -11,6 +11,12 @@
     <h1>Tagihan &amp; Pembayaran</h1>
     <div class="sub">Generate tagihan massal per rombel dan catat transaksi pembayaran peserta didik.</div>
   </div>
+  <div>
+    <a href="{{ route('bills.export', request()->all()) }}" class="btn btn-sm" title="Unduh rekap data tagihan & pembayaran ke Excel (.xlsx)">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      Export Excel (.xlsx)
+    </a>
+  </div>
 </div>
 
 <div class="two-col">

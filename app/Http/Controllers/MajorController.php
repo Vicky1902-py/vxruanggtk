@@ -38,7 +38,7 @@ class MajorController extends Controller
         }
 
         $data['school_id'] = $schoolId;
-        $data['head_of_major_id'] = $data['head_of_major_id'] ?: null;
+        $data['head_of_major_id'] = $data['head_of_major_id'] ?? null;
 
         Major::create($data);
 
@@ -65,7 +65,7 @@ class MajorController extends Controller
             return back()->with('toast', 'Kode jurusan "' . $data['code'] . '" sudah digunakan jurusan lain.');
         }
 
-        $data['head_of_major_id'] = $data['head_of_major_id'] ?: null;
+        $data['head_of_major_id'] = $data['head_of_major_id'] ?? null;
 
         $major->update($data);
 

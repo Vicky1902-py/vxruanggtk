@@ -46,8 +46,8 @@ class SchoolClassController extends Controller
         ]);
 
         $data['school_id'] = $schoolId;
-        $data['major_id'] = $data['major_id'] ?: null;
-        $data['homeroom_teacher_id'] = $data['homeroom_teacher_id'] ?: null;
+        $data['major_id'] = $data['major_id'] ?? null;
+        $data['homeroom_teacher_id'] = $data['homeroom_teacher_id'] ?? null;
 
         SchoolClass::create($data);
 
@@ -63,8 +63,8 @@ class SchoolClassController extends Controller
             'homeroom_teacher_id' => ['nullable', 'exists:employees,id'],
         ]);
 
-        $data['major_id'] = $data['major_id'] ?: null;
-        $data['homeroom_teacher_id'] = $data['homeroom_teacher_id'] ?: null;
+        $data['major_id'] = $data['major_id'] ?? null;
+        $data['homeroom_teacher_id'] = $data['homeroom_teacher_id'] ?? null;
 
         $class->update($data);
 
@@ -84,6 +84,7 @@ class SchoolClassController extends Controller
 
         $data = $request->validate([
             'year_label' => ['required', 'string', 'max:20'],
+            'is_active' => ['nullable'],
         ]);
 
         $exists = AcademicYear::where('school_id', $schoolId)->where('year_label', $data['year_label'])->exists();
@@ -91,10 +92,18 @@ class SchoolClassController extends Controller
             return back()->with('toast', 'Tahun ajaran tersebut sudah ada.');
         }
 
+        $isActive = $request->boolean('is_active');
+        $hasActive = AcademicYear::where('school_id', $schoolId)->where('is_active', true)->exists();
+        if (!$hasActive) {
+            $isActive = true;
+        } elseif ($isActive) {
+            AcademicYear::where('school_id', $schoolId)->where('is_active', true)->update(['is_active' => false]);
+        }
+
         AcademicYear::create([
             'school_id' => $schoolId,
             'year_label' => $data['year_label'],
-            'is_active' => false,
+            'is_active' => $isActive,
         ]);
 
         return back()->with('toast', 'Tahun ajaran ' . $data['year_label'] . ' berhasil ditambahkan.');

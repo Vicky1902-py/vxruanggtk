@@ -123,4 +123,63 @@ class AttendanceEmployeeController extends Controller
 
         return back()->with('toast', 'Check-in presensi hari ini berhasil dicatat (' . ucfirst($data['status']) . ').');
     }
+
+    public function export(Request $request, \App\Services\SpreadsheetService $service)
+    {
+        $schoolId = Auth::user()->school_id;
+        $month = $request->input('month', date('Y-m'));
+
+        $employees = Employee::where('school_id', $schoolId)->with('position')->orderBy('full_name')->get();
+
+        $carbonMonth = \Illuminate\Support\Carbon::parse($month . '-01');
+        $startDate = $carbonMonth->copy()->startOfMonth()->toDateString();
+        $endDate = $carbonMonth->copy()->endOfMonth()->toDateString();
+
+        $attendances = AttendanceEmployee::whereBetween('att_date', [$startDate, $endDate])
+            ->whereIn('employee_id', $employees->pluck('id'))
+            ->get();
+
+        $headers = [
+            'NO',
+            'NIP / NUPTK',
+            'NAMA_LENGKAP',
+            'JABATAN',
+            'BULAN',
+            'HADIR (H)',
+            'TERLAMBAT (T)',
+            'IZIN (I)',
+            'ALPA (A)',
+            'TOTAL_HARI',
+            'PERSENTASE_KEHADIRAN',
+        ];
+
+        $rows = [];
+        $no = 1;
+        foreach ($employees as $employee) {
+            $empAtts = $attendances->where('employee_id', $employee->id);
+            $h = $empAtts->where('status', 'hadir')->count();
+            $t = $empAtts->where('status', 'telat')->count();
+            $i = $empAtts->where('status', 'izin')->count();
+            $a = $empAtts->where('status', 'alpa')->count();
+            $total = $h + $t + $i + $a;
+            $pct = $total > 0 ? round((($h + $t) / $total) * 100, 1) . '%' : '0%';
+
+            $rows[] = [
+                $no++,
+                $employee->nip ?? '-',
+                $employee->full_name,
+                $employee->position?->name ?? 'Staf / Pendidik',
+                $carbonMonth->translatedFormat('F Y'),
+                $h,
+                $t,
+                $i,
+                $a,
+                $total,
+                $pct,
+            ];
+        }
+
+        $filename = 'rekap_presensi_gtk_' . $month . '.xlsx';
+        return $service->exportXlsx($filename, $headers, $rows, 'Rekap Presensi GTK');
+    }
 }

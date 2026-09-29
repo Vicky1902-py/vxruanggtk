@@ -12,18 +12,27 @@
     <div class="sub">Pencatatan kehadiran harian per kelas dan rekapitulasi leger kehadiran bulanan.</div>
   </div>
 
-  {{-- Switch Tab Mode --}}
-  <div style="display:flex;gap:6px;background:#ffffff;padding:4px;border-radius:var(--radius-pill);border:1px solid #cbd5e1;box-shadow:0 2px 8px rgba(0,0,0,0.04)">
-    <a href="{{ route('attendance.index', ['mode' => 'harian', 'class_id' => $classId, 'date' => $date]) }}" 
-       class="btn btn-sm {{ $mode === 'harian' ? 'btn-ink' : '' }}" 
-       style="height:32px;font-size:12px;border-radius:var(--radius-pill)">
-      📅 Harian
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+    @if ($classId)
+    <a href="{{ route('attendance.export', ['class_id' => $classId, 'month' => $month]) }}" class="btn btn-sm" title="Unduh rekap presensi kelas ini ke Excel (.xlsx)">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      Export Rekap (.xlsx)
     </a>
-    <a href="{{ route('attendance.index', ['mode' => 'rekap', 'class_id' => $classId, 'month' => $month]) }}" 
-       class="btn btn-sm {{ $mode === 'rekap' ? 'btn-ink' : '' }}" 
-       style="height:32px;font-size:12px;border-radius:var(--radius-pill)">
-      📊 Rekap Bulanan
-    </a>
+    @endif
+
+    {{-- Switch Tab Mode --}}
+    <div style="display:flex;gap:6px;background:#ffffff;padding:4px;border-radius:var(--radius-pill);border:1px solid #cbd5e1;box-shadow:0 2px 8px rgba(0,0,0,0.04)">
+      <a href="{{ route('attendance.index', ['mode' => 'harian', 'class_id' => $classId, 'date' => $date]) }}" 
+         class="btn btn-sm {{ $mode === 'harian' ? 'btn-ink' : '' }}" 
+         style="height:32px;font-size:12px;border-radius:var(--radius-pill)">
+        📅 Harian
+      </a>
+      <a href="{{ route('attendance.index', ['mode' => 'rekap', 'class_id' => $classId, 'month' => $month]) }}" 
+         class="btn btn-sm {{ $mode === 'rekap' ? 'btn-ink' : '' }}" 
+         style="height:32px;font-size:12px;border-radius:var(--radius-pill)">
+        📊 Rekap Bulanan
+      </a>
+    </div>
   </div>
 </div>
 

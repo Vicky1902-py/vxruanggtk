@@ -16,17 +16,23 @@ return new class extends Migration
         });
 
         // Backfill: isi school_id dari student.school_id untuk data yang sudah ada
-        DB::statement('
-            UPDATE bills b
-            JOIN students s ON s.id = b.student_id
-            SET b.school_id = s.school_id
-            WHERE b.school_id IS NULL
-        ');
-
-        // Setelah backfill, buat NOT NULL
-        Schema::table('bills', function (Blueprint $table) {
-            $table->foreignId('school_id')->nullable(false)->change();
-        });
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('
+                UPDATE bills b
+                JOIN students s ON s.id = b.student_id
+                SET b.school_id = s.school_id
+                WHERE b.school_id IS NULL
+            ');
+            Schema::table('bills', function (Blueprint $table) {
+                $table->foreignId('school_id')->nullable(false)->change();
+            });
+        } else {
+            DB::statement('
+                UPDATE bills
+                SET school_id = (SELECT school_id FROM students WHERE students.id = bills.student_id)
+                WHERE school_id IS NULL
+            ');
+        }
     }
 
     public function down(): void

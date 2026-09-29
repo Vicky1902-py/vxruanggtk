@@ -58,12 +58,12 @@ class StudentController extends Controller
         ]);
 
         $data['school_id'] = $schoolId;
-        $data['class_id'] = $data['class_id'] ?: null;
-        $data['major_id'] = $data['major_id'] ?: null;
-        $data['guardian_id'] = $data['guardian_id'] ?: null;
-        $data['birth_date'] = $data['birth_date'] ?: null;
-        $data['nis'] = $data['nis'] ?: null;
-        $data['nisn'] = $data['nisn'] ?: null;
+        $data['class_id'] = $data['class_id'] ?? null;
+        $data['major_id'] = $data['major_id'] ?? null;
+        $data['guardian_id'] = $data['guardian_id'] ?? null;
+        $data['birth_date'] = $data['birth_date'] ?? null;
+        $data['nis'] = $data['nis'] ?? null;
+        $data['nisn'] = $data['nisn'] ?? null;
 
         // Auto-assign major from class if class has major
         if (!empty($data['class_id']) && empty($data['major_id'])) {
@@ -92,12 +92,12 @@ class StudentController extends Controller
             'status' => ['required', 'in:aktif,lulus,pindah,keluar'],
         ]);
 
-        $data['class_id'] = $data['class_id'] ?: null;
-        $data['major_id'] = $data['major_id'] ?: null;
-        $data['guardian_id'] = $data['guardian_id'] ?: null;
-        $data['birth_date'] = $data['birth_date'] ?: null;
-        $data['nis'] = $data['nis'] ?: null;
-        $data['nisn'] = $data['nisn'] ?: null;
+        $data['class_id'] = $data['class_id'] ?? null;
+        $data['major_id'] = $data['major_id'] ?? null;
+        $data['guardian_id'] = $data['guardian_id'] ?? null;
+        $data['birth_date'] = $data['birth_date'] ?? null;
+        $data['nis'] = $data['nis'] ?? null;
+        $data['nisn'] = $data['nisn'] ?? null;
 
         if (!empty($data['class_id']) && empty($data['major_id'])) {
             $selectedClass = SchoolClass::find($data['class_id']);
@@ -254,5 +254,106 @@ class StudentController extends Controller
         }
 
         return back()->with('toast', "Berhasil mengimpor {$imported} data peserta didik dengan sukses!");
+    }
+
+    public function export(Request $request, SpreadsheetService $service)
+    {
+        $query = Student::with(['schoolClass', 'major', 'guardian'])->orderBy('full_name');
+
+        if ($request->filled('class_id')) {
+            $query->where('class_id', $request->integer('class_id'));
+        }
+        if ($request->filled('major_id')) {
+            $query->where('major_id', $request->integer('major_id'));
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->string('status'));
+        }
+        if ($request->filled('q')) {
+            $q = $request->string('q');
+            $query->where(fn ($w) => $w
+                ->where('full_name', 'like', "%{$q}%")
+                ->orWhere('nis', 'like', "%{$q}%")
+                ->orWhere('nisn', 'like', "%{$q}%"));
+        }
+
+        $students = $query->get();
+
+        $headers = [
+            'NO',
+            'NIS',
+            'NISN',
+            'NAMA_LENGKAP',
+            'JENIS_KELAMIN',
+            'KELAS',
+            'JURUSAN',
+            'TANGGAL_LAHIR',
+            'STATUS',
+            'NAMA_WALI',
+            'NO_HP_WALI',
+            'HUBUNGAN_WALI',
+        ];
+
+        $rows = [];
+        $no = 1;
+        foreach ($students as $s) {
+            $rows[] = [
+                $no++,
+                $s->nis ?? '',
+                $s->nisn ?? '',
+                $s->full_name,
+                $s->gender === 'L' ? 'Laki-laki' : 'Perempuan',
+                $s->schoolClass ? 'Kelas ' . $s->schoolClass->name : 'Belum Ditentukan',
+                $s->major ? $s->major->code . ' - ' . $s->major->name : '-',
+                $s->birth_date ? $s->birth_date->format('Y-m-d') : '',
+                ucfirst($s->status),
+                $s->guardian?->full_name ?? '',
+                $s->guardian?->phone_whatsapp ?? '',
+                $s->guardian?->relation_type ?? '',
+            ];
+        }
+
+        $filename = 'data_siswa_' . date('Ymd_His') . '.xlsx';
+        return $service->exportXlsx($filename, $headers, $rows, 'Data Siswa');
+    }
+
+    public function promote(Request $request)
+    {
+        $validated = $request->validate([
+            'student_ids' => ['required', 'array', 'min:1'],
+            'student_ids.*' => ['exists:students,id'],
+            'target_class_id' => ['required', 'exists:classes,id'],
+        ], [
+            'student_ids.required' => 'Pilih minimal satu siswa untuk dinaikkan / dipindahkan kelas.',
+            'target_class_id.required' => 'Pilih kelas tujuan kenaikan kelas.',
+        ]);
+
+        $targetClass = SchoolClass::findOrFail($validated['target_class_id']);
+        $updateData = ['class_id' => $targetClass->id];
+        if ($targetClass->major_id) {
+            $updateData['major_id'] = $targetClass->major_id;
+        }
+
+        Student::whereIn('id', $validated['student_ids'])->update($updateData);
+
+        $count = count($validated['student_ids']);
+        return back()->with('toast', "{$count} siswa berhasil dinaikkan / dialihkan ke Kelas {$targetClass->name}.");
+    }
+
+    public function graduate(Request $request)
+    {
+        $validated = $request->validate([
+            'student_ids' => ['required', 'array', 'min:1'],
+            'student_ids.*' => ['exists:students,id'],
+        ], [
+            'student_ids.required' => 'Pilih minimal satu siswa untuk diluluskan.',
+        ]);
+
+        Student::whereIn('id', $validated['student_ids'])->update([
+            'status' => 'lulus',
+        ]);
+
+        $count = count($validated['student_ids']);
+        return back()->with('toast', "{$count} siswa berhasil diproses dan dinyatakan LULUS.");
     }
 }

@@ -97,4 +97,62 @@ class BillController extends Controller
 
         return back()->with('toast', 'Data tagihan berhasil dihapus.');
     }
+
+    public function export(Request $request, \App\Services\SpreadsheetService $service)
+    {
+        $query = Bill::with(['student.schoolClass', 'paymentType', 'payments'])
+            ->orderByDesc('due_date');
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+        if ($request->filled('class_id')) {
+            $query->whereHas('student', fn ($q) => $q->where('class_id', $request->integer('class_id')));
+        }
+
+        $bills = $query->get();
+
+        $headers = [
+            'NO',
+            'NOMOR_TAGIHAN',
+            'NIS',
+            'NAMA_SISWA',
+            'KELAS',
+            'JENIS_TAGIHAN',
+            'NOMINAL_TAGIHAN',
+            'TOTAL_DIBAYAR',
+            'SISA_TAGIHAN',
+            'JATUH_TEMPO',
+            'STATUS_PEMBAYARAN',
+        ];
+
+        $rows = [];
+        $no = 1;
+        foreach ($bills as $b) {
+            $paid = (float) $b->payments->sum('amount_paid');
+            $remaining = max(0, (float) $b->amount - $paid);
+            $statusLabel = match ($b->status) {
+                'lunas' => 'Lunas',
+                'sebagian' => 'Dibayar Sebagian',
+                default => 'Belum Bayar',
+            };
+
+            $rows[] = [
+                $no++,
+                'TAG-' . str_pad($b->id, 6, '0', STR_PAD_LEFT),
+                $b->student?->nis ?? '-',
+                $b->student?->full_name ?? 'Siswa Terhapus',
+                $b->student?->schoolClass ? 'Kelas ' . $b->student->schoolClass->name : '-',
+                $b->paymentType?->name ?? 'SPP',
+                number_format((float) $b->amount, 0, ',', '.'),
+                number_format($paid, 0, ',', '.'),
+                number_format($remaining, 0, ',', '.'),
+                $b->due_date ? date('d/m/Y', strtotime($b->due_date)) : '-',
+                $statusLabel,
+            ];
+        }
+
+        $filename = 'laporan_tagihan_spp_' . date('Ymd_His') . '.xlsx';
+        return $service->exportXlsx($filename, $headers, $rows, 'Laporan Tagihan SPP');
+    }
 }

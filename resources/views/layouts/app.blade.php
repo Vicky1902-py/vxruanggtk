@@ -128,6 +128,15 @@
       <span>Pengumuman</span>
     </a>
 
+    {{-- Pengaturan Sistem / User (Khusus Admin) --}}
+    @if ($userRole === 'admin')
+    <div class="nav-label">Pengaturan</div>
+    <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}" data-tooltip="Manajemen Pengguna">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Pengguna Sekolah</span>
+    </a>
+    @endif
+
     {{-- Pengaturan Akun Pribadi --}}
     <div class="nav-label">Akun</div>
     <a href="{{ route('profile.index') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}" data-tooltip="Profil & Sandi">

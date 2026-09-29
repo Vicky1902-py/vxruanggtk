@@ -12,8 +12,12 @@
     <div class="sub">{{ $students->count() }} siswa terdata · Terhubung dengan Rombel, Jurusan, Wali Murid, dan Presensi.</div>
   </div>
   <div style="display:flex;gap:10px;flex-wrap:wrap">
-    <a href="{{ route('students.template') }}" class="btn btn-sm" title="Unduh template Excel untuk input cepat">
+    <a href="{{ route('students.export', request()->all()) }}" class="btn btn-sm" title="Unduh seluruh data siswa ke Microsoft Excel (.xlsx)">
       <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      Export Excel (.xlsx)
+    </a>
+    <a href="{{ route('students.template') }}" class="btn btn-sm" title="Unduh template Excel untuk input cepat">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       Template Excel
     </a>
     <button type="button" class="btn btn-sm" data-dialog="#import-student">
@@ -134,9 +138,27 @@
 
   {{-- Tabel Siswa --}}
   <div class="glass table-wrap">
+    {{-- Bulk Action Bar --}}
+    <div id="bulk-toolbar" style="display:none;background:rgba(2,132,199,0.08);border:1px solid rgba(2,132,199,0.25);border-radius:var(--radius-sm);padding:8px 14px;margin-bottom:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div style="font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:6px">
+        <span class="cs-pill" style="font-size:11px;padding:2px 8px"><span id="selected-count">0</span> siswa dipilih</span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button type="button" class="btn btn-sm btn-ink" onclick="openBulkPromote()">
+          🎓 Naik / Pindah Kelas
+        </button>
+        <button type="button" class="btn btn-sm btn-outline" onclick="submitBulkGraduation()">
+          🏅 Luluskan Terpilih
+        </button>
+      </div>
+    </div>
+
     <table class="tbl">
       <thead>
         <tr>
+          <th style="width:36px;text-align:center">
+            <input type="checkbox" id="check-all" title="Pilih Semua Siswa" style="cursor:pointer">
+          </th>
           <th>Nama Siswa</th>
           <th>NIS / NISN</th>
           <th>Kelas &amp; Jurusan</th>
@@ -148,6 +170,9 @@
       <tbody>
         @forelse ($students as $student)
           <tr>
+            <td style="text-align:center">
+              <input type="checkbox" class="student-cb" value="{{ $student->id }}" style="cursor:pointer">
+            </td>
             <td>
               <div style="display:flex;align-items:center;gap:10px">
                 <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex:none">
@@ -203,7 +228,7 @@
           </tr>
         @empty
           <tr>
-            <td colspan="6" class="empty">Tidak ada data siswa yang cocok dengan filter.</td>
+            <td colspan="7" class="empty">Tidak ada data siswa yang cocok dengan filter.</td>
           </tr>
         @endforelse
       </tbody>
@@ -315,4 +340,118 @@
   </form>
 </dialog>
 @endforeach
+
+{{-- Modal Bulk Kenaikan / Pindah Kelas --}}
+<dialog id="dlg-bulk-promote" class="modal glass">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h3 style="margin:0;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px">
+        <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        Kenaikan Kelas / Pindah Rombel Massal
+      </h3>
+      <button type="button" data-close class="modal-close" aria-label="Tutup">✕</button>
+    </div>
+    <form method="POST" action="{{ route('students.promote') }}" id="form-bulk-promote" class="stack">
+      @csrf
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">
+        Anda akan memindahkan <b id="promote-count-text">0</b> siswa terpilih ke rombel/kelas tujuan baru.
+      </p>
+
+      <div class="field">
+        <label>Pilih Rombel / Kelas Tujuan *</label>
+        <select name="target_class_id" class="select" required>
+          <option value="">— Pilih Kelas Baru —</option>
+          @foreach ($classes as $c)
+            <option value="{{ $c->id }}">Kelas {{ $c->name }} ({{ $c->academicYear?->year_label ?? 'Aktif' }})</option>
+          @endforeach
+        </select>
+      </div>
+
+      <div id="promote-hidden-inputs"></div>
+
+      <div class="modal-actions" style="margin-top:16px">
+        <button type="button" class="btn" data-close>Batal</button>
+        <button class="btn btn-ink" data-loading="Memproses Kenaikan Kelas...">🎓 Proses Kenaikan Kelas</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+{{-- Form Kelulusan Massal Tersembunyi --}}
+<form method="POST" action="{{ route('students.graduate') }}" id="form-bulk-graduate" class="hidden">
+  @csrf
+  <div id="graduate-hidden-inputs"></div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const checkAll = document.getElementById('check-all');
+  const cbs = document.querySelectorAll('.student-cb');
+  const toolbar = document.getElementById('bulk-toolbar');
+  const countEl = document.getElementById('selected-count');
+
+  function updateState() {
+    const selected = Array.from(cbs).filter(cb => cb.checked);
+    const count = selected.length;
+    if (countEl) countEl.textContent = count;
+    if (toolbar) toolbar.style.display = count > 0 ? 'flex' : 'none';
+    if (checkAll) {
+      checkAll.checked = count > 0 && count === cbs.length;
+      checkAll.indeterminate = count > 0 && count < cbs.length;
+    }
+  }
+
+  if (checkAll) {
+    checkAll.addEventListener('change', () => {
+      cbs.forEach(cb => cb.checked = checkAll.checked);
+      updateState();
+    });
+  }
+
+  cbs.forEach(cb => cb.addEventListener('change', updateState));
+
+  window.openBulkPromote = function() {
+    const selected = Array.from(cbs).filter(cb => cb.checked);
+    if (!selected.length) return;
+
+    const container = document.getElementById('promote-hidden-inputs');
+    container.innerHTML = '';
+    selected.forEach(cb => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'student_ids[]';
+      input.value = cb.value;
+      container.appendChild(input);
+    });
+
+    const countText = document.getElementById('promote-count-text');
+    if (countText) countText.textContent = selected.length;
+
+    const dlg = document.getElementById('dlg-bulk-promote');
+    if (dlg) dlg.showModal();
+  };
+
+  window.submitBulkGraduation = function() {
+    const selected = Array.from(cbs).filter(cb => cb.checked);
+    if (!selected.length) return;
+
+    if (!confirm(`Apakah Anda yakin ingin meluluskan ${selected.length} siswa terpilih?`)) {
+      return;
+    }
+
+    const form = document.getElementById('form-bulk-graduate');
+    const container = document.getElementById('graduate-hidden-inputs');
+    container.innerHTML = '';
+    selected.forEach(cb => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'student_ids[]';
+      input.value = cb.value;
+      container.appendChild(input);
+    });
+
+    form.submit();
+  };
+});
+</script>
 @endsection

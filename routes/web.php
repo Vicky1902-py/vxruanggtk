@@ -14,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SuperAuthController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // ── Publik ──────────────────────────────────────────────────
@@ -73,6 +74,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin,guru,kepsek')->group(function () {
         Route::get('presensi', [AttendanceStudentController::class, 'index'])->name('attendance.index');
         Route::post('presensi', [AttendanceStudentController::class, 'store'])->name('attendance.store');
+        Route::get('presensi-export', [AttendanceStudentController::class, 'export'])->name('attendance.export');
     });
 
     // Presensi Pegawai (GTK): admin, staff_tu, kepsek, guru
@@ -80,6 +82,7 @@ Route::middleware('auth')->group(function () {
         Route::get('presensi-pegawai', [AttendanceEmployeeController::class, 'index'])->name('attendance-employee.index');
         Route::post('presensi-pegawai/checkin', [AttendanceEmployeeController::class, 'selfCheckIn'])->name('attendance-employee.checkin');
         Route::post('presensi-pegawai', [AttendanceEmployeeController::class, 'store'])->name('attendance-employee.store');
+        Route::get('presensi-pegawai-export', [AttendanceEmployeeController::class, 'export'])->name('attendance-employee.export');
     });
 
     // Manajemen Akademik & Data: admin, staff_tu, kepsek
@@ -94,7 +97,10 @@ Route::middleware('auth')->group(function () {
 
         // Peserta Didik (Siswa)
         Route::get('siswa-template', [StudentController::class, 'template'])->name('students.template');
+        Route::get('siswa-export', [StudentController::class, 'export'])->name('students.export');
         Route::post('siswa-import', [StudentController::class, 'import'])->name('students.import');
+        Route::post('siswa-naik-kelas', [StudentController::class, 'promote'])->name('students.promote');
+        Route::post('siswa-kelulusan', [StudentController::class, 'graduate'])->name('students.graduate');
         Route::resource('siswa', StudentController::class)
             ->only(['index', 'store', 'update', 'destroy'])
             ->parameters(['siswa' => 'student'])
@@ -102,6 +108,7 @@ Route::middleware('auth')->group(function () {
 
         // Tenaga Pendidik & Kependidikan (GTK)
         Route::get('pegawai-template', [EmployeeController::class, 'template'])->name('employees.template');
+        Route::get('pegawai-export', [EmployeeController::class, 'export'])->name('employees.export');
         Route::post('pegawai-import', [EmployeeController::class, 'import'])->name('employees.import');
         Route::resource('pegawai', EmployeeController::class)
             ->only(['index', 'store', 'update', 'destroy'])
@@ -122,10 +129,21 @@ Route::middleware('auth')->group(function () {
 
     // Keuangan & SPP: admin & bendahara
     Route::middleware('role:admin,bendahara')->group(function () {
+        Route::get('tagihan-export', [BillController::class, 'export'])->name('bills.export');
         Route::resource('tagihan', BillController::class)
             ->only(['index', 'store', 'destroy'])
             ->parameters(['tagihan' => 'bill'])
             ->names('bills');
         Route::post('tagihan/{bill}/bayar', [BillController::class, 'pay'])->name('bills.pay');
+    });
+
+    // Manajemen Pengguna Sekolah: khusus admin
+    Route::middleware('role:admin')->group(function () {
+        Route::get('pengguna', [UserController::class, 'index'])->name('users.index');
+        Route::post('pengguna', [UserController::class, 'store'])->name('users.store');
+        Route::put('pengguna/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::post('pengguna/{user}/toggle', [UserController::class, 'toggle'])->name('users.toggle');
+        Route::post('pengguna/{user}/reset', [UserController::class, 'resetPassword'])->name('users.reset');
+        Route::delete('pengguna/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     });
 });

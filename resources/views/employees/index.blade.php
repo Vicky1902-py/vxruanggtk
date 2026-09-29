@@ -12,8 +12,12 @@
     <div class="sub">Direktori seluruh guru dan tenaga kependidikan sekolah beserta jabatan fungsional.</div>
   </div>
   <div style="display:flex;gap:10px;flex-wrap:wrap">
-    <a href="{{ route('employees.template') }}" class="btn btn-sm" title="Unduh template Excel untuk input cepat">
+    <a href="{{ route('employees.export') }}" class="btn btn-sm" title="Unduh seluruh data GTK ke Excel (.xlsx)">
       <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      Export Excel (.xlsx)
+    </a>
+    <a href="{{ route('employees.template') }}" class="btn btn-sm" title="Unduh template Excel untuk input cepat">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       Template Excel (.xlsx)
     </a>
     <button type="button" class="btn btn-sm" data-dialog="#import-employee">

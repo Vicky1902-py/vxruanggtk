@@ -25,7 +25,7 @@ class AnnouncementController extends Controller
             'class_id' => ['nullable', 'exists:classes,id'],
         ]);
 
-        $data['class_id'] = $data['class_id'] ?: null;
+        $data['class_id'] = $data['class_id'] ?? null;
         Announcement::create($data + ['published_at' => now()]);
 
         return back()->with('toast', 'Pengumuman berhasil dipublikasikan.');
