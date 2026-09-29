@@ -167,7 +167,7 @@ class DashboardController extends Controller
                 ->first();
         }
 
-        return view('dashboard', compact(
+        return \App\Services\DeviceService::view('dashboard', compact(
             'user',
             'school',
             'userRole',

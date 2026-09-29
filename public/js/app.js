@@ -19,35 +19,7 @@
   // 2. Reduce Motion Check
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // 4. Interactive Cursor Spotlight on Glass Elements
-  if (!reduceMotion && window.innerWidth > 768) {
-    var spotlightTargets = document.querySelectorAll('.glass, .glass-soft, .stat, .landing-feature, .ann-item');
-    spotlightTargets.forEach(function (el) {
-      el.addEventListener('mousemove', function (e) {
-        var rect = el.getBoundingClientRect();
-        var x = e.clientX - rect.left;
-        var y = e.clientY - rect.top;
-        el.style.setProperty('--mouse-x', x + 'px');
-        el.style.setProperty('--mouse-y', y + 'px');
-      });
-    });
-
-    // 3D Card Tilt on Hover
-    var tiltCards = document.querySelectorAll('.stat, .landing-feature');
-    tiltCards.forEach(function (card) {
-      card.addEventListener('mousemove', function (e) {
-        var rect = card.getBoundingClientRect();
-        var x = e.clientX - rect.left - rect.width / 2;
-        var y = e.clientY - rect.top - rect.height / 2;
-        var rotateX = (y / (rect.height / 2)) * -4;
-        var rotateY = (x / (rect.width / 2)) * 4;
-        card.style.transform = 'perspective(900px) rotateX(' + rotateX.toFixed(2) + 'deg) rotateY(' + rotateY.toFixed(2) + 'deg) translateY(-3px)';
-      });
-      card.addEventListener('mouseleave', function () {
-        card.style.transform = '';
-      });
-    });
-  }
+  // 4. Stabilitas Tampilan Desktop: Hindari kalkulasi mousemove/tilt yang menyebabkan layar goyang
 
   // 5. Count-up Animation for Metrics
   var counters = document.querySelectorAll('.count-up');

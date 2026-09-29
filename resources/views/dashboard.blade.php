@@ -18,7 +18,7 @@
       </span>
     </div>
     <h1>
-      Selamat datang di <span class="brand-ruanggtk"><span class="brand-ruanggtk-text" style="font-size:27px">Ruang<span class="gtk-tag">GTK</span></span><span class="brand-beam"></span></span>, {{ auth()->user()->username }} 👋
+      Selamat datang di <span class="brand-ruanggtk-text" style="font-size:28px">Ruang<span class="gtk-tag" style="color:#0284c7">GTK</span></span>, {{ auth()->user()->username }} 👋
     </h1>
     <div class="sub">Pusat kendali telemetri operasional sekolah, peserta didik, GTK, jurusan, dan arus kas pendidikan.</div>
   </div>
@@ -101,10 +101,10 @@
 
 @if ($userRole !== 'wali')
 {{-- ════════════════════════════════════════════════════════════════════
-     1. AAPANEL CIRCULAR TELEMETRY GAUGES
+     1. AAPANEL UNIFIED COMMAND METRICS (4 Kartu Telemetri dalam 1 Baris Desktop)
      ════════════════════════════════════════════════════════════════════ --}}
-<div class="aapanel-gauges-grid" style="margin-top:16px">
-  {{-- Gauge 1: Presensi Siswa --}}
+<div class="aapanel-gauges-grid" style="margin-top:14px">
+  {{-- Card 1: Presensi Siswa & Peserta Didik --}}
   <div class="glass aapanel-gauge-card">
     <div class="gauge-ring-wrap">
       <svg viewBox="0 0 100 100" class="gauge-ring">
@@ -117,12 +117,19 @@
       </div>
     </div>
     <div class="gauge-info">
-      <h4>Presensi Siswa</h4>
-      <p>Rasio kehadiran hari ini</p>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h4>Presensi Siswa</h4>
+        <span class="badge badge-ok" style="font-size:10px;height:20px;padding:0 8px">Hari Ini</span>
+      </div>
+      <div class="gauge-big-num">
+        <strong class="count-up" data-count="{{ $stats['students'] }}">0</strong>
+        <span>Siswa</span>
+      </div>
+      <p>Rasio kehadiran hari ini · {{ $stats['classes'] }} Rombel</p>
     </div>
   </div>
 
-  {{-- Gauge 2: Realisasi Kas SPP --}}
+  {{-- Card 2: Realisasi Arus Kas & SPP --}}
   <div class="glass aapanel-gauge-card">
     <div class="gauge-ring-wrap">
       <svg viewBox="0 0 100 100" class="gauge-ring">
@@ -135,12 +142,19 @@
       </div>
     </div>
     <div class="gauge-info">
-      <h4>Realisasi Kas SPP</h4>
-      <p>Pembayaran diterima</p>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h4>Realisasi Kas SPP</h4>
+        <span class="badge badge-blue" style="font-size:10px;height:20px;padding:0 8px">{{ $telemetry['spp_rate'] }}% Masuk</span>
+      </div>
+      <div class="gauge-big-num">
+        <span style="font-weight:700;color:var(--text);font-size:16px">Rp</span>
+        <strong class="count-up" data-count="{{ (int) $stats['paid_amount'] }}">0</strong>
+      </div>
+      <p>Tunggakan: Rp {{ number_format($stats['unpaid_amount'], 0, ',', '.') }}</p>
     </div>
   </div>
 
-  {{-- Gauge 3: Utilisasi Rombel --}}
+  {{-- Card 3: Utilisasi Rombel & Jurusan --}}
   <div class="glass aapanel-gauge-card">
     <div class="gauge-ring-wrap">
       <svg viewBox="0 0 100 100" class="gauge-ring">
@@ -153,12 +167,19 @@
       </div>
     </div>
     <div class="gauge-info">
-      <h4>Kapasitas Rombel</h4>
-      <p>{{ $stats['students'] }} siswa di {{ $stats['classes'] }} kelas</p>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h4>Kapasitas Rombel</h4>
+        <span class="badge badge-ink" style="font-size:10px;height:20px;padding:0 8px">{{ $stats['majors'] }} Jurusan</span>
+      </div>
+      <div class="gauge-big-num">
+        <strong class="count-up" data-count="{{ $stats['classes'] }}">0</strong>
+        <span>Kelas</span>
+      </div>
+      <p>{{ $stats['students'] }} siswa di {{ $stats['classes'] }} rombongan belajar</p>
     </div>
   </div>
 
-  {{-- Gauge 4: GTK Aktif --}}
+  {{-- Card 4: GTK & Tenaga Kependidikan --}}
   <div class="glass aapanel-gauge-card">
     <div class="gauge-ring-wrap">
       <svg viewBox="0 0 100 100" class="gauge-ring">
@@ -171,57 +192,15 @@
       </div>
     </div>
     <div class="gauge-info">
-      <h4>GTK Bertugas</h4>
-      <p>{{ $stats['employees'] }} tenaga kependidikan</p>
-    </div>
-  </div>
-</div>
-
-{{-- ════════════════════════════════════════════════════════════════════
-     2. AAPANEL CORE STATS BAR
-     ════════════════════════════════════════════════════════════════════ --}}
-<div class="stat-grid" style="margin-top:16px">
-  <div class="glass stat">
-    <div class="count-pill">
-      <strong class="count-up" data-count="{{ $stats['students'] }}">0</strong>
-      <small>Peserta Didik</small>
-    </div>
-    <div class="stat-label">Siswa terdaftar aktif di sistem</div>
-    <div class="stat-icon">
-      <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3.5 20c.5-4 2.6-6 5.5-6s5 2 5.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5c2.5.2 4 1.8 4.5 4.5"/></svg>
-    </div>
-  </div>
-
-  <div class="glass stat">
-    <div class="count-pill">
-      <strong class="count-up" data-count="{{ $stats['classes'] }}">0</strong>
-      <small>Rombel Kelas</small>
-    </div>
-    <div class="stat-label">Rombongan belajar aktif</div>
-    <div class="stat-icon">
-      <svg viewBox="0 0 24 24"><path d="M3 9l9-6 9 6"/><path d="M5 9v9a2 2 0 002 2h10a2 2 0 002-2V9"/></svg>
-    </div>
-  </div>
-
-  <div class="glass stat">
-    <div class="count-pill">
-      <strong class="count-up" data-count="{{ $stats['majors'] }}">0</strong>
-      <small>Program Keahlian</small>
-    </div>
-    <div class="stat-label">Jurusan keahlian terintegrasi</div>
-    <div class="stat-icon">
-      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
-    </div>
-  </div>
-
-  <div class="glass stat">
-    <div class="count-pill">
-      <strong>Rp <span class="count-up" data-count="{{ (int) $stats['paid_amount'] }}">0</span></strong>
-      <small>Kas Masuk</small>
-    </div>
-    <div class="stat-label">Tunggakan: Rp {{ number_format($stats['unpaid_amount'], 0, ',', '.') }}</div>
-    <div class="stat-icon">
-      <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10.5h18"/></svg>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h4>Kepegawaian (GTK)</h4>
+        <span class="badge badge-ok" style="font-size:10px;height:20px;padding:0 8px">Bertugas</span>
+      </div>
+      <div class="gauge-big-num">
+        <strong class="count-up" data-count="{{ $stats['employees'] }}">0</strong>
+        <span>Pegawai</span>
+      </div>
+      <p>Guru &amp; staf tata usaha terdaftar aktif</p>
     </div>
   </div>
 </div>
@@ -412,6 +391,22 @@
         <div>
           <b>Kasir &amp; SPP</b>
           <small>Kuitansi resmi cetak</small>
+        </div>
+      </a>
+
+      <a href="{{ route('savings.index') }}" class="quick-tool-card glass-soft">
+        <span class="icon-chip is-blue">🏦</span>
+        <div>
+          <b>Tabungan Siswa</b>
+          <small>Buku tabungan &amp; mutasi</small>
+        </div>
+      </a>
+
+      <a href="{{ route('payrolls.index') }}" class="quick-tool-card glass-soft">
+        <span class="icon-chip is-ok">💰</span>
+        <div>
+          <b>Penggajian GTK</b>
+          <small>Slip gaji &amp; rekap honor</small>
         </div>
       </a>
     </div>

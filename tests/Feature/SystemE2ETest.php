@@ -108,6 +108,22 @@ class SystemE2ETest extends TestCase
         $response->assertSee('Telemetri Server');
     }
 
+    public function test_device_service_detection_and_adaptive_view(): void
+    {
+        // 1. Desktop request
+        $desktopRes = $this->actingAs($this->admin)->withHeaders([
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36'
+        ])->get('/dashboard');
+        $desktopRes->assertStatus(200);
+        $desktopRes->assertSee('Selamat datang di');
+
+        // 2. Mobile detection via User-Agent
+        $mobileRes = $this->actingAs($this->admin)->withHeaders([
+            'User-Agent' => 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148'
+        ])->get('/dashboard');
+        $mobileRes->assertStatus(200);
+    }
+
     public function test_major_module_crud_and_template(): void
     {
         // 1. Template download
