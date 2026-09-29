@@ -95,6 +95,13 @@
       <span>Presensi Siswa</span>
     </a>
     @endif
+
+    @if (in_array($userRole, ['admin', 'guru', 'staff_tu', 'kepsek', 'bk']))
+    <a href="{{ route('welfare.index') }}" class="{{ request()->routeIs('welfare.*') ? 'active' : '' }}" data-tooltip="Kedisiplinan & BK">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Kedisiplinan &amp; BK</span>
+    </a>
+    @endif
     @endif
 
     {{-- Kepegawaian --}}
@@ -118,6 +125,14 @@
     <a href="{{ route('bills.index') }}" class="{{ request()->routeIs('bills.*') ? 'active' : '' }}" data-tooltip="Tagihan & SPP">
       <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10.5h18"/><path d="M7 15h4"/></svg>
       <span>Tagihan &amp; SPP</span>
+    </a>
+    <a href="{{ route('savings.index') }}" class="{{ request()->routeIs('savings.*') ? 'active' : '' }}" data-tooltip="Tabungan Siswa">
+      <svg viewBox="0 0 24 24"><path d="M19 5c-1.5 0-2.8 1.2-3 2.7-.4 2.8 1.4 5.3 4.2 5.3h.8v4H3V7h11.2c.4-1.2 1.5-2 2.8-2z"/><circle cx="17" cy="9" r="1"/></svg>
+      <span>Tabungan Siswa</span>
+    </a>
+    <a href="{{ route('payrolls.index') }}" class="{{ request()->routeIs('payrolls.*') ? 'active' : '' }}" data-tooltip="Penggajian GTK">
+      <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      <span>Penggajian GTK</span>
     </a>
     @endif
 

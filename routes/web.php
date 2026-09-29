@@ -9,10 +9,13 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\GodController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SavingsController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentWelfareController;
 use App\Http\Controllers\SuperAuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -135,6 +138,30 @@ Route::middleware('auth')->group(function () {
             ->parameters(['tagihan' => 'bill'])
             ->names('bills');
         Route::post('tagihan/{bill}/bayar', [BillController::class, 'pay'])->name('bills.pay');
+
+        // Tabungan Siswa
+        Route::get('tabungan', [SavingsController::class, 'index'])->name('savings.index');
+        Route::post('tabungan', [SavingsController::class, 'store'])->name('savings.store');
+        Route::get('tabungan-export', [SavingsController::class, 'export'])->name('savings.export');
+        Route::get('tabungan/{student}', [SavingsController::class, 'show'])->name('savings.show');
+
+        // Penggajian GTK (Payroll)
+        Route::get('penggajian', [PayrollController::class, 'index'])->name('payrolls.index');
+        Route::post('penggajian/generate', [PayrollController::class, 'generate'])->name('payrolls.generate');
+        Route::put('penggajian/{payroll}', [PayrollController::class, 'update'])->name('payrolls.update');
+        Route::get('penggajian/{payroll}/slip', [PayrollController::class, 'slip'])->name('payrolls.slip');
+        Route::get('penggajian-export', [PayrollController::class, 'export'])->name('payrolls.export');
+    });
+
+    // Kesiswaan, Kedisiplinan & BK
+    Route::middleware('role:admin,guru,staff_tu,kepsek,bk')->group(function () {
+        Route::get('kesiswaan', [StudentWelfareController::class, 'index'])->name('welfare.index');
+        Route::post('kesiswaan/pelanggaran', [StudentWelfareController::class, 'storeViolation'])->name('welfare.violations.store');
+        Route::delete('kesiswaan/pelanggaran/{violation}', [StudentWelfareController::class, 'destroyViolation'])->name('welfare.violations.destroy');
+        Route::get('kesiswaan/pelanggaran-export', [StudentWelfareController::class, 'exportViolations'])->name('welfare.export-violations');
+        Route::post('kesiswaan/izin', [StudentWelfareController::class, 'storePermit'])->name('welfare.permits.store');
+        Route::put('kesiswaan/izin/{permit}', [StudentWelfareController::class, 'updatePermitStatus'])->name('welfare.permits.update-status');
+        Route::post('kesiswaan/konseling', [StudentWelfareController::class, 'storeCounseling'])->name('welfare.counseling.store');
     });
 
     // Manajemen Pengguna Sekolah: khusus admin

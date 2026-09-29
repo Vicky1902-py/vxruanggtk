@@ -20,6 +20,6 @@ class Saving extends Model
 
     public function transactions()
     {
-        return $this->hasMany(SavingsTransaction::class)->latest();
+        return $this->hasMany(SavingsTransaction::class, 'student_id', 'student_id')->latest();
     }
 }

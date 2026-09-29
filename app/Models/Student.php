@@ -63,4 +63,9 @@ class Student extends Model
     {
         return $this->hasOne(Saving::class);
     }
+
+    public function savingsTransactions()
+    {
+        return $this->hasMany(SavingsTransaction::class)->latest();
+    }
 }

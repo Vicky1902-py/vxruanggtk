@@ -449,4 +449,204 @@ class SystemE2ETest extends TestCase
         $destroy->assertRedirect();
         $this->assertDatabaseMissing('users', ['id' => $newUser->id]);
     }
+
+    public function test_savings_module_and_passbook_workflow(): void
+    {
+        $ay = AcademicYear::firstOrCreate(['school_id' => $this->school->id, 'year_label' => '2026/2027'], ['is_active' => true]);
+        $cls = SchoolClass::firstOrCreate(['school_id' => $this->school->id, 'name' => 'X PPLG 1'], ['academic_year_id' => $ay->id]);
+        $student = Student::create([
+            'school_id' => $this->school->id,
+            'class_id' => $cls->id,
+            'nis' => '99001',
+            'full_name' => 'Siswa Menabung',
+            'status' => 'aktif',
+        ]);
+
+        // 1. Index
+        $index = $this->actingAs($this->bendahara)->get(route('savings.index'));
+        $index->assertStatus(200);
+        $index->assertSee('Tabungan Siswa');
+
+        // 2. Setor Rp 50.000
+        $setor = $this->actingAs($this->bendahara)->post(route('savings.store'), [
+            'student_id' => $student->id,
+            'direction' => 'setor',
+            'amount' => 50000,
+            'note' => 'Setoran awal tabungan',
+        ]);
+        $setor->assertRedirect();
+        $this->assertDatabaseHas('savings', [
+            'student_id' => $student->id,
+            'balance' => 50000,
+        ]);
+        $this->assertDatabaseHas('savings_transactions', [
+            'student_id' => $student->id,
+            'direction' => 'setor',
+            'amount' => 50000,
+            'balance_after' => 50000,
+        ]);
+
+        // 3. Tarik Rp 20.000
+        $tarik = $this->actingAs($this->bendahara)->post(route('savings.store'), [
+            'student_id' => $student->id,
+            'direction' => 'tarik',
+            'amount' => 20000,
+            'note' => 'Beli alat tulis',
+        ]);
+        $tarik->assertRedirect();
+        $this->assertDatabaseHas('savings', [
+            'student_id' => $student->id,
+            'balance' => 30000,
+        ]);
+
+        // 4. Overdraw tarik Rp 100.000 (harus ditolak karena saldo hanya 30.000)
+        $overdraw = $this->actingAs($this->bendahara)->post(route('savings.store'), [
+            'student_id' => $student->id,
+            'direction' => 'tarik',
+            'amount' => 100000,
+        ]);
+        $overdraw->assertRedirect();
+        $this->assertDatabaseHas('savings', [
+            'student_id' => $student->id,
+            'balance' => 30000, // Saldo tetap utuh 30.000
+        ]);
+
+        // 5. Buku Mutasi Passbook View
+        $show = $this->actingAs($this->bendahara)->get(route('savings.show', $student));
+        $show->assertStatus(200);
+        $show->assertSee('Buku Tabungan: Siswa Menabung');
+        $show->assertSee('Setoran awal tabungan');
+
+        // 6. Export Tabungan
+        $export = $this->actingAs($this->bendahara)->get(route('savings.export'));
+        $export->assertStatus(200);
+        $this->assertStringContainsString('spreadsheetml.sheet', $export->headers->get('Content-Type'));
+    }
+
+    public function test_student_welfare_violations_permits_counseling(): void
+    {
+        $student = Student::where('school_id', $this->school->id)->first() ?? Student::create([
+            'school_id' => $this->school->id,
+            'full_name' => 'Siswa Disiplin',
+            'status' => 'aktif',
+        ]);
+
+        // 1. Index
+        $index = $this->actingAs($this->admin)->get(route('welfare.index'));
+        $index->assertStatus(200);
+        $index->assertSee('Catat Pelanggaran Siswa');
+
+        // 2. Store Violation
+        $vioStore = $this->actingAs($this->admin)->post(route('welfare.violations.store'), [
+            'student_id' => $student->id,
+            'category' => 'Keterlambatan Masuk',
+            'points' => 5,
+            'incident_date' => date('Y-m-d'),
+            'description' => 'Terlambat 15 menit apel pagi',
+        ]);
+        $vioStore->assertRedirect();
+        $this->assertDatabaseHas('violations', [
+            'student_id' => $student->id,
+            'category' => 'Keterlambatan Masuk',
+            'points' => 5,
+        ]);
+
+        // 3. Store Permit
+        $permitStore = $this->actingAs($this->admin)->post(route('welfare.permits.store'), [
+            'student_id' => $student->id,
+            'type' => 'keluar',
+            'start_time' => date('Y-m-d H:i:s'),
+            'status' => 'pending',
+        ]);
+        $permitStore->assertRedirect();
+        $this->assertDatabaseHas('permits', [
+            'student_id' => $student->id,
+            'type' => 'keluar',
+            'status' => 'pending',
+        ]);
+
+        $permit = \App\Models\Permit::where('student_id', $student->id)->latest()->first();
+
+        // 4. Update Permit status to approved
+        $permitApprove = $this->actingAs($this->admin)->put(route('welfare.permits.update-status', $permit), [
+            'status' => 'approved',
+        ]);
+        $permitApprove->assertRedirect();
+        $this->assertDatabaseHas('permits', [
+            'id' => $permit->id,
+            'status' => 'approved',
+        ]);
+
+        // 5. Store Counseling
+        $counselingStore = $this->actingAs($this->admin)->post(route('welfare.counseling.store'), [
+            'student_id' => $student->id,
+            'type' => 'konseling',
+            'session_date' => date('Y-m-d'),
+            'notes' => 'Bimbingan kedisiplinan dan motivasi belajar',
+        ]);
+        $counselingStore->assertRedirect();
+        $this->assertDatabaseHas('counselings', [
+            'student_id' => $student->id,
+            'type' => 'konseling',
+        ]);
+
+        // 6. Export Violations
+        $export = $this->actingAs($this->admin)->get(route('welfare.export-violations'));
+        $export->assertStatus(200);
+        $this->assertStringContainsString('spreadsheetml.sheet', $export->headers->get('Content-Type'));
+    }
+
+    public function test_payroll_module_generate_and_slip(): void
+    {
+        $period = date('Y-m');
+
+        $employee = Employee::firstOrCreate(
+            ['school_id' => $this->school->id, 'nip' => '198501012010011005'],
+            ['full_name' => 'Dra. Sri Wahyuni', 'status' => 'aktif']
+        );
+
+        // 1. Visit Payroll Index
+        $index = $this->actingAs($this->admin)->get(route('payrolls.index', ['period' => $period]));
+        $index->assertStatus(200);
+        $index->assertSee('Penggajian GTK');
+
+        // 2. Generate Payroll for period
+        $gen = $this->actingAs($this->admin)->post(route('payrolls.generate'), [
+            'period' => $period,
+        ]);
+        $gen->assertRedirect();
+        $this->assertDatabaseHas('payrolls', [
+            'employee_id' => $employee->id,
+            'period' => $period,
+        ]);
+
+        $payroll = \App\Models\Payroll::where('employee_id', $employee->id)
+            ->where('period', $period)
+            ->first();
+
+        // 3. Update Payroll amount & deductions
+        $update = $this->actingAs($this->admin)->put(route('payrolls.update', $payroll), [
+            'gross_amount' => 5000000,
+            'deductions' => 200000,
+        ]);
+        $update->assertRedirect();
+        $this->assertDatabaseHas('payrolls', [
+            'id' => $payroll->id,
+            'gross_amount' => 5000000,
+            'deductions' => 200000,
+            'net_amount' => 4800000,
+        ]);
+
+        // 4. View Slip Gaji
+        $slip = $this->actingAs($this->admin)->get(route('payrolls.slip', $payroll));
+        $slip->assertStatus(200);
+        $slip->assertSee('SLIP GAJI PEGAWAI');
+        $slip->assertSee('4.800.000');
+
+        // 5. Export Payroll Excel
+        $export = $this->actingAs($this->admin)->get(route('payrolls.export', ['period' => $period]));
+        $export->assertStatus(200);
+        $this->assertStringContainsString('spreadsheetml.sheet', $export->headers->get('Content-Type'));
+    }
 }
+
