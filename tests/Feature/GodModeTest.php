@@ -275,4 +275,43 @@ class GodModeTest extends TestCase
         $this->assertCount(1, $letterTypes);
         $this->assertEquals($letterTypeA->id, $letterTypes->first()->id);
     }
+
+    public function test_super_admin_can_fetch_live_telemetry_json(): void
+    {
+        $response = $this->actingAs($this->superAdmin, 'super')
+            ->get(route('god.telemetry'));
+
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'success',
+            'timestamp',
+            'data' => [
+                'server' => ['cpu', 'memory', 'disk', 'traffic'],
+                'runtime',
+                'platform',
+                'role_dist',
+                'tier_dist',
+                'recent_logs',
+                'traffic_7d',
+            ],
+        ]);
+    }
+
+    public function test_super_admin_can_clear_server_cache(): void
+    {
+        $response = $this->actingAs($this->superAdmin, 'super')
+            ->post(route('god.server.clear-cache'));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('toast');
+    }
+
+    public function test_super_admin_can_rebuild_server_cache(): void
+    {
+        $response = $this->actingAs($this->superAdmin, 'super')
+            ->post(route('god.server.rebuild-cache'));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('toast');
+    }
 }

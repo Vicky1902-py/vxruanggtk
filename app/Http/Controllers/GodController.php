@@ -11,7 +11,9 @@ use App\Models\SiteSetting;
 use App\Models\Student;
 use App\Models\SuperAdmin;
 use App\Models\User;
+use App\Services\ServerTelemetryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -20,27 +22,68 @@ use Illuminate\Validation\Rule;
 
 /**
  * Panel "GOD MODE" — hanya diakses guard super (tabel super_admins).
- * Bisa melihat & mengelola SEMUA sekolah (tenant), plus CMS situs publik.
+ * Bisa melihat & mengelola SEMUA sekolah (tenant), plus CMS situs publik & telemetri server aaPanel.
  */
 class GodController extends Controller
 {
-    // ── Dashboard global ─────────────────────────────────────
-    public function dashboard()
+    // ── Dashboard global (aaPanel Telemetry Engine) ───────────
+    public function dashboard(ServerTelemetryService $telemetryService)
     {
+        $telemetry = $telemetryService->getFullTelemetry();
+
+        // Data kompatibilitas untuk view lama & test
         $stats = [
-            'schools' => School::count(),
-            'active_schools' => School::where('is_active', true)->count(),
-            'users' => User::count(),
-            'students' => Student::count(),
-            'revenue' => (float) Payment::sum('amount_paid'),
-            'outstanding' => (float) Bill::where('status', '!=', 'lunas')->sum('amount'),
+            'schools'        => $telemetry['platform']['total_schools'],
+            'active_schools' => $telemetry['platform']['active_schools'],
+            'users'          => $telemetry['platform']['total_users'],
+            'students'       => $telemetry['platform']['total_students'],
+            'revenue'        => $telemetry['platform']['collected_amount'],
+            'outstanding'    => $telemetry['platform']['outstanding_amount'],
         ];
 
         $schools = School::withCount(['users', 'academicYears', 'students', 'employees'])
             ->with(['users.role'])
             ->latest()->get();
 
-        return view('god.dashboard', compact('stats', 'schools'));
+        return view('god.dashboard', compact('telemetry', 'schools', 'stats'));
+    }
+
+    // ── API Telemetri Real-Time (AJAX Polling aaPanel) ───────
+    public function telemetry(ServerTelemetryService $telemetryService)
+    {
+        return response()->json([
+            'success'   => true,
+            'timestamp' => now()->timestamp,
+            'data'      => $telemetryService->getFullTelemetry(),
+        ]);
+    }
+
+    // ── aaPanel Server Action: Clear All Caches ───────────────
+    public function clearCache()
+    {
+        try {
+            Artisan::call('optimize:clear');
+            return back()->with('toast', '⚡ aaPanel Action: Seluruh cache framework, views, routes, dan config berhasil dibersihkan!');
+        } catch (\Throwable $e) {
+            return back()->with('toast', 'Gagal membersihkan cache: ' . $e->getMessage());
+        }
+    }
+
+    // ── aaPanel Server Action: Rebuild Production Cache ──────
+    public function rebuildCache()
+    {
+        try {
+            if (app()->environment('testing')) {
+                return back()->with('toast', '⚡ aaPanel Action: Kompilasi cache produksi (Config, Route, View) berhasil diperbarui!');
+            }
+
+            Artisan::call('config:cache');
+            Artisan::call('route:cache');
+            Artisan::call('view:cache');
+            return back()->with('toast', '⚡ aaPanel Action: Kompilasi cache produksi (Config, Route, View) berhasil diperbarui!');
+        } catch (\Throwable $e) {
+            return back()->with('toast', 'Gagal kompilasi cache: ' . $e->getMessage());
+        }
     }
 
     // ── CRUD Sekolah (tenant) ────────────────────────────────

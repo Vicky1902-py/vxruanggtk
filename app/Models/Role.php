@@ -12,4 +12,9 @@ class Role extends Model
     {
         return ['permissions' => 'array'];
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

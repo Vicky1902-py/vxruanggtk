@@ -33,6 +33,9 @@ Route::post('/keluar', [AuthController::class, 'logout'])->name('logout');
 // ── Panel GOD MODE (super admin, guard terpisah) ────────────
 Route::prefix('god')->name('god.')->middleware('auth.super')->group(function () {
     Route::get('/', [GodController::class, 'dashboard'])->name('dashboard');
+    Route::get('telemetry', [GodController::class, 'telemetry'])->name('telemetry');
+    Route::post('server/clear-cache', [GodController::class, 'clearCache'])->name('server.clear-cache');
+    Route::post('server/rebuild-cache', [GodController::class, 'rebuildCache'])->name('server.rebuild-cache');
 
     // Kelola sekolah
     Route::post('sekolah', [GodController::class, 'storeSchool'])->name('schools.store');

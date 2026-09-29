@@ -24,7 +24,7 @@
 
 <div class="side-overlay" id="sideOverlay" aria-hidden="true"></div>
 
-<div class="shell god-shell">
+<div class="shell god-shell" id="appShell">
 
   <aside class="side glass-soft" id="sidebar" role="navigation" aria-label="Menu Super Admin">
     <button class="side-close" id="sideClose" aria-label="Tutup menu">
@@ -33,13 +33,16 @@
 
     <div class="brand">
       <div class="brand-mark god-mark"><img src="{{ asset('img/logo.svg') }}" alt="Logo Ruang GTK"></div>
-      <div style="min-width:0">
+      <div class="brand-info" style="min-width:0;flex:1">
         <div class="brand-ruanggtk">
           <span class="brand-ruanggtk-text">Ruang<span class="gtk-tag">GTK</span></span>
           <span class="brand-beam"></span>
         </div>
         <small style="color:#fdba74">Super Admin Platform</small>
       </div>
+      <button type="button" class="aux-toggle" id="auxToggleBtn" title="Kecilkan / Lebarkan Sidebar (aaPanel Mode)" aria-label="Toggle Auxiliary Sidebar">
+        <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+      </button>
     </div>
 
     <div class="nav-label">Kontrol Global</div>
