@@ -186,4 +186,20 @@ Route::middleware('auth')->group(function () {
         Route::get('pengaturan-sekolah', [\App\Http\Controllers\SchoolSettingController::class, 'index'])->name('school.settings');
         Route::put('pengaturan-sekolah', [\App\Http\Controllers\SchoolSettingController::class, 'update'])->name('school.settings.update');
     });
+
+    // Administrasi Persuratan & SK (Buku Agenda, Generator Nomor Otomatis, Pembuat Surat)
+    Route::middleware('role:admin,staff_tu,kepsek')->group(function () {
+        Route::get('persuratan/export', [\App\Http\Controllers\LetterController::class, 'export'])->name('letters.export');
+        Route::get('persuratan/preview-number', [\App\Http\Controllers\LetterController::class, 'previewNumber'])->name('letters.preview-number');
+        Route::get('persuratan/{letter}/cetak', [\App\Http\Controllers\LetterController::class, 'print'])->name('letters.print');
+        Route::resource('persuratan', \App\Http\Controllers\LetterController::class)
+            ->parameters(['persuratan' => 'letter'])
+            ->names('letters');
+
+        // Format & Master Jenis Surat
+        Route::resource('jenis-surat', \App\Http\Controllers\LetterTypeController::class)
+            ->parameters(['jenis-surat' => 'letterType'])
+            ->names('letter-types')
+            ->except(['create', 'show', 'edit']);
+    });
 });

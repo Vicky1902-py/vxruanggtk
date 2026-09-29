@@ -93,4 +93,14 @@ class School extends Model
     {
         return $this->hasMany(Position::class);
     }
+
+    public function letterTypes()
+    {
+        return $this->hasMany(LetterType::class);
+    }
+
+    public function letters()
+    {
+        return $this->hasMany(Letter::class);
+    }
 }

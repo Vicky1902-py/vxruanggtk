@@ -147,6 +147,23 @@
       <span>Pengumuman</span>
     </a>
 
+    {{-- Administrasi Persuratan & SK --}}
+    @if (in_array($userRole, ['admin', 'staff_tu', 'kepsek']))
+    <div class="nav-label">Persuratan</div>
+    <a href="{{ route('letters.index') }}" class="{{ request()->routeIs('letters.index', 'letters.show', 'letters.edit') ? 'active' : '' }}" data-tooltip="Buku Agenda & SK">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span>Buku Agenda &amp; SK</span>
+    </a>
+    <a href="{{ route('letters.create') }}" class="{{ request()->routeIs('letters.create') ? 'active' : '' }}" data-tooltip="Buat Surat / SK Baru">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>Buat Surat / SK</span>
+    </a>
+    <a href="{{ route('letter-types.index') }}" class="{{ request()->routeIs('letter-types.*') ? 'active' : '' }}" data-tooltip="Format & Jenis Surat">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      <span>Format Penomoran</span>
+    </a>
+    @endif
+
     {{-- Pengaturan Sistem / User (Khusus Admin) --}}
     @if ($userRole === 'admin')
     <div class="nav-label">Pengaturan</div>
