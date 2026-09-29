@@ -94,6 +94,26 @@ class School extends Model
         return $this->hasMany(Position::class);
     }
 
+    public function students()
+    {
+        return $this->hasMany(Student::class);
+    }
+
+    public function employees()
+    {
+        return $this->hasMany(Employee::class);
+    }
+
+    public function classes()
+    {
+        return $this->hasMany(SchoolClass::class);
+    }
+
+    public function majors()
+    {
+        return $this->hasMany(Major::class);
+    }
+
     public function letterTypes()
     {
         return $this->hasMany(LetterType::class);

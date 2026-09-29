@@ -318,4 +318,45 @@ class LetterManagementTest extends TestCase
             'code'      => 'REK-KULIAH',
         ]);
     }
+
+    public function test_create_and_edit_views_render_cleanly(): void
+    {
+        // 1. Visit Create page (ensures $school->students() and $school->employees() load smoothly without BadMethodCallException)
+        $createRes = $this->actingAs($this->tu)->get(route('letters.create'));
+        $createRes->assertStatus(200);
+        $createRes->assertSee('Buat Surat Keluar / Surat Keputusan (SK)');
+        $createRes->assertSee('Budi Santoso Pratama'); // Student option
+        $createRes->assertSee('Ahmad Zaki, S.Kom.'); // GTK option
+
+        // 2. Test AJAX preview endpoint
+        $skType = $this->school->letterTypes()->where('code', 'SK')->first();
+        $previewRes = $this->actingAs($this->tu)->get(route('letters.preview-number', [
+            'type_id'    => $skType->id,
+            'student_id' => $this->student->id,
+            'date'       => '2026-09-29',
+        ]));
+        $previewRes->assertStatus(200);
+        $previewRes->assertJsonStructure(['reference_number', 'sequence_number', 'category', 'template_body']);
+
+        // 3. Visit Edit page
+        $letter = Letter::create([
+            'school_id'           => $this->school->id,
+            'letter_type_id'      => $skType->id,
+            'category'            => 'sk',
+            'sequence_number'     => 1,
+            'year'                => 2026,
+            'reference_number'    => '800/001/SK-SMK/IX/2026',
+            'letter_date'         => '2026-09-20',
+            'subject'             => 'SK Pengangkatan Staf',
+            'content'             => '<p>Isi surat...</p>',
+            'status'              => 'diterbitkan',
+            'signed_by_principal' => true,
+            'created_by'          => $this->admin->id,
+        ]);
+
+        $editRes = $this->actingAs($this->tu)->get(route('letters.edit', $letter));
+        $editRes->assertStatus(200);
+        $editRes->assertSee('Edit Surat: 800/001/SK-SMK/IX/2026');
+        $editRes->assertSee('Budi Santoso Pratama');
+    }
 }
