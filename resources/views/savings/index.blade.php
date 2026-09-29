@@ -26,14 +26,36 @@
 {{-- Metric Card Banner --}}
 <div class="dash-grid-4" style="margin-bottom:18px">
   <div class="kpi-card glass">
-    <div class="label">Total Saldo Kas Tabungan</div>
+    <div class="label">
+      <span>Total Saldo Kas Tabungan</span>
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#0284c7;fill:none;stroke-width:2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    </div>
     <div class="val" style="color:#0284c7">Rp {{ number_format($totalBalance, 0, ',', '.') }}</div>
     <div class="note">Total simpanan siswa aktif sekolah</div>
   </div>
-  <div class="kpi-card glass">
-    <div class="label">Transaksi Terbaru</div>
-    <div class="val">{{ $recentTransactions->count() }}</div>
-    <div class="note">Catatan mutasi terakhir</div>
+  <div class="kpi-card glass kpi-success">
+    <div class="label">
+      <span>Total Setoran Masuk</span>
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#10b981;fill:none;stroke-width:2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </div>
+    <div class="val" style="color:#10b981">Rp {{ number_format($totalDeposits, 0, ',', '.') }}</div>
+    <div class="note">Akumulasi penerimaan tabungan</div>
+  </div>
+  <div class="kpi-card glass kpi-danger">
+    <div class="label">
+      <span>Total Penarikan Tunai</span>
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#ef4444;fill:none;stroke-width:2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </div>
+    <div class="val" style="color:#ef4444">Rp {{ number_format($totalWithdrawals, 0, ',', '.') }}</div>
+    <div class="note">Akumulasi pencairan simpanan</div>
+  </div>
+  <div class="kpi-card glass kpi-purple">
+    <div class="label">
+      <span>Rekening Siswa Aktif</span>
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#6366f1;fill:none;stroke-width:2"><circle cx="9" cy="7" r="4"/><path d="M17 11a3 3 0 1 0-4-2.82"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div class="val" style="color:#6366f1">{{ $activeAccountsCount }} Rekening</div>
+    <div class="note">{{ $recentTransactions->count() }} mutasi transaksi terbaru</div>
   </div>
 </div>
 

@@ -130,9 +130,10 @@ Route::middleware('auth')->group(function () {
         Route::post('tahun-ajaran/{year}/aktifkan', [SchoolClassController::class, 'activateYear'])->name('academic-years.activate');
     });
 
-    // Keuangan & SPP: admin & bendahara
-    Route::middleware('role:admin,bendahara')->group(function () {
+    // Keuangan & SPP: admin, bendahara, kepsek
+    Route::middleware('role:admin,bendahara,kepsek')->group(function () {
         Route::get('tagihan-export', [BillController::class, 'export'])->name('bills.export');
+        Route::post('tagihan/generate-bulanan', [BillController::class, 'batchGenerate'])->name('bills.batch-generate');
         Route::resource('tagihan', BillController::class)
             ->only(['index', 'store', 'destroy'])
             ->parameters(['tagihan' => 'bill'])
@@ -148,9 +149,16 @@ Route::middleware('auth')->group(function () {
         // Penggajian GTK (Payroll)
         Route::get('penggajian', [PayrollController::class, 'index'])->name('payrolls.index');
         Route::post('penggajian/generate', [PayrollController::class, 'generate'])->name('payrolls.generate');
+        Route::post('penggajian/disburse-all', [PayrollController::class, 'disburseAll'])->name('payrolls.disburse-all');
         Route::put('penggajian/{payroll}', [PayrollController::class, 'update'])->name('payrolls.update');
+        Route::post('penggajian/{payroll}/disburse', [PayrollController::class, 'disburse'])->name('payrolls.disburse');
         Route::get('penggajian/{payroll}/slip', [PayrollController::class, 'slip'])->name('payrolls.slip');
         Route::get('penggajian-export', [PayrollController::class, 'export'])->name('payrolls.export');
+
+        // Buku Kas Umum (BKU) & Laporan Keuangan Terpadu
+        Route::get('laporan-keuangan', [\App\Http\Controllers\FinancialReportController::class, 'index'])->name('reports.financial');
+        Route::get('laporan-keuangan/export', [\App\Http\Controllers\FinancialReportController::class, 'export'])->name('reports.financial.export');
+        Route::get('laporan-keuangan/cetak', [\App\Http\Controllers\FinancialReportController::class, 'print'])->name('reports.financial.print');
     });
 
     // Kesiswaan, Kedisiplinan & BK

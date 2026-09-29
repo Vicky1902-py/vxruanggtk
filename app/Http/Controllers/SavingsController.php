@@ -37,7 +37,11 @@ class SavingsController extends Controller
         $classes = SchoolClass::where('school_id', $schoolId)->orderBy('name')->get();
 
         // Telemetri Total Tabungan
-        $totalBalance = Saving::whereHas('student', fn ($s) => $s->where('school_id', $schoolId))->sum('balance');
+        $totalBalance = (float) Saving::whereHas('student', fn ($s) => $s->where('school_id', $schoolId))->sum('balance');
+        $totalDeposits = (float) SavingsTransaction::whereHas('student', fn ($s) => $s->where('school_id', $schoolId))->where('direction', 'setor')->sum('amount');
+        $totalWithdrawals = (float) SavingsTransaction::whereHas('student', fn ($s) => $s->where('school_id', $schoolId))->where('direction', 'tarik')->sum('amount');
+        $activeAccountsCount = Saving::whereHas('student', fn ($s) => $s->where('school_id', $schoolId))->where('balance', '>', 0)->count();
+
         $recentTransactions = SavingsTransaction::whereHas('student', fn ($s) => $s->where('school_id', $schoolId))
             ->with('student.schoolClass')
             ->latest()
@@ -45,7 +49,7 @@ class SavingsController extends Controller
             ->get();
 
         return view('savings.index', compact(
-            'students', 'classes', 'totalBalance', 'recentTransactions'
+            'students', 'classes', 'totalBalance', 'totalDeposits', 'totalWithdrawals', 'activeAccountsCount', 'recentTransactions'
         ));
     }
 

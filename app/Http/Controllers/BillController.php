@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\PaymentType;
 use App\Models\SchoolClass;
 use App\Models\Student;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -37,7 +38,12 @@ class BillController extends Controller
         $classes = SchoolClass::orderBy('name')->get();
         $paymentTypes = PaymentType::orderBy('name')->get();
 
-        return view('bills.index', compact('bills', 'classes', 'paymentTypes'));
+        $totalBilled = (float) $bills->sum('amount');
+        $totalPaid = (float) Payment::whereIn('bill_id', $bills->pluck('id'))->sum('amount_paid');
+        $totalUnpaid = max(0, $totalBilled - $totalPaid);
+        $settlementRate = $totalBilled > 0 ? round(($totalPaid / $totalBilled) * 100, 1) : 0;
+
+        return view('bills.index', compact('bills', 'classes', 'paymentTypes', 'totalBilled', 'totalPaid', 'totalUnpaid', 'settlementRate'));
     }
 
     public function store(Request $request)
@@ -74,6 +80,68 @@ class BillController extends Controller
         });
 
         return back()->with('toast', "{$created} tagihan berhasil dibuat.");
+    }
+
+    public function batchGenerate(Request $request)
+    {
+        $data = $request->validate([
+            'payment_type_id' => ['required', 'exists:payment_types,id'],
+            'class_id'        => ['nullable', 'exists:classes,id'],
+            'amount'          => ['required', 'numeric', 'min:0'],
+            'start_month'     => ['required', 'date_format:Y-m'],
+            'end_month'       => ['required', 'date_format:Y-m'],
+            'due_day'         => ['required', 'integer', 'min:1', 'max:28'],
+        ]);
+
+        $students = Student::query()
+            ->when($data['class_id'] ?? null, fn ($q, $cid) => $q->where('class_id', $cid))
+            ->where('status', 'aktif')
+            ->get();
+
+        if ($students->isEmpty()) {
+            return back()->with('toast', 'Tidak ada siswa aktif pada target rombel.');
+        }
+
+        $startDate = Carbon::createFromFormat('Y-m', $data['start_month'])->startOfMonth();
+        $endDate = Carbon::createFromFormat('Y-m', $data['end_month'])->startOfMonth();
+
+        if ($startDate->gt($endDate)) {
+            return back()->with('toast', 'Bulan mulai tidak boleh melampaui bulan selesai.');
+        }
+
+        $schoolId = auth()->user()->school_id;
+        $created = 0;
+
+        DB::transaction(function () use ($students, $data, $startDate, $endDate, $schoolId, &$created) {
+            $cur = $startDate->copy();
+            while ($cur->lte($endDate)) {
+                $dueDate = $cur->copy()->day($data['due_day'])->format('Y-m-d');
+                $startOfMonth = $cur->copy()->startOfMonth()->toDateString();
+                $endOfMonth = $cur->copy()->endOfMonth()->toDateString();
+
+                foreach ($students as $student) {
+                    $exists = Bill::where('student_id', $student->id)
+                        ->where('payment_type_id', $data['payment_type_id'])
+                        ->whereBetween('due_date', [$startOfMonth, $endOfMonth])
+                        ->exists();
+
+                    if (!$exists) {
+                        Bill::create([
+                            'school_id'       => $schoolId,
+                            'student_id'      => $student->id,
+                            'payment_type_id' => $data['payment_type_id'],
+                            'amount'          => $data['amount'],
+                            'due_date'        => $dueDate,
+                        ]);
+                        $created++;
+                    }
+                }
+
+                $cur->addMonth();
+            }
+        });
+
+        return back()->with('toast', "Berhasil men-generate {$created} tagihan bulanan otomatis.");
     }
 
     public function pay(Request $request, Bill $bill)

@@ -134,6 +134,10 @@
       <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
       <span>Penggajian GTK</span>
     </a>
+    <a href="{{ route('reports.financial') }}" class="{{ request()->routeIs('reports.financial*') ? 'active' : '' }}" data-tooltip="Laporan Kas (BKU)">
+      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>
+      <span>Laporan Kas (BKU)</span>
+    </a>
     @endif
 
     {{-- Komunikasi & Warta --}}

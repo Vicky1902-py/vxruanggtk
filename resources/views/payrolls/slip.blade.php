@@ -79,7 +79,19 @@
     </div>
   </div>
 
-  <div style="text-align:center; font-weight:800; font-size:15px; margin: 0 0 18px 0; text-transform: uppercase; letter-spacing: 1px; color:#1e293b; border-bottom: 1px dashed #cbd5e1; padding-bottom: 8px;">SLIP GAJI PEGAWAI</div>
+  <div style="text-align:center; font-weight:800; font-size:15px; margin: 0 0 14px 0; text-transform: uppercase; letter-spacing: 1px; color:#1e293b;">SLIP GAJI PEGAWAI</div>
+
+  <div style="text-align:center;margin-bottom:18px">
+    @if ($payroll->status === 'terbayar')
+      <span style="display:inline-block;border:2px solid #10b981;color:#047857;background:#ecfdf5;font-weight:800;font-size:12px;padding:4px 14px;border-radius:6px;text-transform:uppercase;letter-spacing:1px">
+        ✓ Lunas / Terbayar ({{ $payroll->payment_method ?? 'Transfer Bank' }} · {{ $payroll->paid_at?->translatedFormat('d F Y') ?? now()->translatedFormat('d F Y') }})
+      </span>
+    @else
+      <span style="display:inline-block;border:2px solid #f59e0b;color:#b45309;background:#fef3c7;font-weight:800;font-size:12px;padding:4px 14px;border-radius:6px;text-transform:uppercase;letter-spacing:1px">
+        ⏳ Status: Draft Slip Gaji (Menunggu Realisasi Pencairan)
+      </span>
+    @endif
+  </div>
 
   <table class="info-table">
     <tr>

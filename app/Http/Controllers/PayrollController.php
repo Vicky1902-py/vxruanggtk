@@ -26,13 +26,49 @@ class PayrollController extends Controller
             ->get()
             ->keyBy('employee_id');
 
-        $totalNetSalary = $payrolls->sum('net_amount');
-        $totalGross = $payrolls->sum('gross_amount');
-        $totalDeductions = $payrolls->sum('deductions');
+        $totalNetSalary = (float) $payrolls->sum('net_amount');
+        $totalGross = (float) $payrolls->sum('gross_amount');
+        $totalDeductions = (float) $payrolls->sum('deductions');
+        $totalPaid = (float) $payrolls->where('status', 'terbayar')->sum('net_amount');
+        $paidCount = $payrolls->where('status', 'terbayar')->count();
 
         return view('payrolls.index', compact(
-            'period', 'employees', 'payrolls', 'totalNetSalary', 'totalGross', 'totalDeductions'
+            'period', 'employees', 'payrolls', 'totalNetSalary', 'totalGross', 'totalDeductions', 'totalPaid', 'paidCount'
         ));
+    }
+
+    public function disburse(Request $request, Payroll $payroll)
+    {
+        $schoolId = auth()->user()->school_id;
+        abort_unless($payroll->employee?->school_id === $schoolId, 403);
+
+        $method = $request->input('payment_method', 'Transfer Bank');
+        $payroll->update([
+            'status' => 'terbayar',
+            'paid_at' => now(),
+            'payment_method' => $method,
+        ]);
+
+        return back()->with('toast', 'Gaji ' . $payroll->employee?->full_name . ' berhasil disalurkan (' . $method . ').');
+    }
+
+    public function disburseAll(Request $request)
+    {
+        $schoolId = auth()->user()->school_id;
+        $period = $request->input('period', date('Y-m'));
+        $method = $request->input('payment_method', 'Transfer Bank');
+
+        $employees = Employee::where('school_id', $schoolId)->where('status', 'aktif')->pluck('id');
+        $updated = Payroll::whereIn('employee_id', $employees)
+            ->where('period', $period)
+            ->where('status', '!=', 'terbayar')
+            ->update([
+                'status' => 'terbayar',
+                'paid_at' => now(),
+                'payment_method' => $method,
+            ]);
+
+        return back()->with('toast', "Berhasil mencairkan {$updated} slip gaji periode {$period}.");
     }
 
     public function generate(Request $request)

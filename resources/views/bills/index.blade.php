@@ -12,13 +12,52 @@
     <div class="sub">Kelola penagihan massal per rombel dan catat transaksi kasir pembayaran peserta didik.</div>
   </div>
   <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button type="button" class="btn btn-sm btn-outline" data-dialog="#dialog-batch-generate-bills" style="border-color:#0284c7;color:#0284c7">
+      📅 Generate SPP Bulanan
+    </button>
     <button type="button" class="btn btn-sm btn-ink" data-dialog="#dialog-generate-bills">
-      ⚡ + Buat Tagihan Massal
+      ⚡ + Buat Tagihan
     </button>
     <a href="{{ route('bills.export', request()->all()) }}" class="btn btn-sm" title="Unduh rekap data tagihan & pembayaran ke Excel (.xlsx)">
       <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
       Export Excel (.xlsx)
     </a>
+  </div>
+</div>
+
+{{-- Metric Card Banner --}}
+<div class="dash-grid-4" style="margin-bottom:18px">
+  <div class="kpi-card glass">
+    <div class="label">
+      <span>Total Tagihan Diterbitkan</span>
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#0284c7;fill:none;stroke-width:2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    </div>
+    <div class="val" style="color:#0284c7">Rp {{ number_format($totalBilled, 0, ',', '.') }}</div>
+    <div class="note">{{ $bills->count() }} pos tagihan terdaftar</div>
+  </div>
+  <div class="kpi-card glass kpi-success">
+    <div class="label">
+      <span>Kas SPP / Tagihan Diterima</span>
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#10b981;fill:none;stroke-width:2"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="val" style="color:#10b981">Rp {{ number_format($totalPaid, 0, ',', '.') }}</div>
+    <div class="note">Total realisasi pembayaran kas</div>
+  </div>
+  <div class="kpi-card glass kpi-danger">
+    <div class="label">
+      <span>Sisa Piutang / Tunggakan</span>
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#ef4444;fill:none;stroke-width:2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <div class="val" style="color:#ef4444">Rp {{ number_format($totalUnpaid, 0, ',', '.') }}</div>
+    <div class="note">Tunggakan yang belum tertagih</div>
+  </div>
+  <div class="kpi-card glass kpi-purple">
+    <div class="label">
+      <span>Tingkat Pelunasan</span>
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#6366f1;fill:none;stroke-width:2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </div>
+    <div class="val" style="color:#6366f1">{{ $settlementRate }}%</div>
+    <div class="note">Rasio kas masuk per tagihan</div>
   </div>
 </div>
 
@@ -195,6 +234,74 @@
         <button type="button" class="btn" data-close>Batal</button>
         <button type="submit" class="btn btn-ink" data-loading="Membuat tagihan massal...">
           ⚡ Buat Tagihan Massal
+        </button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+{{-- MODAL GENERATE SPP BULANAN OTOMATIS --}}
+<dialog id="dialog-batch-generate-bills" class="modal glass">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <h3 style="margin:0;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px">
+        <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#0284c7;fill:none;stroke-width:2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Generate Tagihan SPP Bulanan Otomatis
+      </h3>
+      <button type="button" data-close class="modal-close" aria-label="Tutup">✕</button>
+    </div>
+
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:14px">
+      Fitur ini secara otomatis membuat tagihan berulang (contoh: SPP bulanan selama 1 semester atau 1 tahun ajaran) untuk rombel yang dipilih tanpa duplikasi data.
+    </div>
+
+    <form method="POST" action="{{ route('bills.batch-generate') }}" class="stack">
+      @csrf
+      <div class="field">
+        <label>Jenis Pembayaran *</label>
+        <select name="payment_type_id" class="select" required>
+          @foreach ($paymentTypes as $pt)
+            <option value="{{ $pt->id }}">{{ $pt->name }} (Bawaan: Rp {{ number_format($pt->default_amount, 0, ',', '.') }})</option>
+          @endforeach
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Target Sasaran Siswa / Rombel *</label>
+        <select name="class_id" class="select">
+          <option value="">🎯 Semua Siswa Aktif Seluruh Sekolah</option>
+          @foreach ($classes as $class)
+            <option value="{{ $class->id }}">Kelas {{ $class->name }}</option>
+          @endforeach
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Nominal Tagihan per Bulan (Rp) *</label>
+        <input type="number" name="amount" class="input" min="0" step="1000" value="250000" required>
+      </div>
+
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field">
+          <label>Bulan Mulai (YYYY-MM) *</label>
+          <input type="month" name="start_month" class="input" value="{{ date('Y-07') }}" required>
+        </div>
+        <div class="field">
+          <label>Bulan Selesai (YYYY-MM) *</label>
+          <input type="month" name="end_month" class="input" value="{{ date('Y-12') }}" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Hari Jatuh Tempo Tiap Bulan (Tanggal 1 - 28) *</label>
+        <input type="number" name="due_day" class="input" value="10" min="1" max="28" required>
+        <small style="font-size:11px;color:var(--muted)">Contoh: 10 artinya jatuh tempo tanggal 10 tiap bulan berjalan.</small>
+      </div>
+
+      <div class="dlg-actions" style="margin-top:16px">
+        <button type="button" class="btn" data-close>Batal</button>
+        <button type="submit" class="btn btn-ink" data-loading="Men-generate tagihan bulanan...">
+          ⚡ Generate Tagihan Bulanan
         </button>
       </div>
     </form>

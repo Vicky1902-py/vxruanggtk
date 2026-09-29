@@ -28,9 +28,11 @@ class SystemE2ETest extends TestCase
     protected User $admin;
     protected User $guru;
     protected User $bendahara;
+    protected User $kepsek;
     protected Role $adminRole;
     protected Role $guruRole;
     protected Role $bendaharaRole;
+    protected Role $kepsekRole;
 
     protected function setUp(): void
     {
@@ -40,6 +42,7 @@ class SystemE2ETest extends TestCase
         $this->adminRole = Role::firstOrCreate(['name' => 'admin']);
         $this->guruRole = Role::firstOrCreate(['name' => 'guru']);
         $this->bendaharaRole = Role::firstOrCreate(['name' => 'bendahara']);
+        $this->kepsekRole = Role::firstOrCreate(['name' => 'kepsek']);
 
         $this->school = School::firstOrCreate(
             ['subdomain' => 'testschool'],
@@ -59,6 +62,11 @@ class SystemE2ETest extends TestCase
         $this->bendahara = User::firstOrCreate(
             ['username' => 'testbendahara', 'school_id' => $this->school->id],
             ['role_id' => $this->bendaharaRole->id, 'password' => Hash::make('password123'), 'email' => 'bendahara@test.com']
+        );
+
+        $this->kepsek = User::firstOrCreate(
+            ['username' => 'testkepsek', 'school_id' => $this->school->id],
+            ['role_id' => $this->kepsekRole->id, 'password' => Hash::make('password123'), 'email' => 'kepsek@test.com']
         );
     }
 
@@ -664,5 +672,102 @@ class SystemE2ETest extends TestCase
         $export->assertStatus(200);
         $this->assertStringContainsString('spreadsheetml.sheet', $export->headers->get('Content-Type'));
     }
+
+    public function test_payroll_disbursement_workflow(): void
+    {
+        $period = date('Y-m');
+
+        $employee = Employee::firstOrCreate(
+            ['school_id' => $this->school->id, 'nip' => '198701012015011009'],
+            ['full_name' => 'Bambang Pamungkas, M.Pd.', 'status' => 'aktif']
+        );
+
+        $this->actingAs($this->admin)->post(route('payrolls.generate'), ['period' => $period]);
+
+        $payroll = \App\Models\Payroll::where('employee_id', $employee->id)->where('period', $period)->first();
+        $this->assertNotNull($payroll);
+
+        // 1. Single Disburse
+        $disburseRes = $this->actingAs($this->bendahara)->post(route('payrolls.disburse', $payroll), [
+            'payment_method' => 'Transfer Bank BCA',
+        ]);
+        $disburseRes->assertRedirect();
+
+        $payroll->refresh();
+        $this->assertEquals('terbayar', $payroll->status);
+        $this->assertEquals('Transfer Bank BCA', $payroll->payment_method);
+        $this->assertNotNull($payroll->paid_at);
+
+        // 2. Batch Disburse
+        $batchRes = $this->actingAs($this->bendahara)->post(route('payrolls.disburse-all'), [
+            'period' => $period,
+            'payment_method' => 'Tunai Kasir',
+        ]);
+        $batchRes->assertRedirect();
+    }
+
+    public function test_batch_monthly_bill_generation(): void
+    {
+        $pt = \App\Models\PaymentType::firstOrCreate(
+            ['school_id' => $this->school->id, 'name' => 'SPP Bulanan Terpadu'],
+            ['default_amount' => 300000, 'recurrence' => 'bulanan']
+        );
+
+        $cls = SchoolClass::firstOrCreate(
+            ['school_id' => $this->school->id, 'name' => 'XII RPL 1'],
+            ['academic_year_id' => AcademicYear::firstOrCreate(['school_id' => $this->school->id, 'year_label' => '2026/2027'], ['is_active' => true])->id]
+        );
+
+        $student = Student::create([
+            'school_id' => $this->school->id,
+            'class_id'  => $cls->id,
+            'full_name' => 'Batch Test Student',
+            'status'    => 'aktif',
+        ]);
+
+        $res = $this->actingAs($this->bendahara)->post(route('bills.batch-generate'), [
+            'payment_type_id' => $pt->id,
+            'class_id'        => $cls->id,
+            'amount'          => 300000,
+            'start_month'     => '2026-07',
+            'end_month'       => '2026-09',
+            'due_day'         => 10,
+        ]);
+        $res->assertRedirect();
+
+        // Must create 3 bills (Jul, Aug, Sep)
+        $count = \App\Models\Bill::where('student_id', $student->id)
+            ->where('payment_type_id', $pt->id)
+            ->count();
+        $this->assertEquals(3, $count);
+    }
+
+    public function test_financial_report_bku_ledger_and_export(): void
+    {
+        $period = date('Y-m');
+
+        // 1. Visit Financial Report (BKU)
+        $res = $this->actingAs($this->bendahara)->get(route('reports.financial', ['period' => $period]));
+        $res->assertStatus(200);
+        $res->assertSee('Buku Kas Umum (BKU)');
+        $res->assertSee('Total Penerimaan (Debet)');
+
+        // Kepsek can also view
+        $kepsekRes = $this->actingAs($this->kepsek)->get(route('reports.financial', ['period' => $period]));
+        $kepsekRes->assertStatus(200);
+
+        // 2. Export Excel (.xlsx)
+        $export = $this->actingAs($this->bendahara)->get(route('reports.financial.export', ['period' => $period]));
+        $export->assertStatus(200);
+        $this->assertStringContainsString('spreadsheetml.sheet', $export->headers->get('Content-Type'));
+
+        // 3. Print View
+        $print = $this->actingAs($this->bendahara)->get(route('reports.financial.print', ['period' => $period]));
+        $print->assertStatus(200);
+        $print->assertSee('BUKU KAS UMUM (BKU) SEKOLAH');
+        $print->assertSee('Kepala Sekolah');
+        $print->assertSee('Bendahara Sekolah');
+    }
 }
+
 
