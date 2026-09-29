@@ -174,11 +174,16 @@ Route::middleware('auth')->group(function () {
 
     // Manajemen Pengguna Sekolah: khusus admin
     Route::middleware('role:admin')->group(function () {
+        // Manajemen Pengguna Sekolah
         Route::get('pengguna', [UserController::class, 'index'])->name('users.index');
         Route::post('pengguna', [UserController::class, 'store'])->name('users.store');
         Route::put('pengguna/{user}', [UserController::class, 'update'])->name('users.update');
         Route::post('pengguna/{user}/toggle', [UserController::class, 'toggle'])->name('users.toggle');
         Route::post('pengguna/{user}/reset', [UserController::class, 'resetPassword'])->name('users.reset');
         Route::delete('pengguna/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+        // Pengaturan Sekolah & Kop Surat
+        Route::get('pengaturan-sekolah', [\App\Http\Controllers\SchoolSettingController::class, 'index'])->name('school.settings');
+        Route::put('pengaturan-sekolah', [\App\Http\Controllers\SchoolSettingController::class, 'update'])->name('school.settings.update');
     });
 });

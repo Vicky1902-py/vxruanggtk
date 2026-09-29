@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+  </defs>
+  <!-- Outer Shield / Pentagon -->
+  <polygon points="50,4 94,36 77,88 23,88 6,36" fill="url(#blueGrad)" stroke="#0f172a" stroke-width="2"/>
+  <!-- Inner Pentagon Border -->
+  <polygon points="50,9 89,38 74,84 26,84 11,38" fill="#ffffff" stroke="url(#goldGrad)" stroke-width="2.5"/>
+  <!-- Flame of Education -->
+  <path d="M50,18 C52,26 62,34 58,45 C56,41 52,38 50,40 C48,38 44,41 42,45 C38,34 48,26 50,18 Z" fill="#ef4444"/>
+  <path d="M50,25 C51,30 56,35 54,42 C52,39 50,38 50,40 C50,38 48,39 46,42 C44,35 49,30 50,25 Z" fill="#fbbf24"/>
+  <!-- Open Book Base -->
+  <path d="M50,56 C44,52 32,50 22,54 L22,72 C32,68 44,70 50,75 C56,70 68,68 78,72 L78,54 C68,50 56,52 50,56 Z" fill="url(#goldGrad)" stroke="#b45309" stroke-width="1.5"/>
+  <path d="M50,56 L50,75" stroke="#b45309" stroke-width="2"/>
+  <!-- Tut Wuri Wings Left & Right -->
+  <path d="M22,52 C16,42 22,30 36,36 C28,38 24,44 26,50 Z" fill="url(#blueGrad)"/>
+  <path d="M78,52 C84,42 78,30 64,36 C72,38 76,44 74,50 Z" fill="url(#blueGrad)"/>
+  <!-- Belanga / Pedestal Base -->
+  <path d="M38,76 L62,76 L66,82 L34,82 Z" fill="#0369a1"/>
+</svg>

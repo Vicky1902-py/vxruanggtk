@@ -33,13 +33,6 @@
       </button>
     </form>
 
-    <div class="demo-hint" style="background:#fffbeb;border-color:#fde68a">
-      <div style="font-weight:700;color:#b45309;margin-bottom:4px;font-size:12px">⚡ Akun Super Admin Default:</div>
-      <div style="font-size:12px;color:#334155">
-        Username: <code>god</code> · Password: <code>godmode123</code>
-      </div>
-    </div>
-
     <p style="margin-top:18px;text-align:center;font-size:13px">
       <a href="{{ route('landing') }}">← Kembali ke halaman utama</a>
     </p>

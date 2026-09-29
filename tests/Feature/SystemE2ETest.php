@@ -768,6 +768,79 @@ class SystemE2ETest extends TestCase
         $print->assertSee('Kepala Sekolah');
         $print->assertSee('Bendahara Sekolah');
     }
+
+    public function test_school_settings_and_official_kop_management(): void
+    {
+        // 1. Guest redirected
+        $this->get(route('school.settings'))->assertRedirect(route('login'));
+
+        // 2. Unauthorized role forbidden
+        $this->actingAs($this->guru)->get(route('school.settings'))->assertStatus(403);
+
+        // 3. Admin can view settings
+        $res = $this->actingAs($this->admin)->get(route('school.settings'));
+        $res->assertStatus(200);
+        $res->assertSee('Pengaturan Sekolah &amp; Kop Surat', false);
+        $res->assertSee('Pratinjau Kop Surat Resmi');
+
+        // 4. Admin updates identity, kop lines, and principal data
+        $fakeLogo = UploadedFile::fake()->image('logo.png', 100, 100);
+        $fakePemprov = UploadedFile::fake()->image('pemprov.png', 100, 100);
+        $fakeSig = UploadedFile::fake()->image('ttd.png', 100, 100);
+
+        $updateRes = $this->actingAs($this->admin)->put(route('school.settings.update'), [
+            'name'            => 'SMK Negeri 1 Surabaya Unggulan',
+            'npsn'            => '20532219',
+            'level'           => 'SMK',
+            'status_sekolah'  => 'Negeri',
+            'email'           => 'smkn1sby@test.sch.id',
+            'phone'           => '031-8292038',
+            'website'         => 'https://smkn1sby.sch.id',
+            'address'         => 'Jl. SMEA No. 4, Wonokromo',
+            'postal_code'     => '60243',
+            'city'            => 'Kota Surabaya',
+            'province'        => 'Jawa Timur',
+            'header_line_1'   => 'PEMERINTAH PROVINSI JAWA TIMUR',
+            'header_line_2'   => 'DINAS PENDIDIKAN WILAYAH SURABAYA',
+            'header_line_3'   => 'SMK NEGERI 1 SURABAYA',
+            'header_line_4'   => 'Jl. SMEA No. 4, Wonokromo, Surabaya Telp. 031-8292038',
+            'principal_name'  => 'Drs. Hendra Kusuma, M.Pd.',
+            'principal_nip'   => '19720315 199802 1 004',
+            'principal_title' => 'Kepala Sekolah',
+            'logo_school'     => $fakeLogo,
+            'logo_government' => $fakePemprov,
+            'signature'       => $fakeSig,
+        ]);
+
+        $updateRes->assertSessionHas('toast');
+        $this->school->refresh();
+
+        $this->assertEquals('SMK Negeri 1 Surabaya Unggulan', $this->school->name);
+        $this->assertEquals('20532219', $this->school->npsn);
+        $this->assertEquals('Negeri', $this->school->status_sekolah);
+        $this->assertEquals('Drs. Hendra Kusuma, M.Pd.', $this->school->principal_name);
+        $this->assertEquals('19720315 199802 1 004', $this->school->principal_nip);
+        $this->assertNotNull($this->school->logo_url);
+        $this->assertNotNull($this->school->logo_government_url);
+        $this->assertNotNull($this->school->signature_url);
+
+        // 5. Verify Kop Surat and Principal data render in print views
+        $period = date('Y-m');
+        $print = $this->actingAs($this->bendahara)->get(route('reports.financial.print', ['period' => $period]));
+        $print->assertStatus(200);
+        $print->assertSee('PEMERINTAH PROVINSI JAWA TIMUR');
+        $print->assertSee('DINAS PENDIDIKAN WILAYAH SURABAYA');
+        $print->assertSee('SMK NEGERI 1 SURABAYA');
+        $print->assertSee('Drs. Hendra Kusuma, M.Pd.');
+        $print->assertSee('19720315 199802 1 004');
+
+        // Cleanup fake uploaded files
+        foreach ([$this->school->logo_url, $this->school->logo_government_url, $this->school->signature_url] as $path) {
+            if ($path && file_exists(public_path($path))) {
+                @unlink(public_path($path));
+            }
+        }
+    }
 }
 
 

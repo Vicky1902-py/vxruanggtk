@@ -67,7 +67,17 @@
 
 {{-- Mutasi Transaksi Tabungan Full Width --}}
 <div class="glass panel" id="print-area">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+  <div class="only-print" style="display:none;margin-bottom:16px">
+    @include('partials.kop-surat', ['school' => auth()->user()->school])
+    <div style="text-align:center;margin-bottom:14px">
+      <h3 style="margin:0;font-size:16px;text-transform:uppercase;letter-spacing:1px;color:#0f172a">BUKU CATATAN REKENING TABUNGAN SISWA</h3>
+      <div style="font-size:12px;color:#475569;margin-top:3px">
+        No. Rekening: <b>TAB-{{ str_pad($student->id, 5, '0', STR_PAD_LEFT) }}</b> · Nama: <b>{{ $student->full_name }}</b> (NIS: {{ $student->nis ?? '—' }})
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px" class="screen-only">
     <h2 class="panel-title" style="margin:0">
       <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
       Mutasi Transaksi Simpanan
@@ -123,16 +133,35 @@
   </div>
 
   @if ($transactions->hasPages())
-    <div style="margin-top:14px">{{ $transactions->links() }}</div>
+    <div style="margin-top:14px" class="screen-only">{{ $transactions->links() }}</div>
   @endif
+
+  <div class="only-print" style="display:none;margin-top:36px">
+    <div style="display:flex;justify-content:space-between;padding:0 24px;text-align:center;font-size:12px;color:#0f172a">
+      <div style="width:200px">
+        <div>Pemegang Rekening Siswa,</div>
+        <div style="height:55px"></div>
+        <div style="border-bottom:1px solid #0f172a;font-weight:700;padding-bottom:2px">{{ $student->full_name }}</div>
+        <div style="font-size:11px;color:#475569;margin-top:2px">NIS. {{ $student->nis ?? '—' }}</div>
+      </div>
+      <div style="width:200px">
+        <div>Petugas Tabungan / Kasir,</div>
+        <div style="height:55px"></div>
+        <div style="border-bottom:1px solid #0f172a;font-weight:700;padding-bottom:2px">{{ auth()->user()->username }}</div>
+        <div style="font-size:11px;color:#475569;margin-top:2px">Petugas Tata Usaha</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <style>
 @media print {
   body { background: #fff !important; color: #000 !important; }
-  .sidebar, .nav-head, .page-head div:last-child, .btn, .cs-pill { display: none !important; }
+  .sidebar, .nav-head, .page-head, .btn, .cs-pill, .screen-only, div[style*="grid-template-columns:320px"] { display: none !important; }
   .main { margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
-  .panel { border: 1px solid #ccc !important; box-shadow: none !important; }
+  .panel { border: none !important; box-shadow: none !important; padding: 0 !important; }
+  .only-print { display: block !important; }
+  .tbl th, .tbl td { border-color: #cbd5e1 !important; color: #000 !important; }
 }
 </style>
 @endsection

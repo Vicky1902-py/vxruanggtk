@@ -40,9 +40,9 @@
     .salary-table th { background: #f1f5f9; color: #475569; padding: 10px 12px; text-align: left; font-size: 12px; text-transform: uppercase; }
     .salary-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
     .total-row { background: #f8fafc; font-weight: 800; font-size: 15px; }
-    .signatures { display: flex; justify-content: space-between; margin-top: 40px; padding: 0 20px; text-align: center; }
-    .sig-box { width: 200px; font-size: 12.5px; }
-    .sig-line { margin-top: 60px; border-bottom: 1px dashed #94a3b8; font-weight: 700; padding-bottom: 4px; }
+    .signatures { display: flex; justify-content: space-between; margin-top: 36px; padding: 0 10px; text-align: center; gap: 16px; }
+    .sig-box { flex: 1; max-width: 210px; font-size: 12px; }
+    .sig-line { margin-top: 8px; border-bottom: 1px dashed #94a3b8; font-weight: 700; padding-bottom: 4px; }
     .btn-print {
       position: fixed;
       top: 20px;
@@ -69,13 +69,11 @@
 <button class="btn-print" onclick="window.print()">🖨️ Cetak Slip Gaji</button>
 
 <div class="slip-card">
-  <div class="slip-header">
-    <div>
-      <h1 class="school-title">{{ $school?->name ?? 'SMK / SMA Negeri' }}</h1>
-      <div class="school-sub">Sistem Informasi Manajemen Sekolah &amp; GTK · Bukti Sah Pembayaran Honorarium</div>
-    </div>
+  @include('partials.kop-surat', ['school' => $school])
+
+  <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
     <div class="badge-period">
-      {{ \Illuminate\Support\Carbon::parse($payroll->period . '-01')->translatedFormat('F Y') }}
+      Periode: {{ \Illuminate\Support\Carbon::parse($payroll->period . '-01')->translatedFormat('F Y') }}
     </div>
   </div>
 
@@ -144,11 +142,32 @@
   <div class="signatures">
     <div class="sig-box">
       <div>Penerima / Pegawai,</div>
+      <div style="height:50px"></div>
       <div class="sig-line">{{ $employee->full_name }}</div>
+      @if ($employee->nip)
+        <div style="font-size:11px;color:#64748b;margin-top:2px">NIP. {{ $employee->nip }}</div>
+      @endif
     </div>
     <div class="sig-box">
       <div>Bendahara Sekolah,</div>
+      <div style="height:50px"></div>
       <div class="sig-line">Bendahara GTK</div>
+      <div style="font-size:11px;color:#64748b;margin-top:2px">NIP. —</div>
+    </div>
+    <div class="sig-box">
+      <div>Mengetahui,</div>
+      <div style="font-weight:600">{{ $school?->principal_title ?? 'Kepala Sekolah' }}</div>
+      @if ($school?->signature_url)
+        <div style="height:50px;display:flex;align-items:center;justify-content:center">
+          <img src="{{ asset($school->signature_url) }}" style="max-height:46px;max-width:130px;object-fit:contain">
+        </div>
+      @else
+        <div style="height:50px"></div>
+      @endif
+      <div class="sig-line">{{ $school?->principal_name ?? 'Kepala Sekolah' }}</div>
+      @if ($school?->principal_nip)
+        <div style="font-size:11px;color:#64748b;margin-top:2px">NIP. {{ $school->principal_nip }}</div>
+      @endif
     </div>
   </div>
 </div>

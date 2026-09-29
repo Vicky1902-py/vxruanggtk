@@ -356,18 +356,14 @@
 <dialog class="dlg" id="receipt-{{ $bill->id }}" style="max-width:540px">
   <div class="modal-box" style="padding:20px">
     <div class="receipt-box" id="print-area-{{ $bill->id }}">
-      <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--accent);padding-bottom:12px;margin-bottom:14px">
-        <div>
-          <h2 style="font-size:17px;font-weight:800;color:var(--text);margin:0">{{ auth()->user()->school->name }}</h2>
-          <div style="font-size:12px;color:var(--muted)">Sistem Informasi Manajemen Sekolah · Ruang GTK</div>
-        </div>
-        <div style="text-align:right">
-          <span class="badge badge-ok" style="font-size:11.5px">BUKTI RESMI</span>
-          <div style="font-size:11px;color:var(--muted);margin-top:3px">No: KW-{{ str_pad($bill->id, 5, '0', STR_PAD_LEFT) }}</div>
-        </div>
+      @include('partials.kop-surat', ['school' => auth()->user()->school])
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;background:#f1f5f9;padding:6px 12px;border-radius:var(--radius-sm)">
+        <span class="badge badge-ok" style="font-size:11.5px">BUKTI RESMI PEMBAYARAN</span>
+        <div style="font-size:12px;color:var(--muted);font-weight:700">No: KW-{{ str_pad($bill->id, 5, '0', STR_PAD_LEFT) }}</div>
       </div>
 
-      <div style="text-align:center;margin-bottom:16px">
+      <div style="text-align:center;margin-bottom:14px">
         <h3 style="font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:var(--accent);margin:0">Kuitansi Pembayaran Siswa</h3>
       </div>
 

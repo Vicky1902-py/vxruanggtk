@@ -31,7 +31,7 @@
     .total-row { background: #f8fafc; font-weight: 800; font-size: 12.5px; }
     .signatures { display: flex; justify-content: space-between; margin-top: 40px; padding: 0 30px; text-align: center; }
     .sig-box { width: 220px; font-size: 12px; }
-    .sig-line { margin-top: 65px; border-bottom: 1px solid #0f172a; font-weight: 700; padding-bottom: 4px; }
+    .sig-line { margin-top: 8px; border-bottom: 1px solid #0f172a; font-weight: 700; padding-bottom: 4px; }
     .btn-print {
       position: fixed;
       top: 20px;
@@ -58,10 +58,7 @@
 <button class="btn-print" onclick="window.print()">🖨️ Cetak Dokumen BKU</button>
 
 <div class="print-card">
-  <div class="kop">
-    <h1>{{ $school->name }}</h1>
-    <p>Sistem Informasi Manajemen Sekolah &amp; Tata Usaha Terpadu (Ruang GTK)</p>
-  </div>
+  @include('partials.kop-surat', ['school' => $school])
 
   <div class="title-box">
     <h2>BUKU KAS UMUM (BKU) SEKOLAH</h2>
@@ -114,13 +111,25 @@
   <div class="signatures">
     <div class="sig-box">
       <div>Mengetahui,</div>
-      <div>Kepala Sekolah</div>
-      <div class="sig-line">Kepala Sekolah</div>
+      <div style="font-weight:600">{{ $school->principal_title ?? 'Kepala Sekolah' }}</div>
+      @if ($school->signature_url)
+        <div style="height:55px;display:flex;align-items:center;justify-content:center">
+          <img src="{{ asset($school->signature_url) }}" style="max-height:50px;max-width:140px;object-fit:contain">
+        </div>
+      @else
+        <div style="height:55px"></div>
+      @endif
+      <div class="sig-line">{{ $school->principal_name ?? 'Kepala Sekolah' }}</div>
+      @if ($school->principal_nip)
+        <div style="font-size:11px;color:#475569;margin-top:2px">NIP. {{ $school->principal_nip }}</div>
+      @endif
     </div>
     <div class="sig-box">
       <div>Dibuat Oleh,</div>
-      <div>Bendahara Sekolah</div>
+      <div style="font-weight:600">Bendahara Sekolah</div>
+      <div style="height:55px"></div>
       <div class="sig-line">Bendahara Sekolah</div>
+      <div style="font-size:11px;color:#475569;margin-top:2px">NIP. —</div>
     </div>
   </div>
 </div>
