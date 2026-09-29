@@ -132,7 +132,7 @@
       <div class="god-bar-chart-container">
         @foreach ($trafficList as $index => $tDay)
           @php
-            $heightPercent = max(12, round(($tDay['requests'] / $maxRequests) * 100));
+            $heightPercent = max(14, min(80, round(($tDay['requests'] / $maxRequests) * 80)));
             // Jadikan hari dengan request tertinggi atau hari ke-4 sebagai bar aktif beraksen ungu
             $isActiveBar = ($tDay['requests'] === $maxRequests) || ($index === 4);
           @endphp

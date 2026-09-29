@@ -5,8 +5,8 @@
 {{-- Centered Frosted Glass Navigation Pill (ConSentinel Style) --}}
 <nav class="landing-nav glass-soft" aria-label="Navigasi utama">
   <a href="{{ route('landing') }}" class="brand-ruanggtk" style="padding:0 8px">
-    <img src="{{ asset('img/logo.svg') }}" alt="Logo" style="width:26px;height:26px;border-radius:8px">
-    <span class="brand-ruanggtk-text" style="font-size:16px">Ruang<span class="gtk-tag">GTK</span></span>
+    <img src="{{ asset(\App\Models\SiteSetting::get('site_logo', 'img/logo.svg')) }}" alt="Logo" style="width:28px;height:28px;border-radius:8px;object-fit:contain">
+    <span class="brand-ruanggtk-text" style="font-size:16px">{{ \App\Models\SiteSetting::get('site_name', 'Ruang GTK') }}</span>
     <span class="brand-beam"></span>
   </a>
   <a href="#fitur">Fitur</a>
@@ -27,8 +27,7 @@
     </div>
 
     <h1 class="hero-animated-title">
-      Satu ruang cerdas untuk <br>
-      <span class="highlight-caustic">Ruang GTK</span> &amp; institusi Anda.
+      {!! nl2br(e(\App\Models\SiteSetting::get('site_headline', "Satu ruang cerdas untuk \n Ruang GTK & institusi Anda."))) !!}
     </h1>
 
     <p class="lede">{{ $tagline }}</p>
@@ -184,12 +183,22 @@
   </div>
 </section>
 
+{{-- AdSense In-Article / Banner Ad Section if enabled --}}
+@if (\App\Models\SiteSetting::get('adsense_enabled') && ($bannerCode = \App\Models\SiteSetting::get('adsense_banner_code')))
+  <section style="max-width:1100px;margin:30px auto;padding:0 24px;text-align:center">
+    <div style="background:#ffffff;border:1px dashed #cbd5e1;border-radius:14px;padding:16px;overflow:hidden">
+      <small style="color:#94a3b8;display:block;margin-bottom:8px;font-size:11px;text-transform:uppercase;letter-spacing:0.05em">Sponsor / Iklan Mitra</small>
+      {!! $bannerCode !!}
+    </div>
+  </section>
+@endif
+
 {{-- Footer --}}
 <footer class="landing-foot">
   <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
     <a href="{{ route('landing') }}" class="brand-ruanggtk">
-      <img src="{{ asset('img/logo.svg') }}" alt="" style="width:24px;height:24px;border-radius:7px;vertical-align:middle">
-      <span class="brand-ruanggtk-text" style="font-size:16px">Ruang<span class="gtk-tag">GTK</span></span>
+      <img src="{{ asset(\App\Models\SiteSetting::get('site_logo', 'img/logo.svg')) }}" alt="Logo" style="width:24px;height:24px;border-radius:7px;vertical-align:middle;object-fit:contain">
+      <span class="brand-ruanggtk-text" style="font-size:16px">{{ \App\Models\SiteSetting::get('site_name', 'Ruang GTK') }}</span>
     </a>
     <span>© {{ date('Y') }} <b style="color:var(--text)">Vicky Koroh</b> — Hak Cipta Dilindungi · {{ $footerText }}</span>
   </div>

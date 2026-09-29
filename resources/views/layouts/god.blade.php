@@ -48,7 +48,13 @@
         Dashboard
       </a>
       <a href="{{ route('god.cms') }}" class="god-seg-item {{ request()->routeIs('god.cms') ? 'active' : '' }}">
-        CMS Situs
+        Branding &amp; CMS
+      </a>
+      <a href="{{ route('god.seo') }}" class="god-seg-item {{ request()->routeIs('god.seo') ? 'active' : '' }}">
+        SEO &amp; AdSense
+      </a>
+      <a href="{{ route('god.server') }}" class="god-seg-item {{ request()->routeIs('god.server') ? 'active' : '' }}">
+        Server &amp; DB
       </a>
       <a href="{{ route('god.pages') }}" class="god-seg-item {{ request()->routeIs('god.pages') ? 'active' : '' }}">
         Halaman

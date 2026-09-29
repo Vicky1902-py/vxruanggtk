@@ -4,8 +4,8 @@
 @section('content')
 <nav class="landing-nav glass-soft" aria-label="Navigasi">
   <a href="{{ route('landing') }}" class="brand-ruanggtk" style="padding:0 8px">
-    <img src="{{ asset('img/logo.svg') }}" alt="Logo" style="width:24px;height:24px;border-radius:7px">
-    <span class="brand-ruanggtk-text" style="font-size:15px">Ruang<span class="gtk-tag">GTK</span></span>
+    <img src="{{ asset(\App\Models\SiteSetting::get('site_logo', 'img/logo.svg')) }}" alt="Logo" style="width:26px;height:26px;border-radius:7px;object-fit:contain">
+    <span class="brand-ruanggtk-text" style="font-size:15px">{{ \App\Models\SiteSetting::get('site_name', 'Ruang GTK') }}</span>
     <span class="brand-beam"></span>
   </a>
   <a href="{{ route('landing') }}">← Beranda</a>
@@ -17,7 +17,7 @@
     <div style="margin-bottom:12px">
       <span class="cs-pill" style="font-size:11px"><span class="dot"></span> Halaman Publik</span>
     </div>
-    <h1 style="font-size:clamp(26px,4vw,38px);letter-spacing:-.035em;margin-bottom:14px;color:#ffffff">{{ $page->title }}</h1>
+    <h1 style="font-size:clamp(26px,4vw,38px);letter-spacing:-.035em;margin-bottom:14px;color:#0f172a">{{ $page->title }}</h1>
     <div class="ann-meta" style="margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--line-light)">
       <span class="badge badge-blue">Diperbarui: {{ $page->updated_at->translatedFormat('d F Y') }}</span>
     </div>
@@ -30,8 +30,8 @@
 <footer class="landing-foot">
   <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
     <a href="{{ route('landing') }}" class="brand-ruanggtk">
-      <img src="{{ asset('img/logo.svg') }}" alt="" style="width:22px;height:22px;border-radius:6px;vertical-align:middle">
-      <span class="brand-ruanggtk-text" style="font-size:15px">Ruang<span class="gtk-tag">GTK</span></span>
+      <img src="{{ asset(\App\Models\SiteSetting::get('site_logo', 'img/logo.svg')) }}" alt="" style="width:22px;height:22px;border-radius:6px;vertical-align:middle;object-fit:contain">
+      <span class="brand-ruanggtk-text" style="font-size:15px">{{ \App\Models\SiteSetting::get('site_name', 'Ruang GTK') }}</span>
     </a>
     <span>© {{ date('Y') }} <b style="color:var(--text)">Vicky Koroh</b> — Hak Cipta Dilindungi</span>
   </div>

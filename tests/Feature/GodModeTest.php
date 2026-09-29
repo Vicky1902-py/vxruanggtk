@@ -314,4 +314,114 @@ class GodModeTest extends TestCase
         $response->assertRedirect();
         $response->assertSessionHas('toast');
     }
+
+    public function test_super_admin_can_view_and_save_seo_and_adsense(): void
+    {
+        $response = $this->actingAs($this->superAdmin, 'super')
+            ->get(route('god.seo'));
+
+        $response->assertOk();
+        $response->assertSee('Google Search Console & Analytics');
+        $response->assertSee('Google AdSense');
+
+        $postResponse = $this->actingAs($this->superAdmin, 'super')
+            ->post(route('god.seo.save'), [
+                'google_site_verification' => 'google-meta-code-xyz',
+                'ga4_measurement_id'       => 'G-TEST12345',
+                'seo_meta_title'           => 'SIM Sekolah Terbaik',
+                'seo_meta_description'     => 'Deskripsi lengkap platform SIM sekolah modern.',
+                'seo_meta_keywords'        => 'ruang gtk, sim, sekolah',
+                'adsense_enabled'          => '1',
+                'adsense_client_id'        => 'ca-pub-9988776655443322',
+                'adsense_auto_ads'         => '1',
+                'ads_txt'                  => "google.com, pub-9988776655443322, DIRECT, f08c47fec0942fa0\n",
+            ]);
+
+        $postResponse->assertRedirect();
+        $postResponse->assertSessionHas('toast');
+
+        $this->assertEquals('google-meta-code-xyz', \App\Models\SiteSetting::get('google_site_verification'));
+        $this->assertEquals('ca-pub-9988776655443322', \App\Models\SiteSetting::get('adsense_client_id'));
+    }
+
+    public function test_public_ads_txt_and_sitemap_xml(): void
+    {
+        \App\Models\SiteSetting::set('ads_txt', "google.com, pub-12345, DIRECT, f08c47fec0942fa0\n");
+
+        $adsResponse = $this->get('/ads.txt');
+        $adsResponse->assertOk();
+        $adsResponse->assertHeader('Content-Type', 'text/plain; charset=utf-8');
+        $this->assertStringContainsString('pub-12345', $adsResponse->getContent());
+
+        $sitemapResponse = $this->get('/sitemap.xml');
+        $sitemapResponse->assertOk();
+        $sitemapResponse->assertHeader('Content-Type', 'application/xml; charset=utf-8');
+        $this->assertStringContainsString('<urlset', $sitemapResponse->getContent());
+    }
+
+    public function test_super_admin_can_view_server_maintenance_and_live_traffic(): void
+    {
+        $response = $this->actingAs($this->superAdmin, 'super')
+            ->get(route('god.server'));
+
+        $response->assertOk();
+        $response->assertSee('Trafik Langsung Real-Time (Live Feed)');
+        $response->assertSee('Pembersihan & Optimasi Database');
+
+        $trafficResponse = $this->actingAs($this->superAdmin, 'super')
+            ->get(route('god.server.live-traffic'));
+
+        $trafficResponse->assertOk();
+        $trafficResponse->assertJsonStructure([
+            'success',
+            'data',
+        ]);
+    }
+
+    public function test_super_admin_can_download_database_backup(): void
+    {
+        $response = $this->actingAs($this->superAdmin, 'super')
+            ->get(route('god.server.backup'));
+
+        $response->assertOk();
+        $this->assertTrue(
+            $response->headers->contains('content-type', 'application/x-sqlite3') ||
+            $response->headers->contains('content-type', 'application/sql')
+        );
+    }
+
+    public function test_super_admin_can_clean_database(): void
+    {
+        $response = $this->actingAs($this->superAdmin, 'super')
+            ->post(route('god.server.clean-database'));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('toast');
+    }
+
+    public function test_super_admin_can_update_branding_and_logo_settings(): void
+    {
+        $response = $this->actingAs($this->superAdmin, 'super')
+            ->get(route('god.cms'));
+
+        $response->assertOk();
+        $response->assertSee('Identitas Brand & Konten Landing');
+
+        $saveResponse = $this->actingAs($this->superAdmin, 'super')
+            ->post(route('god.cms.save'), [
+                'site_name'        => 'Ruang GTK Pro',
+                'site_headline'    => 'Platform Manajemen Sekolah Pintar',
+                'site_tagline'     => 'Solusi komprehensif seluruh sekolah Indonesia.',
+                'site_logo'        => 'img/custom-logo.svg',
+                'site_favicon'     => 'img/custom-favicon.ico',
+                'site_hero_image'  => 'img/custom-hero.svg',
+                'site_footer_text' => 'Ruang GTK 2026',
+            ]);
+
+        $saveResponse->assertRedirect();
+        $saveResponse->assertSessionHas('toast');
+
+        $this->assertEquals('Ruang GTK Pro', \App\Models\SiteSetting::get('site_name'));
+        $this->assertEquals('Platform Manajemen Sekolah Pintar', \App\Models\SiteSetting::get('site_headline'));
+    }
 }

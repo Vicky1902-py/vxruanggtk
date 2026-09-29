@@ -11,11 +11,13 @@ use App\Models\SiteSetting;
 use App\Models\Student;
 use App\Models\SuperAdmin;
 use App\Models\User;
+use App\Services\DatabaseBackupService;
 use App\Services\ServerTelemetryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -248,13 +250,20 @@ class GodController extends Controller
         return redirect()->route('dashboard');
     }
 
-    // ── CMS: Landing & Pengaturan Situs ──────────────────────
+    // ── CMS & Branding: Landing & Pengaturan Situs ───────────
     public function cms()
     {
         $settings = [
-            'site_tagline' => SiteSetting::get('site_tagline', 'Sistem Informasi Manajemen Sekolah multi-tenant'),
-            'site_hero_image' => SiteSetting::get('site_hero_image', 'img/hero.svg'),
+            'site_name'        => SiteSetting::get('site_name', 'Ruang GTK'),
+            'site_headline'    => SiteSetting::get('site_headline', 'Satu ruang cerdas untuk Ruang GTK & institusi Anda.'),
+            'site_tagline'     => SiteSetting::get('site_tagline', 'Sistem Informasi Manajemen Sekolah multi-tenant — kelola siswa, guru, presensi, tagihan, dan pengumuman dalam satu tampilan yang tenang dan modern.'),
+            'site_hero_image'  => SiteSetting::get('site_hero_image', 'img/hero.svg'),
+            'site_logo'        => SiteSetting::get('site_logo', 'img/logo.svg'),
+            'site_favicon'     => SiteSetting::get('site_favicon', 'img/logo.svg'),
             'site_footer_text' => SiteSetting::get('site_footer_text', 'Ruang GTK — Sistem Informasi Manajemen Sekolah'),
+            'contact_email'    => SiteSetting::get('contact_email', 'admin@ruanggtk.my.id'),
+            'contact_phone'    => SiteSetting::get('contact_phone', '+62 812-3456-7890'),
+            'contact_address'  => SiteSetting::get('contact_address', 'Indonesia'),
         ];
 
         return view('god.cms', compact('settings'));
@@ -263,16 +272,148 @@ class GodController extends Controller
     public function saveCms(Request $request)
     {
         $data = $request->validate([
-            'site_tagline' => ['required', 'string', 'max:300'],
-            'site_hero_image' => ['required', 'string', 'max:200'],
-            'site_footer_text' => ['required', 'string', 'max:200'],
+            'site_name'          => ['nullable', 'string', 'max:100'],
+            'site_headline'      => ['nullable', 'string', 'max:255'],
+            'site_tagline'       => ['required', 'string', 'max:500'],
+            'site_hero_image'    => ['nullable', 'string', 'max:255'],
+            'site_logo'          => ['nullable', 'string', 'max:255'],
+            'site_favicon'       => ['nullable', 'string', 'max:255'],
+            'site_footer_text'   => ['required', 'string', 'max:255'],
+            'contact_email'      => ['nullable', 'email', 'max:100'],
+            'contact_phone'      => ['nullable', 'string', 'max:50'],
+            'contact_address'    => ['nullable', 'string', 'max:255'],
+
+            'site_logo_file'     => ['nullable', 'image', 'mimes:png,jpg,jpeg,svg,webp', 'max:2048'],
+            'site_favicon_file'  => ['nullable', 'mimes:ico,png,svg,jpg,jpeg,webp', 'max:1024'],
+            'site_hero_file'     => ['nullable', 'image', 'mimes:png,jpg,jpeg,svg,webp', 'max:4096'],
         ]);
+
+        $uploadDir = public_path('uploads/branding');
+        if (!File::isDirectory($uploadDir)) {
+            File::makeDirectory($uploadDir, 0755, true, true);
+        }
+
+        // Upload Logo Utama Landing
+        if ($request->hasFile('site_logo_file')) {
+            $file = $request->file('site_logo_file');
+            $filename = 'logo_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move($uploadDir, $filename);
+            SiteSetting::set('site_logo', 'uploads/branding/' . $filename);
+        } elseif (!empty($data['site_logo'])) {
+            SiteSetting::set('site_logo', $data['site_logo']);
+        }
+
+        // Upload Favicon
+        if ($request->hasFile('site_favicon_file')) {
+            $file = $request->file('site_favicon_file');
+            $filename = 'favicon_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move($uploadDir, $filename);
+            SiteSetting::set('site_favicon', 'uploads/branding/' . $filename);
+        } elseif (!empty($data['site_favicon'])) {
+            SiteSetting::set('site_favicon', $data['site_favicon']);
+        }
+
+        // Upload Hero Image
+        if ($request->hasFile('site_hero_file')) {
+            $file = $request->file('site_hero_file');
+            $filename = 'hero_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move($uploadDir, $filename);
+            SiteSetting::set('site_hero_image', 'uploads/branding/' . $filename);
+        } elseif (!empty($data['site_hero_image'])) {
+            SiteSetting::set('site_hero_image', $data['site_hero_image']);
+        }
+
+        // Simpan text settings lainnya
+        $textKeys = [
+            'site_name', 'site_headline', 'site_tagline', 'site_footer_text',
+            'contact_email', 'contact_phone', 'contact_address',
+        ];
+
+        foreach ($textKeys as $key) {
+            if (array_key_exists($key, $data)) {
+                SiteSetting::set($key, $data[$key]);
+            }
+        }
+
+        return back()->with('toast', 'Pengaturan branding & CMS situs berhasil disimpan.');
+    }
+
+    // ── SEO, Search Console & Google AdSense ──────────────────
+    public function seo()
+    {
+        $settings = [
+            'google_site_verification' => SiteSetting::get('google_site_verification', ''),
+            'ga4_measurement_id'       => SiteSetting::get('ga4_measurement_id', ''),
+            'seo_meta_title'           => SiteSetting::get('seo_meta_title', 'Ruang GTK — Sistem Informasi Manajemen Sekolah Modern'),
+            'seo_meta_description'     => SiteSetting::get('seo_meta_description', 'Platform Sistem Informasi Manajemen Sekolah multi-tenant terpadu untuk siswa, GTK, absensi, keuangan SPP, persuratan dan administrasi akademik.'),
+            'seo_meta_keywords'        => SiteSetting::get('seo_meta_keywords', 'ruang gtk, aplikasi sekolah, sim sekolah, spp sekolah, presensi siswa, sistem informasi manajemen sekolah, buku agenda persuratan'),
+            'adsense_enabled'          => (bool) SiteSetting::get('adsense_enabled', '0'),
+            'adsense_client_id'        => SiteSetting::get('adsense_client_id', ''),
+            'adsense_auto_ads'         => (bool) SiteSetting::get('adsense_auto_ads', '1'),
+            'adsense_banner_code'      => SiteSetting::get('adsense_banner_code', ''),
+            'ads_txt'                  => SiteSetting::get('ads_txt', "google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0\n"),
+            'custom_head_code'         => SiteSetting::get('custom_head_code', ''),
+            'custom_footer_code'       => SiteSetting::get('custom_footer_code', ''),
+        ];
+
+        return view('god.seo', compact('settings'));
+    }
+
+    public function saveSeo(Request $request)
+    {
+        $data = $request->validate([
+            'google_site_verification' => ['nullable', 'string', 'max:500'],
+            'ga4_measurement_id'       => ['nullable', 'string', 'max:50'],
+            'seo_meta_title'           => ['nullable', 'string', 'max:200'],
+            'seo_meta_description'     => ['nullable', 'string', 'max:500'],
+            'seo_meta_keywords'        => ['nullable', 'string', 'max:500'],
+            'adsense_enabled'          => ['nullable', 'boolean'],
+            'adsense_client_id'        => ['nullable', 'string', 'max:100'],
+            'adsense_auto_ads'         => ['nullable', 'boolean'],
+            'adsense_banner_code'      => ['nullable', 'string'],
+            'ads_txt'                  => ['nullable', 'string'],
+            'custom_head_code'         => ['nullable', 'string'],
+            'custom_footer_code'       => ['nullable', 'string'],
+        ]);
+
+        $data['adsense_enabled'] = $request->boolean('adsense_enabled') ? '1' : '0';
+        $data['adsense_auto_ads'] = $request->boolean('adsense_auto_ads') ? '1' : '0';
 
         foreach ($data as $key => $value) {
             SiteSetting::set($key, $value);
         }
 
-        return back()->with('toast', 'Pengaturan situs tersimpan.');
+        return back()->with('toast', 'Pengaturan SEO, Google Search Console, dan AdSense tersimpan.');
+    }
+
+    // ── Pemeliharaan Server, Database Backup, Cleanup & Live Traffic ──
+    public function serverMaintenance(ServerTelemetryService $telemetryService)
+    {
+        $telemetry = $telemetryService->getFullTelemetry();
+        $liveTraffic = $telemetryService->getLiveTrafficFeed();
+        $dbDriver = DB::getDriverName();
+
+        return view('god.server', compact('telemetry', 'liveTraffic', 'dbDriver'));
+    }
+
+    public function downloadBackup(DatabaseBackupService $backupService)
+    {
+        return $backupService->downloadBackup();
+    }
+
+    public function cleanDatabase(DatabaseBackupService $backupService)
+    {
+        $result = $backupService->cleanAndOptimize();
+
+        return back()->with('toast', $result['summary']);
+    }
+
+    public function liveTraffic(ServerTelemetryService $telemetryService)
+    {
+        return response()->json([
+            'success' => true,
+            'data'    => $telemetryService->getLiveTrafficFeed(),
+        ]);
     }
 
     // ── CMS: Halaman statis ──────────────────────────────────

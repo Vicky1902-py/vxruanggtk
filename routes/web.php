@@ -23,6 +23,17 @@ use Illuminate\Support\Facades\Route;
 // ── Publik ──────────────────────────────────────────────────
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/halaman/{slug}', [PublicPageController::class, 'show'])->name('page.show');
+Route::get('/ads.txt', function () {
+    $content = \App\Models\SiteSetting::get('ads_txt', "google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0\n");
+    return response($content, 200, ['Content-Type' => 'text/plain; charset=utf-8']);
+})->name('ads.txt');
+Route::get('/sitemap.xml', function () {
+    $pages = \App\Models\Page::where('status', 'published')->get();
+    $schools = \App\Models\School::where('is_active', true)->get();
+    return response()->view('sitemap', compact('pages', 'schools'), 200, [
+        'Content-Type' => 'application/xml; charset=utf-8',
+    ]);
+})->name('sitemap.xml');
 Route::get('/super', [SuperAuthController::class, 'showLogin'])->name('super.login');
 Route::post('/super', [SuperAuthController::class, 'login'])->name('super.attempt');
 Route::post('/super/keluar', [SuperAuthController::class, 'logout'])->name('super.logout');
@@ -37,6 +48,16 @@ Route::prefix('god')->name('god.')->middleware('auth.super')->group(function () 
     Route::post('server/clear-cache', [GodController::class, 'clearCache'])->name('server.clear-cache');
     Route::post('server/rebuild-cache', [GodController::class, 'rebuildCache'])->name('server.rebuild-cache');
 
+    // Pemeliharaan Server, Backup, Pembersihan DB & Live Traffic
+    Route::get('server', [GodController::class, 'serverMaintenance'])->name('server');
+    Route::get('server/backup', [GodController::class, 'downloadBackup'])->name('server.backup');
+    Route::post('server/clean-database', [GodController::class, 'cleanDatabase'])->name('server.clean-database');
+    Route::get('server/live-traffic', [GodController::class, 'liveTraffic'])->name('server.live-traffic');
+
+    // SEO, Google Search Console & Google AdSense
+    Route::get('seo', [GodController::class, 'seo'])->name('seo');
+    Route::post('seo', [GodController::class, 'saveSeo'])->name('seo.save');
+
     // Kelola sekolah
     Route::post('sekolah', [GodController::class, 'storeSchool'])->name('schools.store');
     Route::put('sekolah/{school}', [GodController::class, 'updateSchool'])->name('schools.update');
@@ -46,7 +67,7 @@ Route::prefix('god')->name('god.')->middleware('auth.super')->group(function () 
     Route::post('sekolah/{school}/impersonate', [GodController::class, 'impersonate'])->name('impersonate');
     Route::post('users/{user}/impersonate', [GodController::class, 'impersonateUser'])->name('impersonate.user');
 
-    // CMS
+    // CMS & Halaman
     Route::get('cms', [GodController::class, 'cms'])->name('cms');
     Route::post('cms', [GodController::class, 'saveCms'])->name('cms.save');
     Route::get('halaman', [GodController::class, 'pages'])->name('pages');

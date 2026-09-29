@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\EnsureRole::class,
             'auth.super' => \App\Http\Middleware\EnsureSuperAdmin::class,
         ]);
+        $middleware->web(append: [
+            \App\Http\Middleware\RecordLiveTraffic::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

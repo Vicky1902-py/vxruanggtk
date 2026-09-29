@@ -2885,14 +2885,16 @@ body.has-god-bar .mobile-header {
 
 /* SOFT PURPLE BAR CHART */
 .god-bar-chart-container {
-  height: 200px;
+  height: 220px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 12px;
-  padding-top: 40px;
+  padding-top: 48px;
+  padding-bottom: 6px;
   position: relative;
   border-bottom: 1px solid #f1f5f9;
+  overflow: visible;
 }
 
 .god-bar-chart-col {
@@ -2906,9 +2908,9 @@ body.has-god-bar .mobile-header {
 }
 
 .god-bar-track {
-  flex: 1;
+  height: 135px;
   width: 100%;
-  max-width: 48px;
+  max-width: 44px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
