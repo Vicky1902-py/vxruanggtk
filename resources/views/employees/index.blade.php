@@ -12,6 +12,10 @@
     <div class="sub">Direktori seluruh guru dan tenaga kependidikan sekolah beserta jabatan fungsional.</div>
   </div>
   <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button type="button" class="btn btn-sm btn-ink" data-dialog="#dlg-create-employee">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+      + Tambah Pegawai
+    </button>
     <a href="{{ route('employees.export') }}" class="btn btn-sm" title="Unduh seluruh data GTK ke Excel (.xlsx)">
       <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
       Export Excel (.xlsx)
@@ -27,55 +31,9 @@
   </div>
 </div>
 
-<div class="two-col">
-  {{-- Form Tambah Pegawai --}}
-  <div class="glass panel">
-    <h2 class="panel-title">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
-      Tambah Pegawai Baru
-    </h2>
-    <form method="POST" action="{{ route('employees.store') }}" class="stack">
-      @csrf
-      <div class="field">
-        <label>Nama Lengkap &amp; Gelar *</label>
-        <input name="full_name" class="input" placeholder="mis. Dra. Siti Rahma, M.Pd" required>
-      </div>
-
-      <div class="field">
-        <label>NIP / NUPTK</label>
-        <input name="nip" class="input" placeholder="mis. 19800512 200501 1 002">
-      </div>
-
-      <div class="field">
-        <label>Jabatan Fungsional</label>
-        <select name="position_id" class="select">
-          <option value="">— Belum ditentukan —</option>
-          @foreach ($positions as $position)
-            <option value="{{ $position->id }}">{{ $position->name }}</option>
-          @endforeach
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Akun Login Guru/Staf (Opsional)</label>
-        <input name="username" class="input" placeholder="mis. siti.rahma (kata sandi default: password)">
-      </div>
-
-      <div class="field">
-        <label>Status Kepegawaian</label>
-        <select name="status" class="select">
-          <option value="aktif">🟢 Aktif Bertugas</option>
-          <option value="nonaktif">⚪ Nonaktif / Mutasi</option>
-        </select>
-      </div>
-
-      <button class="btn btn-ink" data-loading="Menyimpan Pegawai...">💾 Simpan Data GTK</button>
-    </form>
-  </div>
-
-  {{-- Tabel Pegawai --}}
-  <div class="glass table-wrap">
-    <table class="tbl">
+{{-- Tabel Pegawai Full Width --}}
+<div class="glass table-wrap">
+  <table class="tbl">
       <thead>
         <tr>
           <th>Nama Pegawai (GTK)</th>
@@ -132,7 +90,59 @@
       </tbody>
     </table>
   </div>
-</div>
+
+{{-- MODAL TAMBAH PEGAWAI BARU --}}
+<dialog id="dlg-create-employee" class="modal glass">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h3 style="margin:0;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px">
+        <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        Tambah Data Pegawai (GTK) Baru
+      </h3>
+      <button type="button" data-close class="modal-close" aria-label="Tutup">✕</button>
+    </div>
+    <form method="POST" action="{{ route('employees.store') }}" class="stack">
+      @csrf
+      <div class="field">
+        <label>Nama Lengkap &amp; Gelar *</label>
+        <input name="full_name" class="input" placeholder="mis. Dra. Siti Rahma, M.Pd" required>
+      </div>
+
+      <div class="field">
+        <label>NIP / NUPTK</label>
+        <input name="nip" class="input" placeholder="mis. 19800512 200501 1 002">
+      </div>
+
+      <div class="field">
+        <label>Jabatan Fungsional</label>
+        <select name="position_id" class="select">
+          <option value="">— Belum ditentukan —</option>
+          @foreach ($positions as $position)
+            <option value="{{ $position->id }}">{{ $position->name }}</option>
+          @endforeach
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Akun Login Guru/Staf (Opsional)</label>
+        <input name="username" class="input" placeholder="mis. siti.rahma (kata sandi default: password)">
+      </div>
+
+      <div class="field">
+        <label>Status Kepegawaian</label>
+        <select name="status" class="select">
+          <option value="aktif">🟢 Aktif Bertugas</option>
+          <option value="nonaktif">⚪ Nonaktif / Mutasi</option>
+        </select>
+      </div>
+
+      <div class="modal-actions" style="margin-top:16px">
+        <button type="button" class="btn" data-close>Batal</button>
+        <button class="btn btn-ink" data-loading="Menyimpan Pegawai...">💾 Simpan Data GTK</button>
+      </div>
+    </form>
+  </div>
+</dialog>
 
 {{-- MODAL IMPORT EXCEL GTK --}}
 <dialog id="import-employee" class="modal glass">

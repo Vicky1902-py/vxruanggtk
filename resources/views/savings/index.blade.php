@@ -12,6 +12,10 @@
     <div class="sub">Pencatatan setor-tarik tunai, buku mutasi tabungan siswa, dan rekap saldo kas titipan.</div>
   </div>
   <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button type="button" class="btn btn-sm btn-ink" data-dialog="#dialog-create-saving-tx">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      + Catat Transaksi Tabungan
+    </button>
     <a href="{{ route('savings.export', request()->all()) }}" class="btn btn-sm" title="Unduh rekap saldo tabungan seluruh siswa ke Excel (.xlsx)">
       <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
       Export Excel (.xlsx)
@@ -33,65 +37,14 @@
   </div>
 </div>
 
-<div class="two-col">
-  {{-- Form Transaksi Setor / Tarik --}}
-  <div class="glass panel">
-    <h2 class="panel-title">
-      <svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-      Catat Transaksi Tabungan
+{{-- Tabel Saldo Siswa Full Width --}}
+<div class="glass panel" style="display:flex;flex-direction:column;gap:14px">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <h2 class="panel-title" style="margin:0">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Daftar Saldo Tabungan Siswa
     </h2>
-    <form method="POST" action="{{ route('savings.store') }}" class="stack">
-      @csrf
-      <div class="field">
-        <label>Pilih Peserta Didik *</label>
-        <select name="student_id" class="select" required>
-          <option value="">— Cari / Pilih Nama Siswa —</option>
-          @foreach ($students as $st)
-            <option value="{{ $st->id }}" {{ old('student_id') == $st->id ? 'selected' : '' }}>
-              {{ $st->full_name }} ({{ $st->schoolClass ? 'Kelas ' . $st->schoolClass->name : 'Tanpa Kelas' }}) — Saldo: Rp {{ number_format($st->savingAccount?->balance ?? 0, 0, ',', '.') }}
-            </option>
-          @endforeach
-        </select>
-        @error('student_id') <span class="error-text">{{ $message }}</span> @enderror
-      </div>
-
-      <div class="field">
-        <label>Jenis Transaksi *</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:#ffffff;border:1.5px solid #cbd5e1;border-radius:var(--radius-sm);cursor:pointer">
-            <input type="radio" name="direction" value="setor" checked>
-            <b style="color:#10b981">📥 Setor Tabungan</b>
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:#ffffff;border:1.5px solid #cbd5e1;border-radius:var(--radius-sm);cursor:pointer">
-            <input type="radio" name="direction" value="tarik">
-            <b style="color:#ef4444">📤 Tarik Tabungan</b>
-          </label>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Nominal Transaksi (Rp) *</label>
-        <input type="number" name="amount" class="input" min="1000" step="500" placeholder="mis. 50000" required>
-        @error('amount') <span class="error-text">{{ $message }}</span> @enderror
-      </div>
-
-      <div class="field">
-        <label>Catatan / Keterangan (Opsional)</label>
-        <input type="text" name="note" class="input" placeholder="mis. Setoran mingguan / uang saku lomba">
-      </div>
-
-      <button class="btn btn-ink" data-loading="Menyimpan Transaksi...">💾 Simpan Transaksi</button>
-    </form>
   </div>
-
-  {{-- Tabel Saldo Siswa --}}
-  <div class="glass panel" style="display:flex;flex-direction:column;gap:14px">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-      <h2 class="panel-title" style="margin:0">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
-        Daftar Saldo Tabungan Siswa
-      </h2>
-    </div>
 
     {{-- Filter Mini --}}
     <form method="GET" style="display:grid;grid-template-columns:1.5fr 1fr auto;gap:8px">
@@ -151,7 +104,64 @@
       <div style="margin-top:10px">{{ $students->links() }}</div>
     @endif
   </div>
-</div>
+
+{{-- MODAL CATAT TRANSAKSI TABUNGAN --}}
+<dialog id="dialog-create-saving-tx" class="modal glass">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h3 style="margin:0;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px">
+        <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Catat Transaksi Tabungan Siswa
+      </h3>
+      <button type="button" data-close class="modal-close" aria-label="Tutup">✕</button>
+    </div>
+    <form method="POST" action="{{ route('savings.store') }}" class="stack">
+      @csrf
+      <div class="field">
+        <label>Pilih Peserta Didik *</label>
+        <select name="student_id" class="select" required>
+          <option value="">— Cari / Pilih Nama Siswa —</option>
+          @foreach ($students as $st)
+            <option value="{{ $st->id }}" {{ old('student_id') == $st->id ? 'selected' : '' }}>
+              {{ $st->full_name }} ({{ $st->schoolClass ? 'Kelas ' . $st->schoolClass->name : 'Tanpa Kelas' }}) — Saldo: Rp {{ number_format($st->savingAccount?->balance ?? 0, 0, ',', '.') }}
+            </option>
+          @endforeach
+        </select>
+        @error('student_id') <span class="error-text">{{ $message }}</span> @enderror
+      </div>
+
+      <div class="field">
+        <label>Jenis Transaksi *</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:#ffffff;border:1.5px solid #cbd5e1;border-radius:var(--radius-sm);cursor:pointer">
+            <input type="radio" name="direction" value="setor" checked>
+            <b style="color:#10b981">📥 Setor Tabungan</b>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:#ffffff;border:1.5px solid #cbd5e1;border-radius:var(--radius-sm);cursor:pointer">
+            <input type="radio" name="direction" value="tarik">
+            <b style="color:#ef4444">📤 Tarik Tabungan</b>
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Nominal Transaksi (Rp) *</label>
+        <input type="number" name="amount" class="input" min="1000" step="500" placeholder="mis. 50000" required>
+        @error('amount') <span class="error-text">{{ $message }}</span> @enderror
+      </div>
+
+      <div class="field">
+        <label>Catatan / Keterangan (Opsional)</label>
+        <input type="text" name="note" class="input" placeholder="mis. Setoran mingguan / uang saku lomba">
+      </div>
+
+      <div class="modal-actions" style="margin-top:16px">
+        <button type="button" class="btn" data-close>Batal</button>
+        <button class="btn btn-ink" data-loading="Menyimpan Transaksi...">💾 Simpan Transaksi</button>
+      </div>
+    </form>
+  </div>
+</dialog>
 
 {{-- Riwayat Transaksi Terakhir --}}
 <div class="glass panel" style="margin-top:20px">

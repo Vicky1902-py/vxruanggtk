@@ -12,6 +12,14 @@
     <div class="sub">Kelola struktur rombongan belajar per tahun ajaran beserta penugasan wali kelas dan jurusan.</div>
   </div>
   <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button type="button" class="btn btn-sm btn-ink" data-dialog="#dialog-create-class">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+      + Tambah Kelas
+    </button>
+    <button type="button" class="btn btn-sm" data-dialog="#dialog-academic-year">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      📅 Tahun Ajaran: {{ $academicYears->firstWhere('is_active', true)?->year_label ?? 'Pilih' }}
+    </button>
     <a href="{{ route('classes.template') }}" class="btn btn-sm" title="Unduh template Excel untuk input cepat">
       <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
       Template Excel (.xlsx)
@@ -23,100 +31,9 @@
   </div>
 </div>
 
-<div class="two-col">
-  <div class="stack">
-    {{-- Form Tambah Kelas --}}
-    <div class="glass panel">
-      <h2 class="panel-title">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
-        Tambah Kelas Baru
-      </h2>
-      <form method="POST" action="{{ route('classes.store') }}" class="stack">
-        @csrf
-        <div class="two-col" style="gap:10px">
-          <div class="field">
-            <label>Tahun Ajaran *</label>
-            <select name="academic_year_id" class="select" required>
-              @foreach ($academicYears as $year)
-                <option value="{{ $year->id }}" {{ $year->is_active ? 'selected' : '' }}>
-                  {{ $year->year_label }}{{ $year->is_active ? ' (Aktif)' : '' }}
-                </option>
-              @endforeach
-            </select>
-          </div>
-          <div class="field">
-            <label>Jurusan / Konsentrasi</label>
-            <select name="major_id" class="select">
-              <option value="">— Umum / Tanpa Jurusan —</option>
-              @foreach ($majors as $m)
-                <option value="{{ $m->id }}">{{ $m->code }} - {{ $m->name }}</option>
-              @endforeach
-            </select>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Nama Rombel / Kelas *</label>
-          <input type="text" name="name" class="input" placeholder="mis. X RPL 1, XI TKJ 2" required maxlength="30">
-        </div>
-
-        <div class="field">
-          <label>Wali Kelas (GTK)</label>
-          <select name="homeroom_teacher_id" class="select">
-            <option value="">— Pilih Guru Wali Kelas —</option>
-            @foreach ($teachers as $teacher)
-              <option value="{{ $teacher->id }}">{{ $teacher->full_name }}</option>
-            @endforeach
-          </select>
-        </div>
-
-        <button class="btn btn-ink" data-loading="Menyimpan Kelas...">💾 Simpan Rombel Kelas</button>
-      </form>
-    </div>
-
-    {{-- Panel Kelola Tahun Ajaran --}}
-    <div class="glass panel">
-      <h2 class="panel-title">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-        Kelola Tahun Ajaran
-      </h2>
-
-      {{-- List Tahun Ajaran --}}
-      <div class="stack" style="gap:8px;margin-bottom:14px">
-        @forelse ($academicYears as $year)
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,0.03);border:1px solid var(--line-light);border-radius:var(--radius-sm)">
-            <div>
-              <b style="color:var(--text);font-size:13.5px">{{ $year->year_label }}</b>
-              @if ($year->is_active)
-                <span class="badge badge-ok" style="font-size:10.5px;margin-left:6px">Aktif</span>
-              @endif
-            </div>
-            <div>
-              @if (! $year->is_active)
-                <form method="POST" action="{{ route('academic-years.activate', $year) }}">
-                  @csrf
-                  <button class="btn btn-sm" style="height:26px;font-size:11px;padding:0 8px">Jadikan Aktif</button>
-                </form>
-              @endif
-            </div>
-          </div>
-        @empty
-          <div style="font-size:12.5px;color:var(--muted)">Belum ada data tahun ajaran.</div>
-        @endforelse
-      </div>
-
-      {{-- Form Tambah Tahun Ajaran --}}
-      <form method="POST" action="{{ route('academic-years.store') }}" style="display:flex;gap:8px">
-        @csrf
-        <input type="text" name="year_label" class="input" placeholder="mis. 2027/2028" required style="height:34px;font-size:12.5px" maxlength="20">
-        <button class="btn btn-sm btn-ink" style="height:34px;white-space:nowrap;padding:0 12px;font-size:12px">+ Tambah</button>
-      </form>
-    </div>
-  </div>
-
-  {{-- Tabel Daftar Kelas --}}
-  <div class="glass table-wrap">
-    <table class="tbl">
+{{-- Tabel Daftar Kelas Full Width --}}
+<div class="glass table-wrap" style="margin-top:16px">
+  <table class="tbl">
       <thead>
         <tr>
           <th>Nama Kelas</th>
@@ -175,7 +92,111 @@
       </tbody>
     </table>
   </div>
-</div>
+
+{{-- MODAL TAMBAH KELAS BARU --}}
+<dialog id="dialog-create-class" class="modal glass">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h3 style="margin:0;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px">
+        <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        Tambah Kelas / Rombel Baru
+      </h3>
+      <button type="button" data-close class="modal-close" aria-label="Tutup">✕</button>
+    </div>
+    <form method="POST" action="{{ route('classes.store') }}" class="stack">
+      @csrf
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field">
+          <label>Tahun Ajaran *</label>
+          <select name="academic_year_id" class="select" required>
+            @foreach ($academicYears as $year)
+              <option value="{{ $year->id }}" {{ $year->is_active ? 'selected' : '' }}>
+                {{ $year->year_label }}{{ $year->is_active ? ' (Aktif)' : '' }}
+              </option>
+            @endforeach
+          </select>
+        </div>
+        <div class="field">
+          <label>Jurusan / Konsentrasi</label>
+          <select name="major_id" class="select">
+            <option value="">— Umum / Tanpa Jurusan —</option>
+            @foreach ($majors as $m)
+              <option value="{{ $m->id }}">{{ $m->code }} - {{ $m->name }}</option>
+            @endforeach
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Nama Rombel / Kelas *</label>
+        <input type="text" name="name" class="input" placeholder="mis. X RPL 1, XI TKJ 2" required maxlength="30">
+      </div>
+
+      <div class="field">
+        <label>Wali Kelas (GTK)</label>
+        <select name="homeroom_teacher_id" class="select">
+          <option value="">— Pilih Guru Wali Kelas —</option>
+          @foreach ($teachers as $teacher)
+            <option value="{{ $teacher->id }}">{{ $teacher->full_name }}</option>
+          @endforeach
+        </select>
+      </div>
+
+      <div class="modal-actions" style="margin-top:16px">
+        <button type="button" class="btn" data-close>Batal</button>
+        <button class="btn btn-ink" data-loading="Menyimpan Kelas...">💾 Simpan Rombel Kelas</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+{{-- MODAL KELOLA TAHUN AJARAN --}}
+<dialog id="dialog-academic-year" class="modal glass">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h3 style="margin:0;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px">
+        <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Kelola Tahun Ajaran
+      </h3>
+      <button type="button" data-close class="modal-close" aria-label="Tutup">✕</button>
+    </div>
+
+    {{-- List Tahun Ajaran --}}
+    <div class="stack" style="gap:8px;margin-bottom:16px">
+      @forelse ($academicYears as $year)
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:var(--radius-sm)">
+          <div>
+            <b style="color:var(--text);font-size:14px">{{ $year->year_label }}</b>
+            @if ($year->is_active)
+              <span class="badge badge-ok" style="font-size:11px;margin-left:8px">Aktif Saat Ini</span>
+            @endif
+          </div>
+          <div>
+            @if (! $year->is_active)
+              <form method="POST" action="{{ route('academic-years.activate', $year) }}">
+                @csrf
+                <button class="btn btn-sm" style="font-size:11.5px;padding:3px 10px">Jadikan Aktif</button>
+              </form>
+            @endif
+          </div>
+        </div>
+      @empty
+        <div style="font-size:13px;color:var(--muted)">Belum ada data tahun ajaran.</div>
+      @endforelse
+    </div>
+
+    {{-- Form Tambah Tahun Ajaran --}}
+    <form method="POST" action="{{ route('academic-years.store') }}" style="display:flex;gap:8px">
+      @csrf
+      <input type="text" name="year_label" class="input" placeholder="Tambah tahun baru, mis. 2027/2028" required style="font-size:13px" maxlength="20">
+      <button class="btn btn-ink" style="white-space:nowrap;padding:0 14px;font-size:12.5px">+ Tambah</button>
+    </form>
+
+    <div class="modal-actions" style="margin-top:16px">
+      <button type="button" class="btn btn-sm" data-close>Tutup</button>
+    </div>
+  </div>
+</dialog>
 
 {{-- MODAL IMPORT EXCEL KELAS --}}
 <dialog id="import-class" class="modal glass">

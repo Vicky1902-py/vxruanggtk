@@ -11,6 +11,12 @@
     <h1>Manajemen Pengguna</h1>
     <div class="sub">{{ $users->count() }} akun terdaftar · Kelola hak akses staf, guru, bendahara, dan administrator internal.</div>
   </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button type="button" class="btn btn-sm btn-ink" data-dialog="#dialog-create-user">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+      + Tambah Pengguna
+    </button>
+  </div>
 </div>
 
 <div class="glass panel" style="margin-bottom:18px">
@@ -45,72 +51,9 @@
   </form>
 </div>
 
-<div class="two-col">
-  {{-- Form Tambah Pengguna --}}
-  <div class="glass panel">
-    <h2 class="panel-title">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
-      Tambah Pengguna Baru
-    </h2>
-    <form method="POST" action="{{ route('users.store') }}" class="stack">
-      @csrf
-      <div class="field">
-        <label>Username *</label>
-        <input name="username" class="input" value="{{ old('username') }}" placeholder="mis. bendahara_sekolah" required>
-        @error('username') <span class="error-text">{{ $message }}</span> @enderror
-      </div>
-
-      <div class="field">
-        <label>Alamat Email (Opsional)</label>
-        <input type="email" name="email" class="input" value="{{ old('email') }}" placeholder="user@sekolah.sch.id">
-        @error('email') <span class="error-text">{{ $message }}</span> @enderror
-      </div>
-
-      <div class="field">
-        <label>Peran / Hak Akses *</label>
-        <select name="role_id" class="select" required>
-          <option value="">— Pilih Hak Akses —</option>
-          @foreach ($roles as $role)
-            <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
-              {{ strtoupper($role->name) }} 
-              @if ($role->name === 'admin') (Akses Penuh Sekolah)
-              @elseif ($role->name === 'bendahara') (Keuangan & SPP)
-              @elseif ($role->name === 'guru') (Akademik & Presensi)
-              @elseif ($role->name === 'staff_tu') (Administrasi & Data)
-              @elseif ($role->name === 'kepsek') (Monitoring & Laporan)
-              @endif
-            </option>
-          @endforeach
-        </select>
-        @error('role_id') <span class="error-text">{{ $message }}</span> @enderror
-      </div>
-
-      <div class="field">
-        <label>Kata Sandi Akun *</label>
-        <input type="password" name="password" class="input" placeholder="Minimal 6 karakter" required>
-        @error('password') <span class="error-text">{{ $message }}</span> @enderror
-      </div>
-
-      <div class="field">
-        <label>Hubungkan dengan Pegawai (GTK)</label>
-        <select name="employee_id" class="select">
-          <option value="">— Tidak terhubung / Akun sistem mandiri —</option>
-          @foreach ($unlinkedEmployees as $emp)
-            <option value="{{ $emp->id }}" {{ old('employee_id') == $emp->id ? 'selected' : '' }}>
-              {{ $emp->full_name }} ({{ $emp->position?->name ?? 'Staf' }})
-            </option>
-          @endforeach
-        </select>
-        <small style="color:var(--muted);font-size:11.5px">Pilih nama guru/staf jika akun ini digunakan oleh pegawai yang sudah terdata.</small>
-      </div>
-
-      <button class="btn btn-ink" data-loading="Menyimpan Pengguna...">💾 Daftarkan Pengguna</button>
-    </form>
-  </div>
-
-  {{-- Tabel Pengguna --}}
-  <div class="glass table-wrap">
-    <table class="tbl">
+{{-- Tabel Pengguna Full Width --}}
+<div class="glass table-wrap">
+  <table class="tbl">
       <thead>
         <tr>
           <th>Pengguna</th>
@@ -195,7 +138,76 @@
       </tbody>
     </table>
   </div>
-</div>
+
+{{-- MODAL TAMBAH PENGGUNA BARU --}}
+<dialog id="dialog-create-user" class="modal glass">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h3 style="margin:0;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px">
+        <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        Tambah Pengguna Baru
+      </h3>
+      <button type="button" data-close class="modal-close" aria-label="Tutup">✕</button>
+    </div>
+    <form method="POST" action="{{ route('users.store') }}" class="stack">
+      @csrf
+      <div class="field">
+        <label>Username *</label>
+        <input name="username" class="input" value="{{ old('username') }}" placeholder="mis. bendahara_sekolah" required>
+        @error('username') <span class="error-text">{{ $message }}</span> @enderror
+      </div>
+
+      <div class="field">
+        <label>Alamat Email (Opsional)</label>
+        <input type="email" name="email" class="input" value="{{ old('email') }}" placeholder="user@sekolah.sch.id">
+        @error('email') <span class="error-text">{{ $message }}</span> @enderror
+      </div>
+
+      <div class="field">
+        <label>Peran / Hak Akses *</label>
+        <select name="role_id" class="select" required>
+          <option value="">— Pilih Hak Akses —</option>
+          @foreach ($roles as $role)
+            <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
+              {{ strtoupper($role->name) }} 
+              @if ($role->name === 'admin') (Akses Penuh Sekolah)
+              @elseif ($role->name === 'bendahara') (Keuangan & SPP)
+              @elseif ($role->name === 'guru') (Akademik & Presensi)
+              @elseif ($role->name === 'staff_tu') (Administrasi & Data)
+              @elseif ($role->name === 'kepsek') (Monitoring & Laporan)
+              @endif
+            </option>
+          @endforeach
+        </select>
+        @error('role_id') <span class="error-text">{{ $message }}</span> @enderror
+      </div>
+
+      <div class="field">
+        <label>Kata Sandi Akun *</label>
+        <input type="password" name="password" class="input" placeholder="Minimal 6 karakter" required>
+        @error('password') <span class="error-text">{{ $message }}</span> @enderror
+      </div>
+
+      <div class="field">
+        <label>Hubungkan dengan Pegawai (GTK)</label>
+        <select name="employee_id" class="select">
+          <option value="">— Tidak terhubung / Akun sistem mandiri —</option>
+          @foreach ($unlinkedEmployees as $emp)
+            <option value="{{ $emp->id }}" {{ old('employee_id') == $emp->id ? 'selected' : '' }}>
+              {{ $emp->full_name }} ({{ $emp->position?->name ?? 'Staf' }})
+            </option>
+          @endforeach
+        </select>
+        <small style="color:var(--muted);font-size:11.5px">Pilih nama guru/staf jika akun ini digunakan oleh pegawai yang sudah terdata.</small>
+      </div>
+
+      <div class="modal-actions" style="margin-top:16px">
+        <button type="button" class="btn" data-close>Batal</button>
+        <button class="btn btn-ink" data-loading="Menyimpan Pengguna...">💾 Daftarkan Pengguna</button>
+      </div>
+    </form>
+  </div>
+</dialog>
 
 {{-- MODALS PER USER --}}
 @foreach ($users as $u)

@@ -12,6 +12,10 @@
     <div class="sub">{{ $students->count() }} siswa terdata · Terhubung dengan Rombel, Jurusan, Wali Murid, dan Presensi.</div>
   </div>
   <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button type="button" class="btn btn-sm btn-ink" data-dialog="#dlg-create-student">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+      + Tambah Siswa
+    </button>
     <a href="{{ route('students.export', request()->all()) }}" class="btn btn-sm" title="Unduh seluruh data siswa ke Microsoft Excel (.xlsx)">
       <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
       Export Excel (.xlsx)
@@ -58,87 +62,9 @@
   </form>
 </div>
 
-<div class="two-col">
-  {{-- Form Tambah Siswa --}}
-  <div class="glass panel">
-    <h2 class="panel-title">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
-      Tambah Siswa Baru
-    </h2>
-    <form method="POST" action="{{ route('students.store') }}" class="stack">
-      @csrf
-      <div class="field">
-        <label>Nama Lengkap *</label>
-        <input name="full_name" class="input" value="{{ old('full_name') }}" placeholder="mis. Muhammad Raihan" required>
-        @error('full_name') <span class="error-text">{{ $message }}</span> @enderror
-      </div>
-      <div class="form-grid" style="grid-template-columns:1fr 1fr">
-        <div class="field">
-          <label>NIS</label>
-          <input name="nis" class="input" value="{{ old('nis') }}" placeholder="mis. 24001">
-        </div>
-        <div class="field">
-          <label>NISN</label>
-          <input name="nisn" class="input" value="{{ old('nisn') }}" placeholder="mis. 0081234567">
-        </div>
-      </div>
-      <div class="form-grid" style="grid-template-columns:1fr 1fr">
-        <div class="field">
-          <label>Jenis Kelamin *</label>
-          <select name="gender" class="select">
-            <option value="L" {{ old('gender') === 'L' ? 'selected' : '' }}>Laki-laki</option>
-            <option value="P" {{ old('gender') === 'P' ? 'selected' : '' }}>Perempuan</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Tanggal Lahir</label>
-          <input type="date" name="birth_date" class="input" value="{{ old('birth_date') }}">
-        </div>
-      </div>
-      <div class="form-grid" style="grid-template-columns:1fr 1fr">
-        <div class="field">
-          <label>Rombel (Kelas)</label>
-          <select name="class_id" class="select">
-            <option value="">— Pilih Rombel —</option>
-            @foreach ($classes as $class)
-              <option value="{{ $class->id }}" {{ old('class_id') == $class->id ? 'selected' : '' }}>Kelas {{ $class->name }}</option>
-            @endforeach
-          </select>
-        </div>
-        <div class="field">
-          <label>Jurusan / Peminatan</label>
-          <select name="major_id" class="select">
-            <option value="">— Pilih Jurusan —</option>
-            @foreach ($majors as $m)
-              <option value="{{ $m->id }}" {{ old('major_id') == $m->id ? 'selected' : '' }}>{{ $m->code }} - {{ $m->name }}</option>
-            @endforeach
-          </select>
-        </div>
-      </div>
-      <div class="field">
-        <label>Wali Murid Terdaftar</label>
-        <select name="guardian_id" class="select">
-          <option value="">— Tanpa wali —</option>
-          @foreach ($guardians as $guardian)
-            <option value="{{ $guardian->id }}" {{ old('guardian_id') == $guardian->id ? 'selected' : '' }}>{{ $guardian->full_name }} ({{ $guardian->relation_type }})</option>
-          @endforeach
-        </select>
-      </div>
-      <div class="field">
-        <label>Status Keaktifan</label>
-        <select name="status" class="select">
-          @foreach (['aktif' => 'Aktif', 'lulus' => 'Lulus', 'pindah' => 'Pindah', 'keluar' => 'Keluar'] as $st => $label)
-            <option value="{{ $st }}" {{ old('status', 'aktif') === $st ? 'selected' : '' }}>{{ $label }}</option>
-          @endforeach
-        </select>
-      </div>
-      <button class="btn btn-ink" data-loading="Menyimpan Siswa...">💾 Simpan Data Siswa</button>
-    </form>
-  </div>
-
-  {{-- Tabel Siswa --}}
-  <div class="glass table-wrap">
-    {{-- Bulk Action Bar --}}
+{{-- Tabel Siswa Full Width --}}
+<div class="glass table-wrap">
+  {{-- Bulk Action Bar --}}
     <div id="bulk-toolbar" style="display:none;background:rgba(2,132,199,0.08);border:1px solid rgba(2,132,199,0.25);border-radius:var(--radius-sm);padding:8px 14px;margin-bottom:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <div style="font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:6px">
         <span class="cs-pill" style="font-size:11px;padding:2px 8px"><span id="selected-count">0</span> siswa dipilih</span>
@@ -234,7 +160,91 @@
       </tbody>
     </table>
   </div>
-</div>
+
+{{-- MODAL TAMBAH SISWA BARU --}}
+<dialog id="dlg-create-student" class="modal glass">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h3 style="margin:0;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px">
+        <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        Tambah Data Siswa Baru
+      </h3>
+      <button type="button" data-close class="modal-close" aria-label="Tutup">✕</button>
+    </div>
+    <form method="POST" action="{{ route('students.store') }}" class="stack">
+      @csrf
+      <div class="field">
+        <label>Nama Lengkap *</label>
+        <input name="full_name" class="input" value="{{ old('full_name') }}" placeholder="mis. Muhammad Raihan" required>
+        @error('full_name') <span class="error-text">{{ $message }}</span> @enderror
+      </div>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field">
+          <label>NIS</label>
+          <input name="nis" class="input" value="{{ old('nis') }}" placeholder="mis. 24001">
+        </div>
+        <div class="field">
+          <label>NISN</label>
+          <input name="nisn" class="input" value="{{ old('nisn') }}" placeholder="mis. 0081234567">
+        </div>
+      </div>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field">
+          <label>Jenis Kelamin *</label>
+          <select name="gender" class="select">
+            <option value="L" {{ old('gender') === 'L' ? 'selected' : '' }}>Laki-laki</option>
+            <option value="P" {{ old('gender') === 'P' ? 'selected' : '' }}>Perempuan</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Tanggal Lahir</label>
+          <input type="date" name="birth_date" class="input" value="{{ old('birth_date') }}">
+        </div>
+      </div>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field">
+          <label>Rombel (Kelas)</label>
+          <select name="class_id" class="select">
+            <option value="">— Pilih Rombel —</option>
+            @foreach ($classes as $class)
+              <option value="{{ $class->id }}" {{ old('class_id') == $class->id ? 'selected' : '' }}>Kelas {{ $class->name }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="field">
+          <label>Jurusan / Peminatan</label>
+          <select name="major_id" class="select">
+            <option value="">— Pilih Jurusan —</option>
+            @foreach ($majors as $m)
+              <option value="{{ $m->id }}" {{ old('major_id') == $m->id ? 'selected' : '' }}>{{ $m->code }} - {{ $m->name }}</option>
+            @endforeach
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Wali Murid Terdaftar</label>
+        <select name="guardian_id" class="select">
+          <option value="">— Tanpa wali —</option>
+          @foreach ($guardians as $guardian)
+            <option value="{{ $guardian->id }}" {{ old('guardian_id') == $guardian->id ? 'selected' : '' }}>{{ $guardian->full_name }} ({{ $guardian->relation_type }})</option>
+          @endforeach
+        </select>
+      </div>
+      <div class="field">
+        <label>Status Keaktifan</label>
+        <select name="status" class="select">
+          @foreach (['aktif' => 'Aktif', 'lulus' => 'Lulus', 'pindah' => 'Pindah', 'keluar' => 'Keluar'] as $st => $label)
+            <option value="{{ $st }}" {{ old('status', 'aktif') === $st ? 'selected' : '' }}>{{ $label }}</option>
+          @endforeach
+        </select>
+      </div>
+      <div class="modal-actions" style="margin-top:16px">
+        <button type="button" class="btn" data-close>Batal</button>
+        <button class="btn btn-ink" data-loading="Menyimpan Siswa...">💾 Simpan Data Siswa</button>
+      </div>
+    </form>
+  </div>
+</dialog>
 
 {{-- MODAL IMPORT EXCEL SISWA --}}
 <dialog id="import-student" class="modal glass">

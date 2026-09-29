@@ -17,6 +17,15 @@ class BillController extends Controller
         $query = Bill::with(['student.schoolClass', 'paymentType', 'payments'])
             ->orderByDesc('due_date');
 
+        if ($request->filled('q')) {
+            $q = $request->input('q');
+            $query->whereHas('student', function ($sq) use ($q) {
+                $sq->where('full_name', 'like', "%{$q}%")
+                   ->orWhere('nis', 'like', "%{$q}%")
+                   ->orWhere('nisn', 'like', "%{$q}%");
+            });
+        }
+
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
         }
