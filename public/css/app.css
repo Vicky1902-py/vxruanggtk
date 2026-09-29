@@ -2412,3 +2412,990 @@ body.has-god-bar .mobile-header {
   border-color: #bae6fd;
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   NEO-SAAS GOD MODE THEME (Exact reference design)
+   ═══════════════════════════════════════════════════════════════════ */
+.god-canvas-body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #0f172a;
+  background: #edeef3;
+  background-image: 
+    radial-gradient(circle at 10% 90%, rgba(254, 215, 170, 0.45) 0%, transparent 45%),
+    radial-gradient(circle at 90% 10%, rgba(196, 181, 253, 0.45) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(237, 233, 254, 0.4) 0%, transparent 55%);
+  background-attachment: fixed;
+  padding: 24px 20px 60px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.god-canvas-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 25px 70px rgba(15, 23, 42, 0.07), 0 4px 20px rgba(0, 0, 0, 0.02);
+  padding: 28px 32px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+/* TOP NAVBAR */
+.god-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+}
+
+.god-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.god-glyph-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.god-brand-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.god-brand-title {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+}
+
+.god-brand-accent {
+  color: #7c3aed;
+}
+
+.god-badge-pill {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: #ede9fe;
+  color: #7c3aed;
+  border: 1px solid #ddd6fe;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.god-nav-segmented {
+  background: #f1f5f9;
+  padding: 5px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.god-seg-item {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #64748b;
+  padding: 8px 22px;
+  border-radius: 999px;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.god-seg-item:hover {
+  color: #0f172a;
+}
+
+.god-seg-item.active {
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.god-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.god-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  position: relative;
+}
+
+.god-icon-btn:hover {
+  background: #f8fafc;
+  color: #7c3aed;
+  border-color: #ddd6fe;
+  transform: translateY(-1px);
+}
+
+.god-notif-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444;
+}
+
+.god-profile-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px 4px 4px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+}
+
+.god-avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1.5px solid #ddd6fe;
+  flex: none;
+}
+
+.god-avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.god-profile-meta {
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.god-profile-meta strong {
+  display: block;
+  font-size: 13px;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.god-profile-meta small {
+  display: block;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.god-logout-trigger {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.god-logout-trigger:hover {
+  background: #fecaca;
+}
+
+/* GREETING HERO STRIP */
+.god-hero-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.god-greeting-title {
+  font-size: clamp(22px, 2.5vw, 28px);
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.god-greeting-sub {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* MAIN LAYOUT 2 COLUMNS */
+.god-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 22px;
+  width: 100%;
+}
+
+@media (max-width: 1100px) {
+  .god-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.god-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+}
+
+.god-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+}
+
+/* METRIC CARDS ROW */
+.god-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+@media (max-width: 820px) {
+  .god-metric-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .god-metric-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.god-neo-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+  padding: 20px 22px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+}
+
+.god-neo-card:hover {
+  transform: translateY(-2px);
+  border-color: #ddd6fe;
+  box-shadow: 0 10px 28px rgba(124, 58, 237, 0.08);
+}
+
+.god-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.god-card-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+}
+
+.god-card-dots {
+  color: #cbd5e1;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.god-card-val {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 4px;
+}
+
+.god-card-lbl {
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* BIG SALES / PERFORMANCE CHART CARD */
+.god-chart-box-neo {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+  padding: 24px 26px;
+}
+
+.god-chart-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.god-chart-title {
+  font-size: 16.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.god-chart-sub {
+  font-size: 12.5px;
+  color: #94a3b8;
+  margin-top: 3px;
+}
+
+.god-chart-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.god-select-pill {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.god-arrow-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.god-arrow-btn:hover {
+  background: #ede9fe;
+  color: #7c3aed;
+  border-color: #ddd6fe;
+}
+
+.god-submetrics-row {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.god-submetric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.god-submetric-label {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.god-submetric-num {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.god-badge-pill-red {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.god-badge-pill-green {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+/* SOFT PURPLE BAR CHART */
+.god-bar-chart-container {
+  height: 200px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 40px;
+  position: relative;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.god-bar-chart-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  position: relative;
+  cursor: pointer;
+}
+
+.god-bar-track {
+  flex: 1;
+  width: 100%;
+  max-width: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.god-bar-body {
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+  background: #ede9fe;
+  transition: all 0.25s ease;
+}
+
+.god-bar-body.active-bar {
+  background: #7c3aed;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+}
+
+.god-bar-tooltip-pinned {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  border: 1px solid #ddd6fe;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 10;
+}
+
+.god-bar-tooltip-pinned span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.god-bar-tooltip-pinned span::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #7c3aed;
+}
+
+.god-bar-label {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 600;
+  padding-top: 10px;
+}
+
+/* RECENT EMAILS / SCHOOLS LIST CARD */
+.god-recent-card-neo {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+  padding: 22px 24px;
+}
+
+.god-recent-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.god-recent-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.god-recent-list-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.god-recent-row-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
+}
+
+.god-recent-row-item:hover {
+  background: #f5f3ff;
+  border-color: #ddd6fe;
+  transform: translateX(2px);
+}
+
+.god-row-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ede9fe;
+  color: #7c3aed;
+  font-weight: 800;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.god-row-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+  min-width: 0;
+}
+
+.god-row-name-col {
+  width: 190px;
+  min-width: 140px;
+}
+
+.god-row-name-col strong {
+  font-size: 13.5px;
+  color: #0f172a;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.god-row-name-col small {
+  font-size: 11.5px;
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+.god-row-detail-col {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: #475569;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* RIGHT COLUMN: FORMATION STATUS CARD */
+.god-formation-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.god-card-header-arrow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.god-card-header-arrow h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 2px;
+}
+
+.god-card-header-arrow small {
+  font-size: 12.5px;
+  color: #94a3b8;
+}
+
+.god-bar-progress-track {
+  width: 100%;
+  height: 22px;
+  background: #f1f5f9;
+  border-radius: 999px;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+}
+
+.god-bar-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #818cf8 0%, #a78bfa 100%);
+  box-shadow: 0 2px 8px rgba(129, 140, 248, 0.35);
+}
+
+.god-btn-pill-full {
+  width: 100%;
+  height: 40px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.god-btn-pill-full:hover {
+  background: #f8fafc;
+  border-color: #7c3aed;
+  color: #7c3aed;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.12);
+}
+
+/* RIGHT COLUMN: SUCCESS RATE & SEMI-CIRCLE GAUGE */
+.god-success-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.god-success-top {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.god-success-top h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 2px;
+}
+
+.god-success-top small {
+  font-size: 12.5px;
+  color: #94a3b8;
+}
+
+.god-radial-dial-wrap {
+  position: relative;
+  width: 220px;
+  height: 120px;
+  margin: 10px auto 4px;
+  display: flex;
+  justify-content: center;
+}
+
+.god-radial-dial-svg {
+  width: 220px;
+  height: 120px;
+  overflow: visible;
+}
+
+.god-dial-center-info {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.god-dial-pill-tag {
+  background: #ffffff;
+  border: 1px solid #ddd6fe;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #7c3aed;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2px;
+}
+
+.god-dial-big-num {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.god-dial-sub-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #10b981;
+  margin-top: 2px;
+}
+
+.god-dial-caption {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+  margin: 12px 0 16px;
+}
+
+.god-dial-split-stats {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.god-split-stat-item small {
+  display: block;
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.god-split-stat-item strong {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.god-btn-primary-neo {
+  background: #7c3aed;
+  color: #ffffff !important;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.god-btn-primary-neo:hover {
+  background: #6d28d9;
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
+  transform: translateY(-1px);
+}
+
+.god-btn-secondary-neo {
+  background: #f8fafc;
+  color: #475569 !important;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.god-btn-secondary-neo:hover {
+  background: #ede9fe;
+  color: #7c3aed !important;
+  border-color: #ddd6fe;
+}
+
+.god-search-pill {
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 12.5px;
+  color: #0f172a;
+  width: 240px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.god-search-pill:focus {
+  background: #ffffff;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+.god-spec-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.god-spec-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+  padding: 5px 0;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.god-spec-row:last-child {
+  border-bottom: none;
+}
+
+.god-spec-label {
+  color: #64748b;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.god-spec-val {
+  color: #0f172a;
+  font-weight: 700;
+  text-align: right;
+}
+
+.spinning {
+  animation: spinTelemetry 0.8s linear infinite;
+}
+
+@keyframes spinTelemetry {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Cohesive styling for God Mode Subpages (CMS, Pages, Admins) inside canvas */
+.god-canvas-wrapper .page-head {
+  margin-bottom: 20px;
+}
+
+.god-canvas-wrapper .btn-god {
+  background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35) !important;
+}
+
+.god-canvas-wrapper .btn-god:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%) !important;
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45) !important;
+}
+
+.god-canvas-wrapper .panel {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+  padding: 24px;
+}
+
+.god-canvas-wrapper .table-wrap,
+.god-canvas-wrapper .tbl-wrap {
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+
+

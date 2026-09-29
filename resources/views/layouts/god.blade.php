@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0284c7">
+<meta name="theme-color" content="#7c3aed">
 <title>@yield('title', 'Kontrol Global') — Ruang GTK Super Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,82 +11,108 @@
 <link rel="icon" href="{{ asset('img/logo.svg') }}" type="image/svg+xml">
 <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ @filemtime(public_path('css/app.css')) }}">
 </head>
-<body>
-<header class="mobile-header glass-soft">
-  <button class="hamburger" id="hamburgerBtn" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="sidebar">
-    <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-  </button>
-  <div style="display:flex;align-items:center;gap:10px">
-    <div class="brand-mark god-mark" style="width:34px;height:34px;border-radius:10px"><img src="{{ asset('img/logo.svg') }}" alt="Logo"></div>
-    <b style="font-size:15px;color:var(--text)">GOD MODE</b>
-  </div>
-</header>
+<body class="god-canvas-body">
+{{-- Ambient Soft Glowing Blurs --}}
+<div class="god-ambient-blur blur-violet"></div>
+<div class="god-ambient-blur blur-blush"></div>
 
-<div class="side-overlay" id="sideOverlay" aria-hidden="true"></div>
+{{-- Main Floating Canvas Card (Neo-SaaS Canvas) --}}
+<div class="god-canvas-wrapper">
 
-<div class="shell god-shell" id="appShell">
-
-  <aside class="side glass-soft" id="sidebar" role="navigation" aria-label="Menu Super Admin">
-    <button class="side-close" id="sideClose" aria-label="Tutup menu">
-      <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
-    </button>
-
-    <div class="brand">
-      <div class="brand-mark god-mark"><img src="{{ asset('img/logo.svg') }}" alt="Logo Ruang GTK"></div>
-      <div class="brand-info" style="min-width:0;flex:1">
-        <div class="brand-ruanggtk">
-          <span class="brand-ruanggtk-text">Ruang<span class="gtk-tag">GTK</span></span>
-          <span class="brand-beam"></span>
+  {{-- TOP NAVBAR WITH SEGMENTED CAPSULE --}}
+  <header class="god-nav-header">
+    <div class="god-nav-left">
+      <a href="{{ route('god.dashboard') }}" style="display:flex;align-items:center;gap:12px;text-decoration:none">
+        <div class="god-glyph-logo">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <rect width="40" height="40" rx="12" fill="url(#god_glyph_grad)" />
+            <path d="M13 20L18 25L27 15" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="god_glyph_grad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#7C3AED" />
+                <stop offset="1" stop-color="#9333EA" />
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
-        <small style="color:#fdba74">Super Admin Platform</small>
-      </div>
-      <button type="button" class="aux-toggle" id="auxToggleBtn" title="Kecilkan / Lebarkan Sidebar (aaPanel Mode)" aria-label="Toggle Auxiliary Sidebar">
-        <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
-      </button>
-    </div>
-
-    <div class="nav-label">Kontrol Global</div>
-    <a href="{{ route('god.dashboard') }}" class="{{ request()->routeIs('god.dashboard') ? 'active' : '' }}">
-      <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
-      Dashboard Global
-    </a>
-    <a href="{{ route('god.cms') }}" class="{{ request()->routeIs('god.cms') ? 'active' : '' }}">
-      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2.5"/><path d="M3 9h18"/><path d="M8 21h8"/></svg>
-      CMS Situs
-    </a>
-    <a href="{{ route('god.pages') }}" class="{{ request()->routeIs('god.pages') ? 'active' : '' }}">
-      <svg viewBox="0 0 24 24"><path d="M6 2.5h9L19 7v14H6z"/><path d="M14 2.5V7h5"/><path d="M9 12h6M9 15.5h6"/></svg>
-      Halaman
-    </a>
-    <a href="{{ route('god.admins') }}" class="{{ request()->routeIs('god.admins') ? 'active' : '' }}">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 20.5c.7-4.5 3.2-7 7-7s6.3 2.5 7 7"/></svg>
-      Super Admin
-    </a>
-
-    <div class="side-foot">
-      <div style="display:flex;align-items:center;gap:10px;padding:0 8px 12px">
-        <div style="width:34px;height:34px;border-radius:50%;background:var(--grad-gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#0b1120;flex:none">
-          ⚡
+        <div class="god-brand-text">
+          <span class="god-brand-title">Ruang<span class="god-brand-accent">GTK</span></span>
+          <span class="god-badge-pill">GOD MODE</span>
         </div>
-        <div style="min-width:0;line-height:1.3">
-          <b style="font-size:13.5px;color:var(--text);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ auth('super')->user()?->name }}</b>
-          <small style="color:var(--muted);font-size:11.5px">{{ '@' . auth('super')->user()?->username }}</small>
-        </div>
-      </div>
-      <div style="padding:4px 8px 6px;font-size:11px;color:var(--muted)">© 2026 Vicky Koroh · God Mode</div>
-      <a href="{{ route('super.logout') }}" onclick="event.preventDefault();document.getElementById('super-logout-form').submit();" style="color:var(--text-2)">
-        <svg viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 012 2v12a2 2 0 01-2 2h-4"/><path d="M10 17l-5-5 5-5M5 12h11"/></svg>
-        Keluar Global
       </a>
     </div>
-  </aside>
 
-  <main class="main">
-    @if (session('toast'))
-      <div class="toast" role="status">{{ session('toast') }}</div>
-    @endif
+    {{-- Center Segmented Capsule Menu --}}
+    <nav class="god-nav-segmented" role="navigation" aria-label="Menu Utama God Mode">
+      <a href="{{ route('god.dashboard') }}" class="god-seg-item {{ request()->routeIs('god.dashboard') ? 'active' : '' }}">
+        Dashboard
+      </a>
+      <a href="{{ route('god.cms') }}" class="god-seg-item {{ request()->routeIs('god.cms') ? 'active' : '' }}">
+        CMS Situs
+      </a>
+      <a href="{{ route('god.pages') }}" class="god-seg-item {{ request()->routeIs('god.pages') ? 'active' : '' }}">
+        Halaman
+      </a>
+      <a href="{{ route('god.admins') }}" class="god-seg-item {{ request()->routeIs('god.admins') ? 'active' : '' }}">
+        Super Admin
+      </a>
+    </nav>
+
+    {{-- Right Utility Bar --}}
+    <div class="god-nav-right">
+      <button type="button" class="god-icon-btn" id="btnRefreshTelemetryNav" title="Sinkronisasi Telemetri Platform">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" id="navRefreshIcon">
+          <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+        </svg>
+      </button>
+
+      <div class="god-icon-btn" title="Notifikasi Sistem Operasional" style="cursor:default">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span class="god-notif-dot"></span>
+      </div>
+
+      <div class="god-profile-chip">
+        <div class="god-avatar-circle">
+          <img src="{{ asset('img/logo.svg') }}" alt="Avatar">
+        </div>
+        <div class="god-profile-meta">
+          <strong>{{ auth('super')->user()?->name ?? 'Super Administrator' }}</strong>
+          <small>Super Admin</small>
+        </div>
+        <a href="{{ route('super.logout') }}"
+           onclick="event.preventDefault();document.getElementById('super-logout-form').submit();"
+           class="god-logout-trigger"
+           title="Keluar dari sesi God Mode">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  {{-- Flash Toast Notification --}}
+  @if (session('toast'))
+    <div class="toast show" role="status">{{ session('toast') }}</div>
+  @endif
+
+  {{-- Main Content Canvas --}}
+  <main class="god-content-area" style="min-width:0;width:100%">
     @yield('content')
   </main>
+
+  {{-- Footer --}}
+  <footer style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(226,232,240,0.6);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12px;color:#94a3b8">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981"></span>
+      <span>Ruang GTK Platform · Supreme God Mode Active</span>
+    </div>
+    <div>© 2026 Vicky Koroh · Multi-Tenant BelongsToSchool Global Isolation</div>
+  </footer>
+
 </div>
 
 <form id="super-logout-form" action="{{ route('super.logout') }}" method="POST" class="hidden">@csrf</form>
