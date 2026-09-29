@@ -12,6 +12,14 @@ class EnsureSuperAdmin
     public function handle(Request $request, Closure $next): Response
     {
         if (! Auth::guard('super')->check()) {
+            if ($request->session()->has('god_id')) {
+                $god = SuperAdmin::find($request->session()->get('god_id'));
+                if ($god) {
+                    Auth::guard('super')->login($god);
+                    return $next($request);
+                }
+            }
+
             return redirect()->route('super.login');
         }
 

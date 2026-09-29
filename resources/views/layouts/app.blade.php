@@ -11,7 +11,49 @@
 <link rel="icon" href="{{ asset('img/logo.svg') }}" type="image/svg+xml">
 <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ @filemtime(public_path('css/app.css')) }}">
 </head>
-<body>
+<body class="{{ session('god_impersonating') ? 'has-god-bar' : '' }}">
+@if (session('god_impersonating'))
+<div class="god-master-bar" role="region" aria-label="God Mode Navigation Bar">
+  <div class="god-bar-container">
+    <div class="god-bar-left">
+      <div class="god-bar-badge">
+        <span class="god-dot-pulse"></span>
+        <span>⚡ GOD MODE</span>
+      </div>
+      <div class="god-bar-info">
+        <span class="god-info-muted">Sekolah:</span>
+        <strong class="god-info-school">{{ session('god_school_name') }}</strong>
+        <span class="god-info-sub">({{ session('god_school_subdomain') }})</span>
+        <span class="god-info-divider">·</span>
+        <span class="god-info-muted">Masuk sebagai:</span>
+        <span class="god-info-user"><strong>{{ auth()->user()?->username }}</strong> ({{ auth()->user()?->role?->name ?? 'User' }})</span>
+      </div>
+    </div>
+    <div class="god-bar-right">
+      <form action="{{ route('god.switch-school') }}" method="POST" class="god-switch-form" style="margin:0;display:inline-flex;align-items:center">
+        @csrf
+        <label for="godSchoolSelector" class="god-switch-label">Pindah:</label>
+        <select name="school_id" id="godSchoolSelector" class="god-select-school" onchange="this.form.submit()">
+          @foreach (\App\Models\School::orderBy('name')->get(['id', 'name', 'subdomain', 'is_active']) as $gSchool)
+            <option value="{{ $gSchool->id }}" {{ $gSchool->id == session('god_school_id') ? 'selected' : '' }}>
+              {{ $gSchool->name }} ({{ $gSchool->subdomain }}) {{ !$gSchool->is_active ? '⚠️ Nonaktif' : '' }}
+            </option>
+          @endforeach
+        </select>
+      </form>
+      <a href="{{ route('god.dashboard') }}" class="god-bar-btn god-bar-btn-panel" title="Kembali ke Panel Kontrol Super Admin">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Panel God
+      </a>
+      <a href="{{ route('god.exit') }}" class="god-bar-btn god-bar-btn-exit" title="Keluar God Mode">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Keluar
+      </a>
+    </div>
+  </div>
+</div>
+@endif
+
 {{-- Mobile Top Bar (Hanya tampil di layar ponsel < 900px) --}}
 <header class="mobile-header glass-soft">
   <button class="hamburger" id="hamburgerBtn" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="sidebar">

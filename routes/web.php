@@ -36,10 +36,12 @@ Route::prefix('god')->name('god.')->middleware('auth.super')->group(function () 
 
     // Kelola sekolah
     Route::post('sekolah', [GodController::class, 'storeSchool'])->name('schools.store');
+    Route::put('sekolah/{school}', [GodController::class, 'updateSchool'])->name('schools.update');
     Route::post('sekolah/{school}/toggle', [GodController::class, 'toggleSchool'])->name('schools.toggle');
     Route::post('sekolah/{school}/reset-password', [GodController::class, 'resetSchoolAdminPassword'])->name('schools.reset');
     Route::delete('sekolah/{school}', [GodController::class, 'destroySchool'])->name('schools.destroy');
     Route::post('sekolah/{school}/impersonate', [GodController::class, 'impersonate'])->name('impersonate');
+    Route::post('users/{user}/impersonate', [GodController::class, 'impersonateUser'])->name('impersonate.user');
 
     // CMS
     Route::get('cms', [GodController::class, 'cms'])->name('cms');
@@ -57,6 +59,7 @@ Route::prefix('god')->name('god.')->middleware('auth.super')->group(function () 
 });
 
 Route::get('/god/keluar', [GodController::class, 'exitGodMode'])->name('god.exit')->middleware('web');
+Route::post('/god/switch-school', [GodController::class, 'switchSchool'])->name('god.switch-school')->middleware('web');
 
 // ── Terautentikasi (sekolah) ────────────────────────────────
 Route::middleware('auth')->group(function () {

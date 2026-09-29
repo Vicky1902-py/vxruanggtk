@@ -74,7 +74,7 @@
         <tr>
           <th>Nama Sekolah</th>
           <th>Paket Langganan</th>
-          <th>Akun Pengguna</th>
+          <th>Akun & Statistik</th>
           <th>Status</th>
           <th style="text-align:right">Aksi Manajemen</th>
         </tr>
@@ -90,7 +90,10 @@
               <span class="badge badge-blue">{{ ucfirst($school->package_tier) }}</span>
             </td>
             <td>
-              <span>{{ $school->users_count }} akun pengguna</span>
+              <div style="font-size:13px;display:grid;gap:2px">
+                <span><b>{{ $school->users_count }}</b> Akun Pengguna</span>
+                <small style="color:var(--muted)">{{ $school->students_count }} Siswa · {{ $school->employees_count }} GTK</small>
+              </div>
             </td>
             <td>
               <span class="badge {{ $school->is_active ? 'badge-ok' : 'badge-bad' }}">
@@ -98,11 +101,17 @@
               </span>
             </td>
             <td>
-              <div class="actions">
+              <div class="actions" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end">
                 <form method="POST" action="{{ route('god.impersonate', $school) }}">
                   @csrf
-                  <button class="btn btn-sm btn-god" title="Masuk langsung ke sekolah ini">⚡ GOD MODE</button>
+                  <button class="btn btn-sm btn-god" title="Masuk langsung sebagai Administrator sekolah ini">⚡ GOD MODE</button>
                 </form>
+                <button class="btn btn-sm" data-dialog="#users-{{ $school->id }}" title="Lihat semua pengguna & masuk spesifik">
+                  👥 Pengguna ({{ $school->users_count }})
+                </button>
+                <button class="btn btn-sm" data-dialog="#edit-{{ $school->id }}" title="Edit Data Sekolah">
+                  ✏️ Edit
+                </button>
                 <form method="POST" action="{{ route('god.schools.toggle', $school) }}">
                   @csrf
                   <button class="btn btn-sm">{{ $school->is_active ? 'Nonaktifkan' : 'Aktifkan' }}</button>
@@ -192,6 +201,7 @@
 </div>
 
 @foreach ($schools as $school)
+{{-- Dialog Reset Password --}}
 <dialog class="dlg" id="reset-{{ $school->id }}">
   <h3>Reset Password Admin — {{ $school->name }}</h3>
   <form method="POST" action="{{ route('god.schools.reset', $school) }}" class="stack">
@@ -205,6 +215,99 @@
       <button class="btn btn-god" data-loading="Mereset...">Reset Kata Sandi</button>
     </div>
   </form>
+</dialog>
+
+{{-- Dialog Edit Data Sekolah --}}
+<dialog class="dlg" id="edit-{{ $school->id }}" style="max-width:560px;width:95%">
+  <h3>Edit Sekolah — {{ $school->name }}</h3>
+  <form method="POST" action="{{ route('god.schools.update', $school) }}" class="stack">
+    @csrf
+    @method('PUT')
+    <div class="field">
+      <label>Nama Sekolah / Institusi *</label>
+      <input name="name" class="input" value="{{ $school->name }}" required>
+    </div>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field">
+        <label>Subdomain Unik *</label>
+        <input name="subdomain" class="input" value="{{ $school->subdomain }}" required>
+      </div>
+      <div class="field">
+        <label>Paket Langganan *</label>
+        <select name="package_tier" class="select">
+          <option value="dasar" {{ $school->package_tier === 'dasar' ? 'selected' : '' }}>Dasar</option>
+          <option value="menengah" {{ $school->package_tier === 'menengah' ? 'selected' : '' }}>Menengah</option>
+          <option value="atas" {{ $school->package_tier === 'atas' ? 'selected' : '' }}>Atas (Enterprise)</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-weight:600">
+        <input type="checkbox" name="is_active" value="1" {{ $school->is_active ? 'checked' : '' }}>
+        Status Sekolah Aktif (Berlangganan)
+      </label>
+    </div>
+    <div class="dlg-actions">
+      <button type="button" class="btn" data-close>Batal</button>
+      <button class="btn btn-god" data-loading="Menyimpan...">Simpan Perubahan</button>
+    </div>
+  </form>
+</dialog>
+
+{{-- Dialog Daftar Pengguna & Impersonasi --}}
+<dialog class="dlg" id="users-{{ $school->id }}" style="max-width:700px;width:95%">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+    <div>
+      <h3 style="margin:0">Pengguna Sekolah — {{ $school->name }}</h3>
+      <small style="color:var(--muted)">Pilih pengguna manapun untuk masuk langsung (God Mode Impersonate)</small>
+    </div>
+    <button type="button" class="btn btn-sm" data-close>✕</button>
+  </div>
+  <div class="table-wrap" style="max-height:360px;overflow-y:auto;border:1px solid var(--line);border-radius:12px">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Nama</th>
+          <th>Peran (Role)</th>
+          <th>Status</th>
+          <th style="text-align:right">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        @forelse ($school->users as $u)
+          <tr>
+            <td><b>{{ $u->username }}</b></td>
+            <td>{{ $u->name ?? '-' }}</td>
+            <td><span class="badge badge-blue">{{ $u->role?->name ?? 'user' }}</span></td>
+            <td>
+              <span class="badge {{ $u->is_active ? 'badge-ok' : 'badge-bad' }}">
+                {{ $u->is_active ? 'Aktif' : 'Nonaktif' }}
+              </span>
+            </td>
+            <td style="text-align:right">
+              <form method="POST" action="{{ route('god.impersonate.user', $u) }}" style="display:inline">
+                @csrf
+                <button class="btn btn-sm btn-god" title="Masuk langsung sebagai {{ $u->username }}">
+                  ⚡ Masuk
+                </button>
+              </form>
+            </td>
+          </tr>
+        @empty
+          <tr>
+            <td colspan="5" class="empty" style="padding:24px;text-align:center">
+              Belum ada akun pengguna pada sekolah ini.<br>
+              <small style="color:var(--muted)">Gunakan tombol <b>⚡ GOD MODE</b> di luar untuk membuatkan akun admin otomatis.</small>
+            </td>
+          </tr>
+        @endforelse
+      </tbody>
+    </table>
+  </div>
+  <div class="dlg-actions" style="margin-top:16px">
+    <button type="button" class="btn" data-close>Tutup</button>
+  </div>
 </dialog>
 @endforeach
 @endsection

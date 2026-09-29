@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 /**
  * Panel "GOD MODE" — hanya diakses guard super (tabel super_admins).
@@ -35,7 +36,8 @@ class GodController extends Controller
             'outstanding' => (float) Bill::where('status', '!=', 'lunas')->sum('amount'),
         ];
 
-        $schools = School::withCount(['users', 'academicYears'])
+        $schools = School::withCount(['users', 'academicYears', 'students', 'employees'])
+            ->with(['users.role'])
             ->latest()->get();
 
         return view('god.dashboard', compact('stats', 'schools'));
@@ -91,6 +93,21 @@ class GodController extends Controller
         return back()->with('toast', 'Password admin ' . $school->name . ' direset.');
     }
 
+    public function updateSchool(Request $request, School $school)
+    {
+        $data = $request->validate([
+            'name'         => ['required', 'string', 'max:150'],
+            'subdomain'    => ['required', 'string', 'max:60', 'alpha_dash', Rule::unique('schools')->ignore($school->id)],
+            'package_tier' => ['required', 'in:dasar,menengah,atas'],
+            'is_active'    => ['nullable', 'boolean'],
+        ]);
+
+        $data['is_active'] = $request->boolean('is_active', true);
+        $school->update($data);
+
+        return back()->with('toast', "Data sekolah '{$school->name}' berhasil diperbarui.");
+    }
+
     public function destroySchool(School $school)
     {
         $name = $school->name;
@@ -99,23 +116,71 @@ class GodController extends Controller
         return back()->with('toast', "Sekolah \"{$name}\" dan seluruh datanya dihapus.");
     }
 
-    // ── GOD MODE: masuk sebagai sekolah ──────────────────────
+    // ── GOD MODE: Masuk sebagai admin sekolah manapun ────────
     public function impersonate(Request $request, School $school)
     {
-        abort_if(! $school->is_active, 403, 'Sekolah nonaktif tidak bisa di-impersonate.');
-
+        // Cari akun admin, atau buatkan otomatis jika sekolah belum punya admin
         $admin = $school->users()->whereHas('role', fn ($q) => $q->where('name', 'admin'))->first();
-        abort_if(! $admin, 404, 'Sekolah ini belum punya akun admin.');
 
-        $request->session()->put('god_impersonating', true);
-        $request->session()->put('god_school_name', $school->name);
-        $request->session()->put('god_id', Auth::guard('super')->id());
+        if (! $admin) {
+            $adminRole = Role::firstOrCreate(['name' => 'admin']);
+            $admin = User::firstOrCreate(
+                ['school_id' => $school->id, 'username' => 'admin_' . $school->subdomain],
+                [
+                    'role_id'   => $adminRole->id,
+                    'password'  => Hash::make('AdminPass' . rand(1000, 9999)),
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        $superAdminId = Auth::guard('super')->id() ?? $request->session()->get('god_id');
 
         Auth::guard('web')->login($admin);
         $request->session()->regenerate();
 
+        $request->session()->put('god_impersonating', true);
+        $request->session()->put('god_school_id', $school->id);
+        $request->session()->put('god_school_name', $school->name);
+        $request->session()->put('god_school_subdomain', $school->subdomain);
+        $request->session()->put('god_id', $superAdminId);
+
         return redirect()->route('dashboard')
-            ->with('toast', 'GOD MODE: Anda masuk sebagai admin ' . $school->name);
+            ->with('toast', '⚡ GOD MODE AKTIF: Anda memiliki akses penuh ke ' . $school->name . ' sebagai Administrator.');
+    }
+
+    // ── GOD MODE: Masuk sebagai pengguna spesifik manapun ──────
+    public function impersonateUser(Request $request, User $user)
+    {
+        $school = $user->school;
+        abort_if(! $school, 404, 'Sekolah pengguna tidak ditemukan.');
+
+        $superAdminId = Auth::guard('super')->id() ?? $request->session()->get('god_id');
+
+        Auth::guard('web')->login($user);
+        $request->session()->regenerate();
+
+        $request->session()->put('god_impersonating', true);
+        $request->session()->put('god_school_id', $school->id);
+        $request->session()->put('god_school_name', $school->name);
+        $request->session()->put('god_school_subdomain', $school->subdomain);
+        $request->session()->put('god_id', $superAdminId);
+
+        return redirect()->route('dashboard')
+            ->with('toast', "⚡ GOD MODE: Anda masuk sebagai {$user->username} ({$user->role?->name}) di {$school->name}.");
+    }
+
+    // ── GOD MODE: Pindah sekolah instan dari bar navigasi ────
+    public function switchSchool(Request $request)
+    {
+        if (! $request->session()->get('god_impersonating') && ! Auth::guard('super')->check()) {
+            abort(403, 'Akses God Mode ditolak.');
+        }
+
+        $request->validate(['school_id' => 'required|exists:schools,id']);
+        $school = School::findOrFail($request->school_id);
+
+        return $this->impersonate($request, $school);
     }
 
     public function exitGodMode(Request $request)
